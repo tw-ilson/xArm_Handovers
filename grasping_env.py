@@ -11,249 +11,24 @@ import time
 from tqdm import tqdm
 import h5py
 
+import os
 
-class RobotArm:
-    GRIPPER_CLOSED = 0.
-    GRIPPER_OPENED = 1.
-    def __init__(self, fast_mode: bool=True):
-        '''Robot Arm simulated in Pybullet, with support for performing top-down
-        grasps within a specified workspace.
-        '''
-        # placing robot higher above ground improves top-down grasping ability
-        self._id = pb.loadURDF("assets/urdf/xarm.urdf",
-                               basePosition=(0, 0, 0.05),
-                               flags=pb.URDF_USE_SELF_COLLISION,
-                              )
+import nuro_arm.camera 
+from nuro_arm.robot import robot_arm
 
-        # these are hard coded based on how urdf is written
-        self.arm_joint_ids = [1,2,3,4,5]
-        self.gripper_joint_ids = [6,7]
-        self.dummy_joint_ids = [8]
-        self.finger_joint_ids = [9,10]
-        self.end_effector_link_index = 11
 
-        self.arm_joint_limits = np.array(((-2, -1.58, -2, -1.8, -2),
-                                          ( 2,  1.58,  2,  2.0,  2)))
-        self.gripper_joint_limits = np.array(((0.05,0.05),
-                                              (1.38, 1.38)))
 
-        # chosen to move arm out of view of camera
-        self.home_arm_jpos = [0., -1.1, 1.4, 1.3, 0.]
+class HandoverArm(robot_arm.RobotArm):
+    def __init__(self, controller_type='sim', headless=True, realtime=False, workspace=None, pb_client=None, serial_number=None):
+        super().__init__(controller_type, headless, realtime, workspace, pb_client, serial_number)
+        self.camera_link_index = 12;
+        if controller_type == 'sim':
+            self._id = self._sim.robot_id;
 
-        # joint constraints are needed for four-bar linkage in xarm fingers
-        for i in [0,1]:
-            constraint = pb.createConstraint(self._id,
-                                             self.gripper_joint_ids[i],
-                                             self._id,
-                                             self.finger_joint_ids[i],
-                                             pb.JOINT_POINT2POINT,
-                                             (0,0,0),
-                                             (0,0,0.03),
-                                             (0,0,0))
-            pb.changeConstraint(constraint, maxForce=1000000)
-
-        # reset joints in hand so that constraints are satisfied
-        hand_joint_ids = self.gripper_joint_ids + self.dummy_joint_ids + self.finger_joint_ids
-        hand_rest_states = [0.05, 0.05, 0.055, 0.0155, 0.031]
-        [pb.resetJointState(self._id, j_id, jpos)
-                 for j_id,jpos in zip(hand_joint_ids, hand_rest_states)]
-
-        # allow finger and linkages to move freely
-        pb.setJointMotorControlArray(self._id,
-                                     self.dummy_joint_ids+self.finger_joint_ids,
-                                     pb.POSITION_CONTROL,
-                                     forces=[0,0,0])
-
-    def move_gripper_to(self, position: List[float], theta: float, teleport: bool=False):
-        '''Commands motors to move end effector to desired position, oriented
-        downwards with a rotation of theta about z-axis
-
-        Parameters
-        ----------
-        position
-            xyz position that end effector should move toward
-        theta
-            rotation (in radians) of the gripper about the z-axis.
-
-        Returns
-        -------
-        bool
-            True if movement is successful, False otherwise.
-        '''
-        quat = pb.getQuaternionFromEuler((0,-np.pi,theta))
-
-        arm_jpos = self.solve_ik(position, quat)
-
-        if teleport:
-            self.teleport_arm(arm_jpos)
-            return True
-        else:
-            return self.move_arm_to_jpos(arm_jpos)
-
-    def solve_ik(self,
-                 pos: List[float],
-                 quat: Optional[List[float]]=None,
-                ) -> Tuple[List[float], Dict[str, float]]:
-        '''Calculates inverse kinematics solution for a desired end effector
-        position and (optionally) orientation, and returns residuals
-
-        Hint
-        ----
-        To calculate residuals, you can get the pose of the end effector link using
-        `pybullet.getLinkState` (but you need to set the arm joint positions first)
-
-        Parameters
-        ----------
-        pos
-            target xyz position of end effector
-        quat
-            target orientation of end effector as unit quaternion if specified.
-            otherwise, ik solution ignores final orientation
-
-        Returns
-        -------
-        list
-            joint positions of arm that would result in desired end effector
-            position and orientation. in order from base to wrist
-        dict
-            position and orientation residuals:
-                {'position' : || pos - achieved_pos ||,
-                 'orientation' : 1 - |<quat, achieved_quat>|}
-        '''
-        old_arm_jpos = list(zip(*pb.getJointStates(self._id, self.arm_joint_ids)))[0]
-
-        # good initial arm jpos for ik
-        [pb.resetJointState(self._id, i, jp)
-            for i,jp in zip(self.arm_joint_ids, self.home_arm_jpos)]
-
-        n_joints = pb.getNumJoints(self._id)
-        all_jpos = pb.calculateInverseKinematics(self._id,
-                                                 self.end_effector_link_index,
-                                                 pos,
-                                                 quat,
-                                                 maxNumIterations=20,
-                                                 jointDamping=n_joints*[0.005])
-        arm_jpos = all_jpos[:len(self.arm_joint_ids)]
-
-        self.teleport_arm(old_arm_jpos)
-
-        return arm_jpos
-
-    def move_arm_to_jpos(self, arm_jpos: List[float]) -> bool:
-        '''Commands motors to move arm to desired joint positions
-
-        Parameters
-        ----------
-        arm_jpos
-            joint positions (radians) of arm joints, ordered from base to wrist
-
-        Returns
-        -------
-        bool
-            True if movement is successful, False otherwise.
-        '''
-        # cannot use setJointMotorControlArray because API does not expose
-        # maxVelocity argument, which is needed for stable object manipulation
-        for j_id, jpos in zip(self.arm_joint_ids, arm_jpos):
-            pb.setJointMotorControl2(self._id,
-                                     j_id,
-                                     pb.POSITION_CONTROL,
-                                     jpos,
-                                     positionGain=0.2,
-                                     maxVelocity=1.0)
-
-        return self.monitor_movement(arm_jpos, self.arm_joint_ids)
-
-    def teleport_arm(self, arm_jpos: List[float]) -> None:
-        [pb.resetJointState(self._id, i, jp)
-            for i,jp in zip(self.arm_joint_ids, arm_jpos)]
-
-    def teleport_gripper(self, gripper_state: float) -> None:
-        assert 0 <= gripper_state <= 1, 'Gripper state must be in range [0,1]'
-
-        gripper_jpos = (1-gripper_state)*self.gripper_joint_limits[0] \
-                       + gripper_state*self.gripper_joint_limits[1]
-        [pb.resetJointState(self._id, i, jp)
-            for i,jp in zip(self.gripper_joint_ids, gripper_jpos)]
-
-        [pb.resetJointState(self._id, j_id, jpos)
-                 for j_id,jpos in zip(self.hand_joint_ids, self.hand_rest_states)]
-
-    def set_gripper_state(self, gripper_state: float) -> bool:
-        '''Commands motors to move gripper to given state
-
-        Parameters
-        ----------
-        gripper_state
-            gripper state is a continuous number from 0. (fully closed)
-            to 1. (fully open)
-
-        Returns
-        -------
-        bool
-            True if movement is successful, False otherwise.
-
-        Raises
-        ------
-        AssertionError
-            If `gripper_state` is outside the range [0,1]
-        '''
-        assert 0 <= gripper_state <= 1, 'Gripper state must be in range [0,1]'
-
-        gripper_jpos = (1-gripper_state)*self.gripper_joint_limits[0] \
-                       + gripper_state*self.gripper_joint_limits[1]
-
-        pb.setJointMotorControlArray(self._id,
-                                     self.gripper_joint_ids,
-                                     pb.POSITION_CONTROL,
-                                     gripper_jpos,
-                                     positionGains=[0.2, 0.2])
-
-        success = self.monitor_movement(gripper_jpos, self.gripper_joint_ids)
-        return success
-
-    def monitor_movement(self,
-                         target_jpos: List[float],
-                         joint_ids: List[int],
-                        ) -> bool:
-        '''Monitors movement of motors to detect early stoppage or success.
-
-        Note
-        ----
-        Current implementation calls `pybullet.stepSimulation`, without which the
-        simulator will not move the motors.  You can avoid this by setting
-        `pybullet.setRealTimeSimulation(True)` but this is usually not advised.
-
-        Parameters
-        ----------
-        target_jpos
-            final joint positions that motors are moving toward
-        joint_ids
-            the joint ids associated with each `target_jpos`, used to read out
-            the joint state during movement
-
-        Returns
-        -------
-        bool
-            True if movement is successful, False otherwise.
-        '''
-        old_jpos = list(zip(*pb.getJointStates(self._id, joint_ids)))[0]
-        while True:
-            [pb.stepSimulation() for _ in range(10)]
-
-            achieved_jpos = list(zip(*pb.getJointStates(self._id, joint_ids)))[0]
-            if np.allclose(target_jpos, achieved_jpos, atol=1e-3):
-                # success
-                return True
-
-            if np.allclose(achieved_jpos, old_jpos, atol=1e-2):
-                # movement stopped
-                return False
-            old_jpos = achieved_jpos
-
+    
 
 class WristCamera:
-    def __init__(self, robot: RobotArm, img_size: int) -> None:
+    def __init__(self, robot: HandoverArm, img_size: int) -> None:
         '''Camera that is mounted to view workspace from above
         Hint
         ----
@@ -276,18 +51,33 @@ class WristCamera:
         '''
         self.img_size = img_size
         self.robot = robot
-        
-        wrist_linkstate = pb.getLinkState(robot._id, robot.end_effector_link_index)
-        self.position = wrist_linkstate[0]
-        self.orientation = wrist_linkstate[1]
 
-        self.view_mtx = pb.computeViewMatrix(cameraEyePosition=self.position
-                                             cameraTargetPosition=target_pos,
-                                            cameraUpVector=(-1,0,0))
-        self.proj_mtx = pb.computeProjectionMatrixFOV(fov=fov,
+        self.computeView()
+
+    def computeView(self):
+        """
+        Computes the view matrix and projection matrix based on the position and orientation of the robot's end effector
+        """
+        cam_linkstate = pb.getLinkState(self.robot._id, self.robot.camera_link_index)
+        self.position = [*cam_linkstate[0]]
+        self.orientation = [*pb.getMatrixFromQuaternion(cam_linkstate[1])] + [0, 0, 0]
+
+        #pre-allocate view matrix
+        self.view_mtx = np.zeros(shape=(4,4))
+        for i in range(4):
+            for j in range(3):
+                self.view_mtx[i, j] = self.orientation[3*i +j]
+        for i in range(3):
+            self.view_mtx[i, 3] = self.position[i]
+        self.view_mtx[3,3] = 1
+
+        self.proj_mtx = pb.computeProjectionMatrixFOV(fov=60,
                                                       aspect=1,
                                                       nearVal=0.01,
                                                       farVal=1)
+        
+        assert(self.view_mtx.shape == (4, 4))
+
 
     def get_rgb_image(self) -> np.ndarray:
         '''Takes rgb image
@@ -315,30 +105,10 @@ class TopDownGraspingEnv(gym.Env):
         single object.  A camera is positioned to take images of workspace
         from above.
         '''
-        self.client = pb.connect(pb.GUI if render else pb.DIRECT)
-        pb.setPhysicsEngineParameter(numSubSteps=0,
-                                     numSolverIterations=100,
-                                     solverResidualThreshold=1e-7,
-                                     constraintSolverType=pb.CONSTRAINT_SOLVER_LCP_SI)
-        pb.setGravity(0,0,-10)
-
-        self.tex_ids = [pb.loadTexture(f) for f in glob.glob('assets/textures/*.png')]
-
-        # create ground plane
-        pb.setAdditionalSearchPath(pybullet_data.getDataPath())
-        # offset plane y-dim to place white tile under workspace
-        self.plane_id = pb.loadURDF('plane.urdf', (0,-0.5,0))
-
-        # makes collisions with plane more stable
-        pb.changeDynamics(self.plane_id, -1,
-                          linearDamping=0.04,
-                          angularDamping=0.04,
-                          restitution=0,
-                          contactStiffness=3000,
-                          contactDamping=100)
-
         # add robot
-        self.robot = RobotArm()
+        self.robot = HandoverArm(headless=False)
+
+        self.camera = WristCamera(self.robot, 42);
 
         # add object
         self.object_id = pb.loadURDF("assets/urdf/object.urdf")
@@ -351,16 +121,12 @@ class TopDownGraspingEnv(gym.Env):
         self.workspace = np.array(((0.10, -0.05), # ((min_x, min_y)
                                    (0.20, 0.05))) #  (max_x, max_y))
 
-        self.camera = Camera(self.workspace, img_size)
-        self.img_size = img_size
 
         self.t_step = 0
         self.episode_length = episode_length
 
-        self.observation_space = gym.spaces.Box(0, 255,
-                                                shape=(img_size, img_size, 3),
-                                                dtype=np.uint8)
-        self.action_space = gym.spaces.Box(0, img_size-1, shape=(2,), dtype=int)
+        #self.observation_space = gym.spaces.Box(0, 255, shape=(img_size, img_size, 3), dtype=np.uint8)
+        #self.action_space = gym.spaces.Box(0, img_size-1, shape=(2,), dtype=int)
 
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
@@ -469,41 +235,6 @@ class TopDownGraspingEnv(gym.Env):
         return self.camera.get_rgb_image()
 
 
-def collect_transitions(env: TopDownGraspingEnv,
-                        hdf5_file: str,
-                        num_steps: int=3000,
-                        policy: Optional[Callable]=None):
-    if policy is None:
-        policy = lambda s: env.action_space.sample()
-
-    states = []
-    actions = []
-    rewards = []
-    next_states = []
-    dones = []
-
-    s = env.reset()
-    for i in tqdm(range(num_steps)):
-        a = policy(s)
-        sp, r, d, info = env.step(a)
-
-        states.append(s.copy())
-        actions.append(a.copy())
-        rewards.append(r)
-        next_states.append(sp.copy())
-        dones.append(d)
-
-        s = sp.copy()
-        if d:
-            s = env.reset()
-
-    with h5py.File(hdf5_file, 'w') as hf:
-        hf.create_dataset('states', data=np.array(states, dtype=np.uint8))
-        hf.create_dataset('actions', data=np.array(actions, dtype=np.int8))
-        hf.create_dataset('rewards', data=np.array(rewards, dtype=np.float32))
-        hf.create_dataset('next_states', data=np.array(next_states, dtype=np.uint8))
-        hf.create_dataset('dones', data=np.array(dones, dtype=bool))
-
 
 def watch_policy(env: TopDownGraspingEnv, policy: Optional[Callable]=None):
     if policy is None:
@@ -523,4 +254,6 @@ def watch_policy(env: TopDownGraspingEnv, policy: Optional[Callable]=None):
 
 if __name__ == "__main__":
     env = TopDownGraspingEnv(render=True)
-    watch_policy(env)
+    while True:
+        [pb.stepSimulation() for _ in range(10)]
+        time.sleep(.01)

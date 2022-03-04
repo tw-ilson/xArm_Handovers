@@ -154,6 +154,7 @@
       </collision>
     </link>
 
+
     <link name="left_finger_base_link">
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -270,6 +271,16 @@
         </inertial>
     </link>
 
+    <link name="camera_link">
+      <visual name="camera">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+	<geometry>
+	  <sphere radius="0.01"/>
+        </geometry>
+        <material name="pink"/>
+      </visual>
+    </link>
+    
     <joint name="world_joint" type="fixed">
         <parent link="world"/>
         <child link="base_link"/>
@@ -311,6 +322,7 @@
       <limit lower="-1.8" upper="2.0" velocity="2.0"/>
       <dynamics friction="0" damping="0.5"/>
     </joint>
+
 
     <joint name="wrist_rotation_joint" type="revolute">
       <origin xyz="0 0 0.0588" rpy="0 0 0"/>
@@ -367,6 +379,12 @@
         <parent link="hand_link"/>
         <child link="virtual_grasp_link"/>
         <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.1"/>
+    </joint>
+
+    <joint name="camera_joint" type="fixed">
+      <parent link="hand_link"/>
+      <child link="camera_link"/>
+      <origin xyz="-0.025 0 0.05" rpy="0 0 0"/>
     </joint>
 
     <material name="black">
