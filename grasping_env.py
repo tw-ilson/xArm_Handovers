@@ -20,12 +20,16 @@ WORKSPACE = np.array(((0.10, -0.05, 0.2), # ((min_x, min_y, min_z)
 
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
 
+DELTA = 0.02
+
 
 class HandoverArm(robot.RobotArm):
     def __init__(self, controller_type='sim', headless=True, realtime=False, workspace=None, pb_client=None, serial_number=None):
         super().__init__(controller_type, headless, realtime, workspace, pb_client, serial_number)
         
+        self.end_effector_link_index = 11;
         self.camera_link_index = 12;
+        self.open_gripper
         if controller_type == 'sim':
             self._id = self._sim.robot_id;
 
@@ -147,24 +151,47 @@ class HandoverGraspingEnv(gym.Env):
         self.t_step = 0
         self.episode_length = episode_length
 
-        #self.observation_space = gym.spaces.Box(0, 255, shape=(img_size, img_size, 3), dtype=np.uint8)
-        #self.action_space = gym.spaces.Box(0, img_size-1, shape=(2,), dtype=int)
+        self.observation_space = gym.spaces.Box(0, 255, shape=(img_size, img_size, 3), dtype=np.float32)
+
+        self.action_delta = DELTA
+
+        self.x_action_space = gym.spaces.Discrete(0, 3, start=-1,dtype=int)
+        self.y_action_space = gym.spaces.Discrete(0, 3, start=-1,dtype=int)
+        self.z_action_space = gym.spaces.Discrete(0, 3, start=-1,dtype=int)
+        self.theta_action_space = gym.spaces.Discrete(0, 3,start=-1, dtype=int)
 
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
         '''
         self.reset_object_position()
-        self.reset_object_texture()
+        #self.reset_object_texture()
         self.t_step = 0
 
-        return self.get_obs()
+        return self.get_obs()[0]
 
     def step(self, action: np.ndarray):
-        assert self.action_space.contains(action)
+        '''
+        Takes one small step in the environment.
 
-        x,y = self._convert_from_pixel(np.array(action))
+        Params
+        ------
+            action: 4-vector with discre values in {-1, 0, 1}
+        Returns
+        ------
+            obs, reward, done, info
+        '''
 
-        success = self.perform_grasp(x, y)
+        assert self.x_action_space.contains(action[0])
+        assert self.y_action_space.contains(action[2])
+        assert self.z_action_space.contains(action[3])
+        assert self.theta_action_space.contains(action[3])
+        
+        current_effector_pos = pb.getLinkState(self.robot._id, self.robot.end_effector_link_index, calculateForwardKinematics=True)[0]
+
+        next_pos = [x + self.action_delta * a for x, a in zip(current_effector_pos, action[:3])]
+        
+        self.robot.move_hand_to(next_pos)
+
         self.t_step += 1
 
         obs = self.get_obs()
