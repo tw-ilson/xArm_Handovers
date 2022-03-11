@@ -155,10 +155,10 @@ class HandoverGraspingEnv(gym.Env):
 
         self.action_delta = DELTA
 
-        self.x_action_space = gym.spaces.Discrete(0, 3, start=-1,dtype=int)
-        self.y_action_space = gym.spaces.Discrete(0, 3, start=-1,dtype=int)
-        self.z_action_space = gym.spaces.Discrete(0, 3, start=-1,dtype=int)
-        self.theta_action_space = gym.spaces.Discrete(0, 3,start=-1, dtype=int)
+       # self.x_action_space = gym.spaces.Discrete( 3, start=-1, dtype=int)
+       # self.y_action_space = gym.spaces.Discrete( 3, start=-1, dtype=int)
+       # self.z_action_space = gym.spaces.Discrete( 3, start=-1, dtype=int)
+       # self.theta_action_space = gym.spaces.Discrete( 3,start=-1, dtype=int)
 
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
