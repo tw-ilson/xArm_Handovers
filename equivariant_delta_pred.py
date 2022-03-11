@@ -7,7 +7,7 @@ from e2cnn import nn
 # TODO experiment with kernel sizes for average pooling
 
 
-class EquivariantXYZ(torch.nn.Module):
+class EquivariantDeltas(torch.nn.Module):
     def __init__(self, input_shape, N=8) -> None:
         """Creates equivariant X, Y, Z prediction network for input image
 
