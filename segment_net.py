@@ -2,54 +2,11 @@ import torch
 import numpy as np
 from torch.utils.data import DataLoader, Dataset
 from torchvision.transforms import ToTensor
-import segmentation_models_pytorch as smp
 import albumentations as aug
 import cv2
 import h5py
 
 from typing import Dict, Tuple, List
-
-
-"""
-Image segmentation network used to pre-process the image obtained from wrist mounted camera. We will take a pre-trained network and tune it to produce a segmentation mask on the object if it is in frame.
-"""
-
-class ObjectMaskNetwork(torch.Module) :
-    """
-    Convolutional Auto-encoder pre-trained on ImageNet
-    """
-
-    def __init__(self, arch="FPN", encoder="resnet", in_channels=3, out_classes=1):
-        self.model = smp.create_model( \
-            arch, encoder_name=encoder, in_channels=in_channels, classes=out_classes) 
-
-         # preprocessing parameteres for image
-        self.params = smp.encoders.get_preprocessing_params(encoder)
-
-        # for image segmentation dice loss could be the best first choice
-        self.loss_fn = smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
-
-    def forward(self, x):
-        """
-        parameters
-        ===========
-        x:
-            image tensor batch from wrist camera of shape (B, 3, H, W)
-
-        returns
-        ===========
-        image_mask:
-            image mask tensor batch of shape (B, H, W)
-        """
-
-        image_mask = self.model(x)
-        return image_mask
-
-    def compute_loss(self,
-            y_pred: torch.Tensor,
-            y_target: torch.Tensor):
-        return self.loss_fn(y_pred, y_target)
-
 
 class ObjectMaskDataset(Dataset):
     """
