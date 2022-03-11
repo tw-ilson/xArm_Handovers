@@ -1,0 +1,3 @@
+[submodule "nuro-arm"]
+	path = nuro-arm
+	url = https://github.com/tw-ilson/nuro-arm.git
