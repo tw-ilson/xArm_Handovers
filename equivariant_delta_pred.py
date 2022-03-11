@@ -8,16 +8,14 @@ from e2cnn import nn
 
 
 class EquivariantXYZ(torch.nn.Module):
-    def __init__(self, x_delta, y_delta, z_delta, theta_delta, input_shape, N=8) -> None:
+    def __init__(self, input_shape, N=8) -> None:
         """Creates equivariant X, Y, Z prediction network for input image
 
         Args:
-            x_delta (int): delta x for each time step
-            y_delta (int): delta y for each time step
-            z_delta (int): delta z for each time step
-            theta_delta (int): delta theta for each time step
             input_shape (tuple, optional): Shape of the image (C, H, W). Should be square.
             N (int, optional): Number of discrete rotations, or -1 for continuous. Defaults to 8.
+            NOTES: have 2 predictions of direct joint values: (base and gripper), two predictions
+            of combinations of motors: (forward z values, and pitch up down)
         """
         super().__init__()
         # (B, C, H, W)
@@ -26,8 +24,10 @@ class EquivariantXYZ(torch.nn.Module):
             "Input image should be square"
         )
         self.N = N
-        self.actions = [-x_delta, 0, x_delta, -y_delta, 0, y_delta,
-                        -z_delta, 0, z_delta, -theta_delta, 0, theta_delta]
+        self.actions = []
+        for _ in range(4):
+            self.actions.extend([-1, 0, 1])
+
         self.input_shape = input_shape
         self.conv_out_channels = 8
 
