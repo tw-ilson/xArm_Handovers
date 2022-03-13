@@ -1,0 +1,1132 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ALARM	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    ALARM = '#c30b0b'$/;"	v	class:Colors
+ALARM	nuro-arm/nuro_arm/tk_utils.py	/^    ALARM = '#c30b0b'$/;"	v	class:Colors
+ARUCO_DICT	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^ARUCO_DICT = {$/;"	v
+ARUCO_DICT	nuro-arm/build/lib/nuro_arm/constants.py	/^ARUCO_DICT = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)$/;"	v
+ARUCO_DICT	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^ARUCO_DICT = {$/;"	v
+ARUCO_DICT	nuro-arm/nuro_arm/constants.py	/^ARUCO_DICT = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)$/;"	v
+ARUCO_PARAMS	nuro-arm/build/lib/nuro_arm/constants.py	/^ARUCO_PARAMS = cv2.aruco.DetectorParameters_create()$/;"	v
+ARUCO_PARAMS	nuro-arm/nuro_arm/constants.py	/^ARUCO_PARAMS = cv2.aruco.DetectorParameters_create()$/;"	v
+ArucoCube	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^ArucoCube = namedtuple('ArucoCube', ['id_', 'pos', 'quat', 'vertices'])$/;"	v
+ArucoCube	nuro-arm/nuro_arm/camera/camera_utils.py	/^ArucoCube = namedtuple('ArucoCube', ['id_', 'pos', 'quat', 'vertices'])$/;"	v
+ArucoTag	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^ArucoTag = namedtuple('ArucoTag', ['id_', 'corners', 'tag2cam'])$/;"	v
+ArucoTag	nuro-arm/nuro_arm/camera/camera_utils.py	/^ArucoTag = namedtuple('ArucoTag', ['id_', 'corners', 'tag2cam'])$/;"	v
+BASE_HEIGHT_SPACING	nuro-arm/tests/find_workspace.py	/^BASE_HEIGHT_SPACING = 0.02$/;"	v
+BLACK	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    BLACK = '#2e2e2e'$/;"	v	class:Colors
+BLACK	nuro-arm/nuro_arm/tk_utils.py	/^    BLACK = '#2e2e2e'$/;"	v	class:Colors
+BUILDDIR	nuro-arm/docs/Makefile	/^BUILDDIR      = _build$/;"	m
+BUILDDIR	nuro-arm/docs/make.bat	/^set BUILDDIR=_build$/;"	v
+BaseController	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^class BaseController:$/;"	c
+BaseController	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^from nuro_arm.robot.base_controller import BaseController$/;"	i
+BaseController	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^from nuro_arm.robot.base_controller import BaseController$/;"	i
+BaseController	nuro-arm/nuro_arm/robot/base_controller.py	/^class BaseController:$/;"	c
+BaseController	nuro-arm/nuro_arm/robot/simulator_controller.py	/^from nuro_arm.robot.base_controller import BaseController$/;"	i
+BaseController	nuro-arm/nuro_arm/robot/xarm_controller.py	/^from nuro_arm.robot.base_controller import BaseController$/;"	i
+CALIBRATION_GRIDSHAPE	nuro-arm/build/lib/nuro_arm/constants.py	/^CALIBRATION_GRIDSHAPE = (9,7)$/;"	v
+CALIBRATION_GRIDSHAPE	nuro-arm/nuro_arm/constants.py	/^CALIBRATION_GRIDSHAPE = (9,7)$/;"	v
+CALIBRATION_GRIDSIZE	nuro-arm/build/lib/nuro_arm/constants.py	/^CALIBRATION_GRIDSIZE = 0.020$/;"	v
+CALIBRATION_GRIDSIZE	nuro-arm/nuro_arm/constants.py	/^CALIBRATION_GRIDSIZE = 0.020$/;"	v
+CAMERA_CONFIG_FILE	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^from nuro_arm.constants import CAMERA_CONFIG_FILE$/;"	i
+CAMERA_CONFIG_FILE	nuro-arm/build/lib/nuro_arm/constants.py	/^CAMERA_CONFIG_FILE = os.path.join(os.path.dirname(nuro_arm.__file__),$/;"	v
+CAMERA_CONFIG_FILE	nuro-arm/nuro_arm/camera/calibrate.py	/^from nuro_arm.constants import CAMERA_CONFIG_FILE$/;"	i
+CAMERA_CONFIG_FILE	nuro-arm/nuro_arm/constants.py	/^CAMERA_CONFIG_FILE = os.path.join(os.path.dirname(nuro_arm.__file__),$/;"	v
+CAM_DIST_COEFFS	nuro-arm/build/lib/nuro_arm/constants.py	/^CAM_DIST_COEFFS = np.array([[-4.17660678e-01, 5.12390537e-02, -2.35830953e-03,$/;"	v
+CAM_DIST_COEFFS	nuro-arm/nuro_arm/constants.py	/^CAM_DIST_COEFFS = np.array([[-4.17660678e-01, 5.12390537e-02, -2.35830953e-03,$/;"	v
+CAM_MTX	nuro-arm/build/lib/nuro_arm/constants.py	/^CAM_MTX = np.array([[669.69257956,   0.       , 322.45184341],$/;"	v
+CAM_MTX	nuro-arm/nuro_arm/constants.py	/^CAM_MTX = np.array([[669.69257956,   0.       , 322.45184341],$/;"	v
+CAM_RESOLUTION_HEIGHT	nuro-arm/build/lib/nuro_arm/constants.py	/^CAM_RESOLUTION_HEIGHT = 480$/;"	v
+CAM_RESOLUTION_HEIGHT	nuro-arm/nuro_arm/constants.py	/^CAM_RESOLUTION_HEIGHT = 480$/;"	v
+CAM_RESOLUTION_WIDTH	nuro-arm/build/lib/nuro_arm/constants.py	/^CAM_RESOLUTION_WIDTH = 640$/;"	v
+CAM_RESOLUTION_WIDTH	nuro-arm/nuro_arm/constants.py	/^CAM_RESOLUTION_WIDTH = 640$/;"	v
+CUBE_EDGES	nuro-arm/build/lib/nuro_arm/constants.py	/^CUBE_EDGES = ((0,1),(0,2),(0,4),(1,3),(1,5),(2,3),$/;"	v
+CUBE_EDGES	nuro-arm/nuro_arm/constants.py	/^CUBE_EDGES = ((0,1),(0,2),(0,4),(1,3),(1,5),(2,3),$/;"	v
+CUBE_SIZE	nuro-arm/build/lib/nuro_arm/constants.py	/^CUBE_SIZE = 0.0254$/;"	v
+CUBE_SIZE	nuro-arm/build/lib/nuro_arm/cube.py	/^from nuro_arm.constants import URDF_DIR, CUBE_SIZE$/;"	i
+CUBE_SIZE	nuro-arm/nuro_arm/constants.py	/^CUBE_SIZE = 0.0254$/;"	v
+CUBE_SIZE	nuro-arm/nuro_arm/cube.py	/^from nuro_arm.constants import URDF_DIR, CUBE_SIZE$/;"	i
+CUBE_SIZE	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^from nuro_arm.constants import CUBE_SIZE$/;"	i
+Callable	grasping_env.py	/^from typing import Tuple, List, Optional, Dict, Callable$/;"	i
+Camera	nuro-arm/build/lib/nuro_arm/__init__.py	/^from nuro_arm.camera.camera import Camera$/;"	i
+Camera	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^from nuro_arm import Camera$/;"	i
+Camera	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^class Camera:$/;"	c
+Camera	nuro-arm/nuro_arm/__init__.py	/^from nuro_arm.camera.camera import Camera$/;"	i
+Camera	nuro-arm/nuro_arm/camera/calibrate.py	/^from nuro_arm import Camera$/;"	i
+Camera	nuro-arm/nuro_arm/camera/camera.py	/^class Camera:$/;"	c
+Camera	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^from nuro_arm.camera.camera import Camera$/;"	i
+Camera	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^from nuro_arm import RobotArm, Camera, Cube$/;"	i
+Camera	nuro-arm/nuro_arm/examples/pickup_cube.py	/^from nuro_arm.camera.camera import Camera$/;"	i
+Camera	nuro-arm/nuro_arm/examples/show_cubes.py	/^from nuro_arm.camera.camera import Camera$/;"	i
+Capturer	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^from nuro_arm.camera.capturer import Capturer, SimCapturer$/;"	i
+Capturer	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^class Capturer:$/;"	c
+Capturer	nuro-arm/nuro_arm/camera/camera.py	/^from nuro_arm.camera.capturer import Capturer, SimCapturer$/;"	i
+Capturer	nuro-arm/nuro_arm/camera/capturer.py	/^class Capturer:$/;"	c
+CmdLib	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^class CmdLib:$/;"	c
+CmdLib	nuro-arm/nuro_arm/robot/xarm_controller.py	/^class CmdLib:$/;"	c
+Collision	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^class Collision:$/;"	c
+Collision	nuro-arm/nuro_arm/robot/motion_planner.py	/^class Collision:$/;"	c
+Colors	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
+Colors	nuro-arm/build/lib/nuro_arm/robot/calibrate.py	/^from nuro_arm.tk_utils import ImagePopup, Popup, Colors$/;"	i
+Colors	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^class Colors:$/;"	c
+Colors	nuro-arm/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
+Colors	nuro-arm/nuro_arm/robot/calibrate.py	/^from nuro_arm.tk_utils import ImagePopup, Popup, Colors$/;"	i
+Colors	nuro-arm/nuro_arm/tk_utils.py	/^class Colors:$/;"	c
+Cube	nuro-arm/build/lib/nuro_arm/__init__.py	/^from nuro_arm.cube import Cube$/;"	i
+Cube	nuro-arm/build/lib/nuro_arm/cube.py	/^class Cube:$/;"	c
+Cube	nuro-arm/nuro_arm/__init__.py	/^from nuro_arm.cube import Cube$/;"	i
+Cube	nuro-arm/nuro_arm/cube.py	/^class Cube:$/;"	c
+Cube	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^from nuro_arm.cube import Cube$/;"	i
+Cube	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^from nuro_arm import RobotArm, Camera, Cube$/;"	i
+DEFAULT_CAM_POSE_MTX	nuro-arm/build/lib/nuro_arm/constants.py	/^DEFAULT_CAM_POSE_MTX = np.array([$/;"	v
+DEFAULT_CAM_POSE_MTX	nuro-arm/nuro_arm/constants.py	/^DEFAULT_CAM_POSE_MTX = np.array([$/;"	v
+DELTA	grasping_env.py	/^DELTA = 0.02$/;"	v
+DQNAgent	agent.py	/^class DQNAgent:$/;"	c
+DataLoader	segment_net.py	/^from torch.utils.data import DataLoader, Dataset$/;"	i
+Dataset	segment_net.py	/^from torch.utils.data import DataLoader, Dataset$/;"	i
+Device	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^class Device:$/;"	c
+Device	nuro-arm/nuro_arm/robot/xarm_controller.py	/^class Device:$/;"	c
+Dict	data_collection.py	/^from typing import Tuple, List, Optional, Dict, Union$/;"	i
+Dict	grasping_env.py	/^from typing import Tuple, List, Optional, Dict, Callable$/;"	i
+Dict	segment_net.py	/^from typing import Dict, Tuple, List$/;"	i
+Discrete	grasping_env.py	/^from gym.spaces.discrete import Discrete$/;"	i
+EquivariantDeltas	equivariant_delta_pred.py	/^class EquivariantDeltas(torch.nn.Module):$/;"	c
+FRAME_RATE	nuro-arm/build/lib/nuro_arm/constants.py	/^FRAME_RATE = 20$/;"	v
+FRAME_RATE	nuro-arm/nuro_arm/constants.py	/^FRAME_RATE = 20$/;"	v
+GOAL	nuro-arm/nuro_arm/examples/throw_cube.py	/^GOAL = np.array([-0.029,-0.671,-0.237,0.303,0])$/;"	v
+GRIPPER_CLOSED	nuro-arm/build/lib/nuro_arm/constants.py	/^GRIPPER_CLOSED = 0$/;"	v
+GRIPPER_CLOSED	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^from nuro_arm.constants import GRIPPER_CLOSED, GRIPPER_OPENED$/;"	i
+GRIPPER_CLOSED	nuro-arm/nuro_arm/constants.py	/^GRIPPER_CLOSED = 0$/;"	v
+GRIPPER_CLOSED	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^from nuro_arm.constants import GRIPPER_CLOSED, GRIPPER_OPENED$/;"	i
+GRIPPER_CLOSED	nuro-arm/nuro_arm/examples/read_joint_positions.py	/^from nuro_arm.constants import GRIPPER_CLOSED$/;"	i
+GRIPPER_CLOSED	nuro-arm/nuro_arm/examples/throw_cube.py	/^from nuro_arm.constants import GRIPPER_CLOSED, GRIPPER_OPENED$/;"	i
+GRIPPER_CLOSED	nuro-arm/nuro_arm/robot/robot_arm.py	/^from nuro_arm.constants import GRIPPER_CLOSED, GRIPPER_OPENED$/;"	i
+GRIPPER_OPENED	nuro-arm/build/lib/nuro_arm/constants.py	/^GRIPPER_OPENED = 1$/;"	v
+GRIPPER_OPENED	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^from nuro_arm.constants import GRIPPER_CLOSED, GRIPPER_OPENED$/;"	i
+GRIPPER_OPENED	nuro-arm/nuro_arm/constants.py	/^GRIPPER_OPENED = 1$/;"	v
+GRIPPER_OPENED	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^from nuro_arm.constants import GRIPPER_CLOSED, GRIPPER_OPENED$/;"	i
+GRIPPER_OPENED	nuro-arm/nuro_arm/examples/throw_cube.py	/^from nuro_arm.constants import GRIPPER_CLOSED, GRIPPER_OPENED$/;"	i
+GRIPPER_OPENED	nuro-arm/nuro_arm/robot/robot_arm.py	/^from nuro_arm.constants import GRIPPER_CLOSED, GRIPPER_OPENED$/;"	i
+GUI	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^from nuro_arm.camera.gui import GUI$/;"	i
+GUI	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^class GUI:$/;"	c
+GUI	nuro-arm/nuro_arm/camera/camera.py	/^from nuro_arm.camera.gui import GUI$/;"	i
+GUI	nuro-arm/nuro_arm/camera/gui.py	/^class GUI:$/;"	c
+GUI	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^class GUI(tk.Frame):$/;"	c
+GUI	nuro-arm/nuro_arm/examples/pickup_cube.py	/^from nuro_arm.camera.gui import GUI, ShowCubes$/;"	i
+GUI	nuro-arm/nuro_arm/examples/record_movements.py	/^class GUI(tk.Frame):$/;"	c
+GridWorldEnv	nuro-arm/nuro_arm/examples/gym_envs/grid_world_env.py	/^class GridWorldEnv(gym.Env):$/;"	c
+HEIGHT	nuro-arm/tests/find_workspace.py	/^HEIGHT = 0.08$/;"	v
+HORIZONTAL_GRASP	nuro-arm/build/lib/nuro_arm/constants.py	/^HORIZONTAL_GRASP = np.array((-np.pi\/2, 0.))$/;"	v
+HORIZONTAL_GRASP	nuro-arm/nuro_arm/constants.py	/^HORIZONTAL_GRASP = np.array((-np.pi\/2, 0.))$/;"	v
+HandoverArm	grasping_env.py	/^class HandoverArm(robot.RobotArm):$/;"	c
+HandoverGraspingEnv	agent.py	/^from grasping_env import HandoverGraspingEnv$/;"	i
+HandoverGraspingEnv	data_collection.py	/^from grasping_env import HandoverGraspingEnv$/;"	i
+HandoverGraspingEnv	grasping_env.py	/^class HandoverGraspingEnv(gym.Env):$/;"	c
+HighlightedCheckerboard	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^    class HighlightedCheckerboard:$/;"	c	function:calibrate_camera
+HighlightedCheckerboard	nuro-arm/nuro_arm/camera/calibrate.py	/^    class HighlightedCheckerboard:$/;"	c	function:calibrate_camera
+IMAGES_DIR	nuro-arm/build/lib/nuro_arm/constants.py	/^IMAGES_DIR = os.path.join(os.path.dirname(nuro_arm.__file__),$/;"	v
+IMAGES_DIR	nuro-arm/build/lib/nuro_arm/robot/calibrate.py	/^from nuro_arm.constants import XARM_CONFIG_FILE, IMAGES_DIR$/;"	i
+IMAGES_DIR	nuro-arm/nuro_arm/constants.py	/^IMAGES_DIR = os.path.join(os.path.dirname(nuro_arm.__file__),$/;"	v
+IMAGES_DIR	nuro-arm/nuro_arm/robot/calibrate.py	/^from nuro_arm.constants import XARM_CONFIG_FILE, IMAGES_DIR$/;"	i
+Image	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^from PIL import Image$/;"	i
+Image	nuro-arm/build/lib/nuro_arm/cube.py	/^from PIL import Image$/;"	i
+Image	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^from PIL import ImageTk, Image$/;"	i
+Image	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^from PIL import Image$/;"	i
+Image	nuro-arm/nuro_arm/cube.py	/^from PIL import Image$/;"	i
+Image	nuro-arm/nuro_arm/tk_utils.py	/^from PIL import ImageTk, Image$/;"	i
+ImageBasedPickingEnv	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^class ImageBasedPickingEnv(gym.Env):$/;"	c
+ImageModifierFunction	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^class ImageModifierFunction:$/;"	c
+ImageModifierFunction	nuro-arm/nuro_arm/camera/gui.py	/^class ImageModifierFunction:$/;"	c
+ImagePopup	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
+ImagePopup	nuro-arm/build/lib/nuro_arm/robot/calibrate.py	/^from nuro_arm.tk_utils import ImagePopup, Popup, Colors$/;"	i
+ImagePopup	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^class ImagePopup(Popup):$/;"	c
+ImagePopup	nuro-arm/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
+ImagePopup	nuro-arm/nuro_arm/robot/calibrate.py	/^from nuro_arm.tk_utils import ImagePopup, Popup, Colors$/;"	i
+ImagePopup	nuro-arm/nuro_arm/tk_utils.py	/^class ImagePopup(Popup):$/;"	c
+ImageTk	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^from PIL import ImageTk, Image$/;"	i
+ImageTk	nuro-arm/nuro_arm/tk_utils.py	/^from PIL import ImageTk, Image$/;"	i
+List	data_collection.py	/^from typing import Tuple, List, Optional, Dict, Union$/;"	i
+List	grasping_env.py	/^from typing import Tuple, List, Optional, Dict, Callable$/;"	i
+List	segment_net.py	/^from typing import Dict, Tuple, List$/;"	i
+MARKER_PADDING	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^MARKER_PADDING = 10 # mm$/;"	v
+MARKER_PADDING	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^MARKER_PADDING = 10 # mm$/;"	v
+MM2IN	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^MM2IN = 1.0 \/ 25.4$/;"	v
+MM2IN	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^MM2IN = 1.0 \/ 25.4$/;"	v
+MOVE	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    MOVE = 3$/;"	v	class:CmdLib
+MOVE	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    MOVE = 3$/;"	v	class:CmdLib
+MotionPlanner	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^class MotionPlanner:$/;"	c
+MotionPlanner	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^from nuro_arm.robot.motion_planner import MotionPlanner$/;"	i
+MotionPlanner	nuro-arm/nuro_arm/robot/motion_planner.py	/^class MotionPlanner:$/;"	c
+MotionPlanner	nuro-arm/nuro_arm/robot/robot_arm.py	/^from nuro_arm.robot.motion_planner import MotionPlanner$/;"	i
+MovementDispatcher	nuro-arm/nuro_arm/examples/record_movements.py	/^class MovementDispatcher(Thread):$/;"	c
+NEUTRAL	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    NEUTRAL = '#cacaca'$/;"	v	class:Colors
+NEUTRAL	nuro-arm/nuro_arm/tk_utils.py	/^    NEUTRAL = '#cacaca'$/;"	v	class:Colors
+NEW_CAM_MTX	nuro-arm/build/lib/nuro_arm/constants.py	/^NEW_CAM_MTX = np.array([[560.95526123,   0.        , 321.88958533],$/;"	v
+NEW_CAM_MTX	nuro-arm/nuro_arm/constants.py	/^NEW_CAM_MTX = np.array([[560.95526123,   0.        , 321.88958533],$/;"	v
+NEW_CAM_ROI	nuro-arm/build/lib/nuro_arm/constants.py	/^NEW_CAM_ROI = np.array((18, 25, 602, 429))$/;"	v
+NEW_CAM_ROI	nuro-arm/nuro_arm/constants.py	/^NEW_CAM_ROI = np.array((18, 25, 602, 429))$/;"	v
+NO	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    NO = '#a03939'$/;"	v	class:Colors
+NO	nuro-arm/nuro_arm/tk_utils.py	/^    NO = '#a03939'$/;"	v	class:Colors
+NORM_CUBE_VERTICES	nuro-arm/build/lib/nuro_arm/constants.py	/^NORM_CUBE_VERTICES = 0.5 * np.array((( 1, 1, 1),$/;"	v
+NORM_CUBE_VERTICES	nuro-arm/nuro_arm/constants.py	/^NORM_CUBE_VERTICES = 0.5 * np.array((( 1, 1, 1),$/;"	v
+N_BASE_HEIGHTS	nuro-arm/tests/find_workspace.py	/^N_BASE_HEIGHTS = 5$/;"	v
+N_GRIPPER_THETAS	nuro-arm/tests/find_workspace.py	/^N_GRIPPER_THETAS = 5$/;"	v
+OFFSET_READ	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    OFFSET_READ = 23$/;"	v	class:CmdLib
+OFFSET_READ	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    OFFSET_READ = 23$/;"	v	class:CmdLib
+OFFSET_WRITE	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    OFFSET_WRITE = 24$/;"	v	class:CmdLib
+OFFSET_WRITE	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    OFFSET_WRITE = 24$/;"	v	class:CmdLib
+ObjectMaskDataset	segment_net.py	/^class ObjectMaskDataset(Dataset):$/;"	c
+Optional	agent.py	/^from typing import Optional, Union, Tuple$/;"	i
+Optional	data_collection.py	/^from typing import Tuple, List, Optional, Dict, Union$/;"	i
+Optional	grasping_env.py	/^from typing import Tuple, List, Optional, Dict, Callable$/;"	i
+PAPER_MARGIN	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^PAPER_MARGIN = 13 # mm$/;"	v
+PAPER_MARGIN	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^PAPER_MARGIN = 13 # mm$/;"	v
+PAPER_SHAPE	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^PAPER_SHAPE = (215, 279) # mm$/;"	v
+PAPER_SHAPE	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^PAPER_SHAPE = (215, 279) # mm$/;"	v
+PICK	nuro-arm/nuro_arm/examples/throw_cube.py	/^PICK = np.array([-0.029,0.385,-1.051,1.931,0])$/;"	v
+POS2RADIANS	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    POS2RADIANS = np.pi \/ 180. * ( 240. \/ 1000. )$/;"	v	class:XArmController
+POS2RADIANS	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    POS2RADIANS = np.pi \/ 180. * ( 240. \/ 1000. )$/;"	v	class:XArmController
+POSITION_CORRECTION	nuro-arm/nuro_arm/examples/pickup_cube.py	/^    POSITION_CORRECTION = [0, 0, 0.025]$/;"	v
+POSITION_READ	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    POSITION_READ = 21$/;"	v	class:CmdLib
+POSITION_READ	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    POSITION_READ = 21$/;"	v	class:CmdLib
+POWER_OFF	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    POWER_OFF = 20$/;"	v	class:CmdLib
+POWER_OFF	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    POWER_OFF = 20$/;"	v	class:CmdLib
+PixelWiseQNetwork	agent.py	/^from networks import PixelWiseQNetwork, argmax2d$/;"	i
+Popup	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
+Popup	nuro-arm/build/lib/nuro_arm/robot/calibrate.py	/^from nuro_arm.tk_utils import ImagePopup, Popup, Colors$/;"	i
+Popup	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^class Popup:$/;"	c
+Popup	nuro-arm/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
+Popup	nuro-arm/nuro_arm/robot/calibrate.py	/^from nuro_arm.tk_utils import ImagePopup, Popup, Colors$/;"	i
+Popup	nuro-arm/nuro_arm/tk_utils.py	/^class Popup:$/;"	c
+ProcessPoolExecutor	data_collection.py	/^from concurrent.futures import ProcessPoolExecutor, as_completed$/;"	i
+PybulletSimulator	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^class PybulletSimulator:$/;"	c
+PybulletSimulator	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^from nuro_arm.robot.pybullet_simulator import PybulletSimulator$/;"	i
+PybulletSimulator	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^class PybulletSimulator:$/;"	c
+PybulletSimulator	nuro-arm/nuro_arm/robot/robot_arm.py	/^from nuro_arm.robot.pybullet_simulator import PybulletSimulator$/;"	i
+R	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^from scipy.spatial.transform import Rotation as R$/;"	i
+R	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^from scipy.spatial.transform import Rotation as R$/;"	i
+R	nuro-arm/build/lib/nuro_arm/transformation_utils.py	/^from scipy.spatial.transform import Rotation as R$/;"	i
+R	nuro-arm/nuro_arm/camera/camera_utils.py	/^from scipy.spatial.transform import Rotation as R$/;"	i
+R	nuro-arm/nuro_arm/robot/robot_arm.py	/^from scipy.spatial.transform import Rotation as R$/;"	i
+R	nuro-arm/nuro_arm/transformation_utils.py	/^from scipy.spatial.transform import Rotation as R$/;"	i
+R	nuro-arm/tests/find_workspace.py	/^from scipy.spatial.transform import Rotation as R$/;"	i
+READY_JPOS	grasping_env.py	/^READY_JPOS = [0, -1, 1.2, 1.4, 0]$/;"	v
+RESOLUTION	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^RESOLUTION = 200$/;"	v
+RESOLUTION	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^RESOLUTION = 200$/;"	v
+ReplayBuffer	agent.py	/^from utils import ReplayBuffer, plot_predictions, plot_curves$/;"	i
+RobotArm	nuro-arm/build/lib/nuro_arm/__init__.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^class RobotArm:$/;"	c
+RobotArm	nuro-arm/nuro_arm/__init__.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/complex_motion.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/gym_envs/grid_world_env.py	/^from nuro_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^from nuro_arm import RobotArm, Camera, Cube$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/pickup_cube.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/read_joint_positions.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/real_sim_mirroring.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/record_movements.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/examples/throw_cube.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+RobotArm	nuro-arm/nuro_arm/robot/robot_arm.py	/^class RobotArm:$/;"	c
+RobotArm	nuro-arm/tests/find_workspace.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
+Rotation	grasping_env.py	/^from scipy.spatial.transform.rotation import Rotation$/;"	i
+SERVO_HOME	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    SERVO_HOME = 500$/;"	v	class:XArmController
+SERVO_HOME	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    SERVO_HOME = 500$/;"	v	class:XArmController
+SERVO_LOWER_LIMIT	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    SERVO_LOWER_LIMIT = 0$/;"	v	class:XArmController
+SERVO_LOWER_LIMIT	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    SERVO_LOWER_LIMIT = 0$/;"	v	class:XArmController
+SERVO_UPPER_LIMIT	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    SERVO_UPPER_LIMIT = 1000$/;"	v	class:XArmController
+SERVO_UPPER_LIMIT	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    SERVO_UPPER_LIMIT = 1000$/;"	v	class:XArmController
+SIGNATURE	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    SIGNATURE = 85$/;"	v	class:CmdLib
+SIGNATURE	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    SIGNATURE = 85$/;"	v	class:CmdLib
+SOURCEDIR	nuro-arm/docs/Makefile	/^SOURCEDIR     = .$/;"	m
+SOURCEDIR	nuro-arm/docs/make.bat	/^set SOURCEDIR=.$/;"	v
+SPHINXBUILD	nuro-arm/docs/Makefile	/^SPHINXBUILD   ?= sphinx-build$/;"	m
+SPHINXBUILD	nuro-arm/docs/make.bat	/^	set SPHINXBUILD=sphinx-build$/;"	v
+SPHINXOPTS	nuro-arm/docs/Makefile	/^SPHINXOPTS    ?=$/;"	m
+STANDARD_GRASP	nuro-arm/build/lib/nuro_arm/constants.py	/^STANDARD_GRASP = np.array((-2.6, 0.))$/;"	v
+STANDARD_GRASP	nuro-arm/nuro_arm/constants.py	/^STANDARD_GRASP = np.array((-2.6, 0.))$/;"	v
+START	nuro-arm/nuro_arm/examples/throw_cube.py	/^START = np.array([-0.029,0.038,-0.892,0.628,0])$/;"	v
+START_ARM_JPOS	nuro-arm/nuro_arm/examples/pickup_cube.py	/^START_ARM_JPOS = [-0.15498, -1.0932, 1.386, 1.3362, 0.01256]$/;"	v
+ShowArucoTags	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^class ShowArucoTags(ImageModifierFunction):$/;"	c
+ShowArucoTags	nuro-arm/nuro_arm/camera/gui.py	/^class ShowArucoTags(ImageModifierFunction):$/;"	c
+ShowCheckerboard	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^from nuro_arm.camera.gui import ShowCheckerboard$/;"	i
+ShowCheckerboard	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^class ShowCheckerboard(ImageModifierFunction):$/;"	c
+ShowCheckerboard	nuro-arm/nuro_arm/camera/calibrate.py	/^from nuro_arm.camera.gui import ShowCheckerboard$/;"	i
+ShowCheckerboard	nuro-arm/nuro_arm/camera/gui.py	/^class ShowCheckerboard(ImageModifierFunction):$/;"	c
+ShowCubes	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^class ShowCubes(ImageModifierFunction):$/;"	c
+ShowCubes	nuro-arm/nuro_arm/camera/gui.py	/^class ShowCubes(ImageModifierFunction):$/;"	c
+ShowCubes	nuro-arm/nuro_arm/examples/pickup_cube.py	/^from nuro_arm.camera.gui import GUI, ShowCubes$/;"	i
+ShowCubes	nuro-arm/nuro_arm/examples/show_cubes.py	/^from nuro_arm.camera.gui import ShowCubes$/;"	i
+ShowFace	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^class ShowFace(ImageModifierFunction):$/;"	c
+ShowFace	nuro-arm/nuro_arm/camera/gui.py	/^class ShowFace(ImageModifierFunction):$/;"	c
+SimCapturer	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^from nuro_arm.camera.capturer import Capturer, SimCapturer$/;"	i
+SimCapturer	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^class SimCapturer(Capturer):$/;"	c
+SimCapturer	nuro-arm/nuro_arm/camera/camera.py	/^from nuro_arm.camera.capturer import Capturer, SimCapturer$/;"	i
+SimCapturer	nuro-arm/nuro_arm/camera/capturer.py	/^class SimCapturer(Capturer):$/;"	c
+SimulatorController	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^from nuro_arm.robot.simulator_controller import SimulatorController$/;"	i
+SimulatorController	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^class SimulatorController(BaseController):$/;"	c
+SimulatorController	nuro-arm/nuro_arm/robot/robot_arm.py	/^from nuro_arm.robot.simulator_controller import SimulatorController$/;"	i
+SimulatorController	nuro-arm/nuro_arm/robot/simulator_controller.py	/^class SimulatorController(BaseController):$/;"	c
+TAG_SIZE	nuro-arm/build/lib/nuro_arm/constants.py	/^TAG_SIZE = 0.0188976$/;"	v
+TAG_SIZE	nuro-arm/nuro_arm/constants.py	/^TAG_SIZE = 0.0188976$/;"	v
+TOP_DOWN_GRASP	nuro-arm/build/lib/nuro_arm/constants.py	/^TOP_DOWN_GRASP = np.array((-np.pi, 0.,))$/;"	v
+TOP_DOWN_GRASP	nuro-arm/nuro_arm/constants.py	/^TOP_DOWN_GRASP = np.array((-np.pi, 0.,))$/;"	v
+TVEC_WORLD2RIGHTFOOT	nuro-arm/build/lib/nuro_arm/constants.py	/^TVEC_WORLD2RIGHTFOOT = np.array((0.091, -0.0635, 0.0))$/;"	v
+TVEC_WORLD2RIGHTFOOT	nuro-arm/nuro_arm/constants.py	/^TVEC_WORLD2RIGHTFOOT = np.array((0.091, -0.0635, 0.0))$/;"	v
+Tensor	agent.py	/^from torch import Tensor$/;"	i
+Thread	nuro-arm/nuro_arm/examples/record_movements.py	/^from threading import Thread$/;"	i
+ToTensor	segment_net.py	/^from torchvision.transforms import ToTensor$/;"	i
+TopDownGraspingEnv	agent.py	/^    from grasping_env import TopDownGraspingEnv$/;"	i
+Tuple	agent.py	/^from typing import Optional, Union, Tuple$/;"	i
+Tuple	data_collection.py	/^from typing import Tuple, List, Optional, Dict, Union$/;"	i
+Tuple	grasping_env.py	/^from typing import Tuple, List, Optional, Dict, Callable$/;"	i
+Tuple	segment_net.py	/^from typing import Dict, Tuple, List$/;"	i
+URDF_DIR	nuro-arm/build/lib/nuro_arm/constants.py	/^URDF_DIR = os.path.join(os.path.dirname(nuro_arm.__file__), 'assets\/urdf')$/;"	v
+URDF_DIR	nuro-arm/build/lib/nuro_arm/cube.py	/^from nuro_arm.constants import URDF_DIR, CUBE_SIZE$/;"	i
+URDF_DIR	nuro-arm/nuro_arm/constants.py	/^URDF_DIR = os.path.join(os.path.dirname(nuro_arm.__file__), 'assets\/urdf')$/;"	v
+URDF_DIR	nuro-arm/nuro_arm/cube.py	/^from nuro_arm.constants import URDF_DIR, CUBE_SIZE$/;"	i
+Union	agent.py	/^from typing import Optional, Union, Tuple$/;"	i
+Union	data_collection.py	/^from typing import Tuple, List, Optional, Dict, Union$/;"	i
+VideoPopup	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
+VideoPopup	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^class VideoPopup(Popup):$/;"	c
+VideoPopup	nuro-arm/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
+VideoPopup	nuro-arm/nuro_arm/tk_utils.py	/^class VideoPopup(Popup):$/;"	c
+WIDTH	nuro-arm/tests/find_workspace.py	/^WIDTH = 0.08$/;"	v
+WORKSPACE	grasping_env.py	/^WORKSPACE = np.array(((0.10, -0.05, 0.2), # ((min_x, min_y, min_z)$/;"	v
+WristCamera	grasping_env.py	/^class WristCamera:$/;"	c
+XARM_CONFIG_FILE	nuro-arm/build/lib/nuro_arm/constants.py	/^XARM_CONFIG_FILE = os.path.join(os.path.dirname(nuro_arm.__file__),$/;"	v
+XARM_CONFIG_FILE	nuro-arm/build/lib/nuro_arm/robot/calibrate.py	/^from nuro_arm.constants import XARM_CONFIG_FILE, IMAGES_DIR$/;"	i
+XARM_CONFIG_FILE	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^from nuro_arm.constants import XARM_CONFIG_FILE$/;"	i
+XARM_CONFIG_FILE	nuro-arm/nuro_arm/constants.py	/^XARM_CONFIG_FILE = os.path.join(os.path.dirname(nuro_arm.__file__),$/;"	v
+XARM_CONFIG_FILE	nuro-arm/nuro_arm/robot/calibrate.py	/^from nuro_arm.constants import XARM_CONFIG_FILE, IMAGES_DIR$/;"	i
+XARM_CONFIG_FILE	nuro-arm/nuro_arm/robot/xarm_controller.py	/^from nuro_arm.constants import XARM_CONFIG_FILE$/;"	i
+XArmController	nuro-arm/build/lib/nuro_arm/robot/calibrate.py	/^from nuro_arm.robot.xarm_controller import XArmController$/;"	i
+XArmController	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^from nuro_arm.robot.xarm_controller import XArmController$/;"	i
+XArmController	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^class XArmController(BaseController):$/;"	c
+XArmController	nuro-arm/nuro_arm/robot/calibrate.py	/^from nuro_arm.robot.xarm_controller import XArmController$/;"	i
+XArmController	nuro-arm/nuro_arm/robot/robot_arm.py	/^from nuro_arm.robot.xarm_controller import XArmController$/;"	i
+XArmController	nuro-arm/nuro_arm/robot/xarm_controller.py	/^class XArmController(BaseController):$/;"	c
+XY_SPACING	nuro-arm/tests/find_workspace.py	/^XY_SPACING = 0.01$/;"	v
+X_CENTER	nuro-arm/tests/find_workspace.py	/^X_CENTER = 0.16$/;"	v
+YES	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    YES = '#51b442'$/;"	v	class:Colors
+YES	nuro-arm/nuro_arm/tk_utils.py	/^    YES = '#51b442'$/;"	v	class:Colors
+Y_CENTER	nuro-arm/tests/find_workspace.py	/^Y_CENTER = 0.0$/;"	v
+__call__	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def __call__(self):$/;"	m	class:Camera	file:
+__call__	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def __call__(self):$/;"	m	class:Capturer	file:
+__call__	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^    def __call__(self, canvas, original):$/;"	m	class:ImageModifierFunction	file:
+__call__	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^    def __call__(self, original, canvas):$/;"	m	class:ShowCheckerboard	file:
+__call__	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^    def __call__(self, original, canvas=None):$/;"	m	class:ShowArucoTags	file:
+__call__	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^    def __call__(self, original, canvas=None):$/;"	m	class:ShowCubes	file:
+__call__	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^    def __call__(self, original, canvas=None):$/;"	m	class:ShowFace	file:
+__call__	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    def __call__(self):$/;"	m	class:Popup	file:
+__call__	nuro-arm/nuro_arm/camera/camera.py	/^    def __call__(self):$/;"	m	class:Camera	file:
+__call__	nuro-arm/nuro_arm/camera/capturer.py	/^    def __call__(self):$/;"	m	class:Capturer	file:
+__call__	nuro-arm/nuro_arm/camera/gui.py	/^    def __call__(self, canvas, original):$/;"	m	class:ImageModifierFunction	file:
+__call__	nuro-arm/nuro_arm/camera/gui.py	/^    def __call__(self, original, canvas):$/;"	m	class:ShowCheckerboard	file:
+__call__	nuro-arm/nuro_arm/camera/gui.py	/^    def __call__(self, original, canvas=None):$/;"	m	class:ShowArucoTags	file:
+__call__	nuro-arm/nuro_arm/camera/gui.py	/^    def __call__(self, original, canvas=None):$/;"	m	class:ShowCubes	file:
+__call__	nuro-arm/nuro_arm/camera/gui.py	/^    def __call__(self, original, canvas=None):$/;"	m	class:ShowFace	file:
+__call__	nuro-arm/nuro_arm/tk_utils.py	/^    def __call__(self):$/;"	m	class:Popup	file:
+__del__	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def __del__(self):$/;"	m	class:Capturer	file:
+__del__	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def __del__(self):$/;"	m	class:XArmController	file:
+__del__	nuro-arm/nuro_arm/camera/capturer.py	/^    def __del__(self):$/;"	m	class:Capturer	file:
+__del__	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def __del__(self):$/;"	m	class:XArmController	file:
+__getitem__	segment_net.py	/^    def __getitem__(self, i) -> Dict[str, torch.Tensor]:$/;"	m	class:ObjectMaskDataset	file:
+__hash__	nuro-arm/build/lib/nuro_arm/cube.py	/^    def __hash__(self):$/;"	m	class:Cube	file:
+__hash__	nuro-arm/nuro_arm/cube.py	/^    def __hash__(self):$/;"	m	class:Cube	file:
+__init__	agent.py	/^    def __init__(self,$/;"	m	class:DQNAgent
+__init__	equivariant_delta_pred.py	/^    def __init__(self, input_shape, N=8) -> None:$/;"	m	class:EquivariantDeltas
+__init__	grasping_env.py	/^    def __init__(self, controller_type='sim', headless=True, realtime=False, workspace=None, pb_client=None, serial_number=None):$/;"	m	class:HandoverArm
+__init__	grasping_env.py	/^    def __init__(self, robot: HandoverArm, img_size: int) -> None:$/;"	m	class:WristCamera
+__init__	grasping_env.py	/^    def __init__(self,$/;"	m	class:HandoverGraspingEnv
+__init__	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^        def __init__(self, camera):$/;"	m	class:calibrate_camera.HighlightedCheckerboard
+__init__	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def __init__(self,$/;"	m	class:Camera
+__init__	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def __init__(self):$/;"	m	class:Capturer
+__init__	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def __init__(self, pose_mtx=None, pb_client=0):$/;"	m	class:SimCapturer
+__init__	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^    def __init__(self, cam2world):$/;"	m	class:ImageModifierFunction
+__init__	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^    def __init__(self, cam2world, cube_size=None,$/;"	m	class:ShowCubes
+__init__	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^    def __init__(self, cam2world, tag_size=None):$/;"	m	class:ShowArucoTags
+__init__	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^    def __init__(self, capturer):$/;"	m	class:GUI
+__init__	nuro-arm/build/lib/nuro_arm/cube.py	/^    def __init__(self,$/;"	m	class:Cube
+__init__	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def __init__(self):$/;"	m	class:BaseController
+__init__	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def __init__(self, contact_pt, pb_client):$/;"	m	class:Collision
+__init__	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def __init__(self, pb_sim, workspace=None):$/;"	m	class:MotionPlanner
+__init__	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^    def __init__(self,$/;"	m	class:PybulletSimulator
+__init__	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def __init__(self,$/;"	m	class:RobotArm
+__init__	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^    def __init__(self,$/;"	m	class:SimulatorController
+__init__	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def __init__(self, serial_number=None):$/;"	m	class:Device
+__init__	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def __init__(self, serial_number=None):$/;"	m	class:XArmController
+__init__	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    def __init__(self,$/;"	m	class:ImagePopup
+__init__	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    def __init__(self,$/;"	m	class:Popup
+__init__	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    def __init__(self,$/;"	m	class:VideoPopup
+__init__	nuro-arm/nuro_arm/camera/calibrate.py	/^        def __init__(self, camera):$/;"	m	class:calibrate_camera.HighlightedCheckerboard
+__init__	nuro-arm/nuro_arm/camera/camera.py	/^    def __init__(self,$/;"	m	class:Camera
+__init__	nuro-arm/nuro_arm/camera/capturer.py	/^    def __init__(self):$/;"	m	class:Capturer
+__init__	nuro-arm/nuro_arm/camera/capturer.py	/^    def __init__(self, pose_mtx=None, pb_client=0):$/;"	m	class:SimCapturer
+__init__	nuro-arm/nuro_arm/camera/gui.py	/^    def __init__(self, cam2world):$/;"	m	class:ImageModifierFunction
+__init__	nuro-arm/nuro_arm/camera/gui.py	/^    def __init__(self, cam2world, cube_size=None,$/;"	m	class:ShowCubes
+__init__	nuro-arm/nuro_arm/camera/gui.py	/^    def __init__(self, cam2world, tag_size=None):$/;"	m	class:ShowArucoTags
+__init__	nuro-arm/nuro_arm/camera/gui.py	/^    def __init__(self, capturer):$/;"	m	class:GUI
+__init__	nuro-arm/nuro_arm/cube.py	/^    def __init__(self,$/;"	m	class:Cube
+__init__	nuro-arm/nuro_arm/examples/gym_envs/grid_world_env.py	/^    def __init__(self,$/;"	m	class:GridWorldEnv
+__init__	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    def __init__(self, mode='sim', seed=None):$/;"	m	class:ImageBasedPickingEnv
+__init__	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^    def __init__(self, parent, robot):$/;"	m	class:GUI
+__init__	nuro-arm/nuro_arm/examples/record_movements.py	/^    def __init__(self, parent, robot):$/;"	m	class:GUI
+__init__	nuro-arm/nuro_arm/examples/record_movements.py	/^    def __init__(self, robot, table, idxs):$/;"	m	class:MovementDispatcher
+__init__	nuro-arm/nuro_arm/robot/base_controller.py	/^    def __init__(self):$/;"	m	class:BaseController
+__init__	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def __init__(self, contact_pt, pb_client):$/;"	m	class:Collision
+__init__	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def __init__(self, pb_sim, workspace=None):$/;"	m	class:MotionPlanner
+__init__	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^    def __init__(self,$/;"	m	class:PybulletSimulator
+__init__	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def __init__(self,$/;"	m	class:RobotArm
+__init__	nuro-arm/nuro_arm/robot/simulator_controller.py	/^    def __init__(self,$/;"	m	class:SimulatorController
+__init__	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def __init__(self, serial_number=None):$/;"	m	class:Device
+__init__	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def __init__(self, serial_number=None):$/;"	m	class:XArmController
+__init__	nuro-arm/nuro_arm/tk_utils.py	/^    def __init__(self,$/;"	m	class:ImagePopup
+__init__	nuro-arm/nuro_arm/tk_utils.py	/^    def __init__(self,$/;"	m	class:Popup
+__init__	nuro-arm/nuro_arm/tk_utils.py	/^    def __init__(self,$/;"	m	class:VideoPopup
+__init__	segment_net.py	/^    def __init__(self, $/;"	m	class:ObjectMaskDataset
+__len__	segment_net.py	/^    def __len__(self):$/;"	m	class:ObjectMaskDataset	file:
+__str__	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def __str__(self):$/;"	m	class:Collision	file:
+__str__	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def __str__(self):$/;"	m	class:Collision	file:
+_get_feed	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def _get_feed(self):$/;"	m	class:Capturer
+_get_feed	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def _get_feed(self):$/;"	m	class:SimCapturer
+_get_feed	nuro-arm/nuro_arm/camera/capturer.py	/^    def _get_feed(self):$/;"	m	class:Capturer
+_get_feed	nuro-arm/nuro_arm/camera/capturer.py	/^    def _get_feed(self):$/;"	m	class:SimCapturer
+_get_link_pose	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^    def _get_link_pose(self, link_name):$/;"	m	class:PybulletSimulator
+_get_link_pose	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^    def _get_link_pose(self, link_name):$/;"	m	class:PybulletSimulator
+_gripper_jpos_to_state	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def _gripper_jpos_to_state(self, jpos):$/;"	m	class:BaseController
+_gripper_jpos_to_state	nuro-arm/nuro_arm/robot/base_controller.py	/^    def _gripper_jpos_to_state(self, jpos):$/;"	m	class:BaseController
+_gripper_state_to_jpos	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def _gripper_state_to_jpos(self, state):$/;"	m	class:BaseController
+_gripper_state_to_jpos	nuro-arm/nuro_arm/robot/base_controller.py	/^    def _gripper_state_to_jpos(self, state):$/;"	m	class:BaseController
+_initialize_client	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^    def _initialize_client(self, connection_mode):$/;"	m	class:PybulletSimulator
+_initialize_client	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^    def _initialize_client(self, connection_mode):$/;"	m	class:PybulletSimulator
+_read_servo_offset	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def _read_servo_offset(self, servo_id):$/;"	m	class:XArmController
+_read_servo_offset	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def _read_servo_offset(self, servo_id):$/;"	m	class:XArmController
+_recv	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def _recv(self, cmd, ret_type, timeout=1000):$/;"	m	class:XArmController
+_recv	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def _recv(self, cmd, ret_type, timeout=1000):$/;"	m	class:XArmController
+_reset_servo_offsets	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def _reset_servo_offsets(self):$/;"	m	class:XArmController
+_reset_servo_offsets	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def _reset_servo_offsets(self):$/;"	m	class:XArmController
+_send	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def _send(self, cmd, data=[]):$/;"	m	class:XArmController
+_send	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def _send(self, cmd, data=[]):$/;"	m	class:XArmController
+_teleport_arm	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def _teleport_arm(self, arm_jpos):$/;"	m	class:MotionPlanner
+_teleport_arm	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def _teleport_arm(self, arm_jpos):$/;"	m	class:MotionPlanner
+_teleport_gripper	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def _teleport_gripper(self, state):$/;"	m	class:MotionPlanner
+_teleport_gripper	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def _teleport_gripper(self, state):$/;"	m	class:MotionPlanner
+_to_pos_units	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def _to_pos_units(self, joint_id, jpos):$/;"	m	class:XArmController
+_to_pos_units	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def _to_pos_units(self, joint_id, jpos):$/;"	m	class:XArmController
+_to_radians	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def _to_radians(self, joint_id, pos):$/;"	m	class:XArmController
+_to_radians	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def _to_radians(self, joint_id, pos):$/;"	m	class:XArmController
+_unpack_camera_pose	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def _unpack_camera_pose(self, pose_mtx):$/;"	m	class:Camera
+_unpack_camera_pose	nuro-arm/nuro_arm/camera/camera.py	/^    def _unpack_camera_pose(self, pose_mtx):$/;"	m	class:Camera
+_unpack_simulator_params	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def _unpack_simulator_params(self):$/;"	m	class:MotionPlanner
+_unpack_simulator_params	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^    def _unpack_simulator_params(self):$/;"	m	class:SimulatorController
+_unpack_simulator_params	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def _unpack_simulator_params(self):$/;"	m	class:MotionPlanner
+_unpack_simulator_params	nuro-arm/nuro_arm/robot/simulator_controller.py	/^    def _unpack_simulator_params(self):$/;"	m	class:SimulatorController
+_update	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def _update(self):$/;"	m	class:Capturer
+_update	nuro-arm/nuro_arm/camera/capturer.py	/^    def _update(self):$/;"	m	class:Capturer
+_write_servo_offset	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def _write_servo_offset(self, servo_id, offset):$/;"	m	class:XArmController
+_write_servo_offset	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def _write_servo_offset(self, servo_id, offset):$/;"	m	class:XArmController
+abstractmethod	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^from abc import abstractmethod$/;"	i
+abstractmethod	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^from abc import abstractmethod$/;"	i
+abstractmethod	nuro-arm/nuro_arm/camera/gui.py	/^from abc import abstractmethod$/;"	i
+abstractmethod	nuro-arm/nuro_arm/robot/base_controller.py	/^from abc import abstractmethod$/;"	i
+active_mode	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def active_mode(self):$/;"	m	class:RobotArm
+active_mode	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def active_mode(self):$/;"	m	class:RobotArm
+add_aruco_tag	nuro-arm/build/lib/nuro_arm/cube.py	/^    def add_aruco_tag(self,$/;"	m	class:Cube
+add_aruco_tag	nuro-arm/nuro_arm/cube.py	/^    def add_aruco_tag(self,$/;"	m	class:Cube
+add_collision_objects	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def add_collision_objects(self):$/;"	m	class:Camera
+add_collision_objects	nuro-arm/nuro_arm/camera/camera.py	/^    def add_collision_objects(self):$/;"	m	class:Camera
+agent	agent.py	/^    agent = DQNAgent(env= env,$/;"	v	class:DQNAgent
+append	nuro-arm/nuro_arm/examples/record_movements.py	/^    def append(self):$/;"	m	class:GUI
+apply_transformation	nuro-arm/build/lib/nuro_arm/transformation_utils.py	/^def apply_transformation(transform_mtx, pts):$/;"	f
+apply_transformation	nuro-arm/nuro_arm/transformation_utils.py	/^def apply_transformation(transform_mtx, pts):$/;"	f
+argmax2d	agent.py	/^from networks import PixelWiseQNetwork, argmax2d$/;"	i
+argparse	data_collection.py	/^import argparse$/;"	i
+argparse	grasping_env.py	/^import argparse$/;"	i
+argparse	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^import argparse$/;"	i
+argparse	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^import argparse$/;"	i
+argparse	nuro-arm/nuro_arm/examples/complex_motion.py	/^import argparse$/;"	i
+argparse	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^import argparse$/;"	i
+args	data_collection.py	/^    args = parser.parse_args()$/;"	v
+args	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^    args = parser.parse_args()$/;"	v
+args	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^    args = parser.parse_args()$/;"	v
+args	nuro-arm/nuro_arm/examples/complex_motion.py	/^    args = parser.parse_args()$/;"	v
+args	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^    args = parser.parse_args()$/;"	v
+arm_jpos	nuro-arm/nuro_arm/examples/read_joint_positions.py	/^    arm_jpos = robot.get_arm_jpos()$/;"	v
+aruco_dict	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^    aruco_dict = cv2.aruco.Dictionary_get(ARUCO_DICT[args.dict_name])$/;"	v
+aruco_dict	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^    aruco_dict = cv2.aruco.Dictionary_get(ARUCO_DICT[args.dict_name])$/;"	v
+as_completed	data_collection.py	/^from concurrent.futures import ProcessPoolExecutor, as_completed$/;"	i
+aug	segment_net.py	/^import albumentations as aug$/;"	i
+author	nuro-arm/docs/conf.py	/^author = 'David Klee'$/;"	v
+author	nuro-arm/setup.py	/^    author='David Klee',$/;"	v
+author_email	nuro-arm/setup.py	/^    author_email='klee.d@northeastern.edu',$/;"	v
+base_heights	nuro-arm/tests/find_workspace.py	/^base_heights = BASE_HEIGHT_SPACING*(np.arange(N_BASE_HEIGHTS)-N_BASE_HEIGHTS\/\/2)$/;"	v
+body	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^body = pb.createMultiBody(1, -1, id_, pos_body)$/;"	v
+body	nuro-arm/tests/find_workspace.py	/^body = pb.createMultiBody(1, -1, id_, pos_body)$/;"	v
+button_colors	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^        button_colors=[Colors.NEUTRAL]$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+button_colors	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^        button_colors=[Colors.YES, Colors.NO]$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+button_colors	nuro-arm/nuro_arm/camera/calibrate.py	/^        button_colors=[Colors.NEUTRAL]$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+button_colors	nuro-arm/nuro_arm/camera/calibrate.py	/^        button_colors=[Colors.YES, Colors.NO]$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+button_names	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^        button_names=['CLOSE'],$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+button_names	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^        button_names=['CONTINUE', 'QUIT'],$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+button_names	nuro-arm/nuro_arm/camera/calibrate.py	/^        button_names=['CLOSE'],$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+button_names	nuro-arm/nuro_arm/camera/calibrate.py	/^        button_names=['CONTINUE', 'QUIT'],$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+button_val	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^    button_val = pb.readUserDebugParameter(d_toggle, physicsClientId=client)$/;"	v
+calc_distortion_matrix	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^def calc_distortion_matrix(imgs=None, verbose=True):$/;"	f
+calc_distortion_matrix	nuro-arm/nuro_arm/camera/camera_utils.py	/^def calc_distortion_matrix(imgs=None, verbose=True):$/;"	f
+calc_location	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def calc_location(self):$/;"	m	class:Camera
+calc_location	nuro-arm/nuro_arm/camera/camera.py	/^    def calc_location(self):$/;"	m	class:Camera
+calculate_ik	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def calculate_ik(self,$/;"	m	class:MotionPlanner
+calculate_ik	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def calculate_ik(self,$/;"	m	class:MotionPlanner
+calibrate_camera	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^def calibrate_camera():$/;"	f
+calibrate_camera	nuro-arm/nuro_arm/camera/calibrate.py	/^def calibrate_camera():$/;"	f
+calibrate_xarm	nuro-arm/build/lib/nuro_arm/robot/calibrate.py	/^def calibrate_xarm():$/;"	f
+calibrate_xarm	nuro-arm/nuro_arm/robot/calibrate.py	/^def calibrate_xarm():$/;"	f
+camera	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^camera = Camera(free_floating=False)$/;"	v
+camera	nuro-arm/nuro_arm/examples/pickup_cube.py	/^    camera = Camera()$/;"	v
+cameraPitch	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^                              cameraPitch=-40,$/;"	v
+cameraPitch	nuro-arm/nuro_arm/examples/real_sim_mirroring.py	/^                              cameraPitch=-40,$/;"	v
+cameraTargetPosition	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^                              cameraTargetPosition=(-0.45, 0.35, -0.4))$/;"	v
+cameraTargetPosition	nuro-arm/nuro_arm/examples/real_sim_mirroring.py	/^                              cameraTargetPosition=(-0.45, 0.35, -0.4))$/;"	v
+cameraYaw	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^                              cameraYaw=50,$/;"	v
+cameraYaw	nuro-arm/nuro_arm/examples/real_sim_mirroring.py	/^                              cameraYaw=50,$/;"	v
+camera_utils	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^from nuro_arm.camera import camera_utils$/;"	i
+camera_utils	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^from nuro_arm.camera import camera_utils$/;"	i
+camera_utils	nuro-arm/nuro_arm/camera/camera.py	/^from nuro_arm.camera import camera_utils$/;"	i
+camera_utils	nuro-arm/nuro_arm/camera/gui.py	/^from nuro_arm.camera import camera_utils$/;"	i
+camera_utils	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^from nuro_arm.camera import camera_utils$/;"	i
+camera_utils	nuro-arm/nuro_arm/examples/pickup_cube.py	/^from nuro_arm.camera import camera_utils$/;"	i
+change_buttons_state	nuro-arm/nuro_arm/examples/record_movements.py	/^    def change_buttons_state(self, state):$/;"	m	class:GUI
+change_camera_id	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def change_camera_id(self, cam_id):$/;"	m	class:Camera
+change_camera_id	nuro-arm/nuro_arm/camera/camera.py	/^    def change_camera_id(self, cam_id):$/;"	m	class:Camera
+check	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def check(self, ignored_link_ids):$/;"	m	class:Collision
+check	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def check(self, ignored_link_ids):$/;"	m	class:Collision
+check_file	nuro-arm/nuro_arm/examples/record_movements.py	/^        def check_file():$/;"	f	function:GUI.save
+client	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^client = robot.controller._client$/;"	v
+close	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^    def close(self):$/;"	m	class:PybulletSimulator
+close	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def close(self):$/;"	m	class:Device
+close	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^    def close(self):$/;"	m	class:PybulletSimulator
+close	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def close(self):$/;"	m	class:Device
+close_gripper	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def close_gripper(self):$/;"	m	class:RobotArm
+close_gripper	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def close_gripper(self):$/;"	m	class:RobotArm
+collect_dataset	data_collection.py	/^def collect_dataset(dataset_name: str,$/;"	f
+collisions	nuro-arm/tests/find_workspace.py	/^        collisions = robot.mp.find_collisions(jpos, ignore_gripper=1)$/;"	v
+computeView	grasping_env.py	/^    def computeView(self):$/;"	m	class:WristCamera
+compute_epsilon	agent.py	/^    def compute_epsilon(self, fraction: float) -> float:$/;"	m	class:DQNAgent
+configs	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def configs(self):$/;"	m	class:Camera
+configs	nuro-arm/nuro_arm/camera/camera.py	/^    def configs(self):$/;"	m	class:Camera
+connect	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def connect(self, run_async):$/;"	m	class:Camera
+connect	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def connect(self, serial_number=None):$/;"	m	class:XArmController
+connect	nuro-arm/nuro_arm/camera/camera.py	/^    def connect(self, run_async):$/;"	m	class:Camera
+connect	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def connect(self, serial_number=None):$/;"	m	class:XArmController
+constants	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^from nuro_arm import constants$/;"	i
+constants	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^from nuro_arm import constants$/;"	i
+constants	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^from nuro_arm import constants$/;"	i
+constants	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^import nuro_arm.constants as constants$/;"	i
+constants	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^from nuro_arm import transformation_utils, constants$/;"	i
+constants	nuro-arm/nuro_arm/camera/camera.py	/^from nuro_arm import constants$/;"	i
+constants	nuro-arm/nuro_arm/camera/camera_utils.py	/^from nuro_arm import constants$/;"	i
+constants	nuro-arm/nuro_arm/camera/capturer.py	/^from nuro_arm import constants$/;"	i
+constants	nuro-arm/nuro_arm/camera/gui.py	/^import nuro_arm.constants as constants$/;"	i
+constants	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^from nuro_arm import transformation_utils, constants$/;"	i
+convert_gray	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^def convert_gray(img):$/;"	f
+convert_gray	nuro-arm/nuro_arm/camera/camera_utils.py	/^def convert_gray(img):$/;"	f
+convert_tag_to_cube	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^def convert_tag_to_cube(tag, cam2world, cube_size=None):$/;"	f
+convert_tag_to_cube	nuro-arm/nuro_arm/camera/camera_utils.py	/^def convert_tag_to_cube(tag, cam2world, cube_size=None):$/;"	f
+copyright	nuro-arm/docs/conf.py	/^copyright = '2021, David Klee'$/;"	v
+create_label_pair	data_collection.py	/^def create_label_pair(n_pairs, img_size, seed,$/;"	f
+cube	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^cube = Cube(pos=(0,0,100), tag_id=0)$/;"	v
+cube_id	nuro-arm/nuro_arm/examples/pickup_cube.py	/^    cube_id = decide_cube_id(camera)$/;"	v
+cube_info	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^        cube_info = camera_utils.find_cubes(camera.get_image(), camera._cam2world,)[0]$/;"	v
+cv2	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^import cv2$/;"	i
+cv2	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^import cv2$/;"	i
+cv2	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^import cv2$/;"	i
+cv2	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^import cv2$/;"	i
+cv2	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^import cv2$/;"	i
+cv2	nuro-arm/build/lib/nuro_arm/constants.py	/^import cv2$/;"	i
+cv2	nuro-arm/build/lib/nuro_arm/cube.py	/^import cv2$/;"	i
+cv2	nuro-arm/build/lib/nuro_arm/transformation_utils.py	/^import cv2$/;"	i
+cv2	nuro-arm/nuro_arm/camera/camera.py	/^import cv2$/;"	i
+cv2	nuro-arm/nuro_arm/camera/camera_utils.py	/^import cv2$/;"	i
+cv2	nuro-arm/nuro_arm/camera/capturer.py	/^import cv2$/;"	i
+cv2	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^import cv2$/;"	i
+cv2	nuro-arm/nuro_arm/camera/gui.py	/^import cv2$/;"	i
+cv2	nuro-arm/nuro_arm/constants.py	/^import cv2$/;"	i
+cv2	nuro-arm/nuro_arm/cube.py	/^import cv2$/;"	i
+cv2	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^import cv2$/;"	i
+cv2	nuro-arm/nuro_arm/examples/show_cubes.py	/^import cv2$/;"	i
+cv2	nuro-arm/nuro_arm/transformation_utils.py	/^import cv2$/;"	i
+cv2	segment_net.py	/^import cv2$/;"	i
+d_toggle	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^d_toggle = pb.addUserDebugParameter('toggle orientation specification',$/;"	v
+dbg_params	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^dbg_params = {$/;"	v
+dbg_values	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^dbg_values = {d:0 for d,i in dbg_params.items()}$/;"	v
+decide_cube_id	nuro-arm/nuro_arm/examples/pickup_cube.py	/^def decide_cube_id(camera):$/;"	f
+default	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^                        default="DICT_4X4_50",$/;"	v
+default	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^                        default=0,$/;"	v
+default	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^                        default=12,$/;"	v
+default	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^                        default=25,$/;"	v
+default	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^                        default="DICT_4X4_50",$/;"	v
+default	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^                        default=0,$/;"	v
+default	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^                        default=12,$/;"	v
+default	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^                        default=25,$/;"	v
+delay	nuro-arm/nuro_arm/examples/read_joint_positions.py	/^    delay = 0.1 # seconds$/;"	v
+delete	nuro-arm/build/lib/nuro_arm/cube.py	/^    def delete(self):$/;"	m	class:Cube
+delete	nuro-arm/nuro_arm/cube.py	/^    def delete(self):$/;"	m	class:Cube
+delete	nuro-arm/nuro_arm/examples/record_movements.py	/^    def delete(self):$/;"	m	class:GUI
+description	nuro-arm/setup.py	/^    description='NU Robotics Outreach: Learning Robotic Manipulation',$/;"	v
+disconnect	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def disconnect(self):$/;"	m	class:XArmController
+disconnect	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def disconnect(self):$/;"	m	class:XArmController
+dtype	nuro-arm/build/lib/nuro_arm/constants.py	/^                                    dtype=np.float32)$/;"	v
+dtype	nuro-arm/nuro_arm/constants.py	/^                                    dtype=np.float32)$/;"	v
+easyhid	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^            import easyhid$/;"	i
+easyhid	nuro-arm/nuro_arm/robot/xarm_controller.py	/^            import easyhid$/;"	i
+end	nuro-arm/docs/make.bat	/^:end$/;"	l
+end_recording	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def end_recording(self):$/;"	m	class:Camera
+end_recording	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def end_recording(self):$/;"	m	class:Capturer
+end_recording	nuro-arm/nuro_arm/camera/camera.py	/^    def end_recording(self):$/;"	m	class:Camera
+end_recording	nuro-arm/nuro_arm/camera/capturer.py	/^    def end_recording(self):$/;"	m	class:Capturer
+entry_point	nuro-arm/build/lib/nuro_arm/__init__.py	/^    entry_point='nuro_arm.examples.gym_envs.simple_picking_env:ImageBasedPickingEnv',$/;"	v
+entry_point	nuro-arm/nuro_arm/__init__.py	/^    entry_point='nuro_arm.examples.gym_envs.simple_picking_env:ImageBasedPickingEnv',$/;"	v
+env	agent.py	/^    env = TopDownGraspingEnv(render=False)$/;"	v	class:DQNAgent
+env	grasping_env.py	/^    env = HandoverGraspingEnv(render=False, img_size=200)$/;"	v
+env	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    env = ImageBasedPickingEnv()$/;"	v	class:ImageBasedPickingEnv
+exclude_patterns	nuro-arm/docs/conf.py	/^exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']$/;"	v
+extensions	nuro-arm/docs/conf.py	/^extensions = [$/;"	v
+feasiblility	nuro-arm/tests/find_workspace.py	/^feasiblility = np.zeros(xyz_points.shape[:-1], dtype=int)$/;"	v
+find_arucotags	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^def find_arucotags(img, tag_size=None):$/;"	f
+find_arucotags	nuro-arm/nuro_arm/camera/camera_utils.py	/^def find_arucotags(img, tag_size=None):$/;"	f
+find_collisions	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def find_collisions(self, arm_jpos, ignore_gripper=False):$/;"	m	class:MotionPlanner
+find_collisions	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def find_collisions(self, arm_jpos, ignore_gripper=False):$/;"	m	class:MotionPlanner
+find_cubes	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def find_cubes(self, cube_size=None, tag_size=None):$/;"	m	class:Camera
+find_cubes	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^def find_cubes(img, cam2world, cube_size=None, tag_size=None):$/;"	f
+find_cubes	nuro-arm/nuro_arm/camera/camera.py	/^    def find_cubes(self, cube_size=None, tag_size=None):$/;"	m	class:Camera
+find_cubes	nuro-arm/nuro_arm/camera/camera_utils.py	/^def find_cubes(img, cam2world, cube_size=None, tag_size=None):$/;"	f
+find_face	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^def find_face(img):$/;"	f
+find_face	nuro-arm/nuro_arm/camera/camera_utils.py	/^def find_face(img):$/;"	f
+find_packages	nuro-arm/setup.py	/^from setuptools import setup, find_packages$/;"	i
+follow_waypts_real	nuro-arm/nuro_arm/examples/complex_motion.py	/^def follow_waypts_real(waypts):$/;"	f
+follow_waypts_sim	nuro-arm/nuro_arm/examples/complex_motion.py	/^def follow_waypts_sim(waypts):$/;"	f
+forward	equivariant_delta_pred.py	/^    def forward(self, x) -> tuple(torch.Tensor, torch.Tensor, torch.Tensor):$/;"	m	class:EquivariantDeltas
+frame_rate	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def frame_rate(self):$/;"	m	class:Camera
+frame_rate	nuro-arm/nuro_arm/camera/camera.py	/^    def frame_rate(self):$/;"	m	class:Camera
+generate_tag	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^def generate_tag(aruco_dict, tag_id, tag_size):$/;"	f
+generate_tag	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^def generate_tag(aruco_dict, tag_id, tag_size):$/;"	f
+generate_tags	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^def generate_tags(aruco_dict,$/;"	f
+generate_tags	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^def generate_tags(aruco_dict,$/;"	f
+generate_waypts	nuro-arm/nuro_arm/examples/complex_motion.py	/^def generate_waypts():$/;"	f
+get_arm_jpos	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def get_arm_jpos(self):$/;"	m	class:RobotArm
+get_arm_jpos	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def get_arm_jpos(self):$/;"	m	class:RobotArm
+get_client	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def get_client(self):$/;"	m	class:MotionPlanner
+get_client	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def get_client(self):$/;"	m	class:MotionPlanner
+get_gripper_state	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def get_gripper_state(self):$/;"	m	class:RobotArm
+get_gripper_state	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def get_gripper_state(self):$/;"	m	class:RobotArm
+get_hand_pose	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^    def get_hand_pose(self):$/;"	m	class:PybulletSimulator
+get_hand_pose	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def get_hand_pose(self):$/;"	m	class:RobotArm
+get_hand_pose	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^    def get_hand_pose(self):$/;"	m	class:PybulletSimulator
+get_hand_pose	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def get_hand_pose(self):$/;"	m	class:RobotArm
+get_image	grasping_env.py	/^    def get_image(self) -> Tuple[np.ndarray, np.ndarray]:$/;"	m	class:WristCamera
+get_image	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def get_image(self):$/;"	m	class:Camera
+get_image	nuro-arm/nuro_arm/camera/camera.py	/^    def get_image(self):$/;"	m	class:Camera
+get_joint_id	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def get_joint_id(self, joint_name):$/;"	m	class:BaseController
+get_joint_id	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^    def get_joint_id(self, joint_name):$/;"	m	class:SimulatorController
+get_joint_id	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def get_joint_id(self, joint_name):$/;"	m	class:XArmController
+get_joint_id	nuro-arm/nuro_arm/robot/base_controller.py	/^    def get_joint_id(self, joint_name):$/;"	m	class:BaseController
+get_joint_id	nuro-arm/nuro_arm/robot/simulator_controller.py	/^    def get_joint_id(self, joint_name):$/;"	m	class:SimulatorController
+get_joint_id	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def get_joint_id(self, joint_name):$/;"	m	class:XArmController
+get_joint_name	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def get_joint_name(self, joint_id):$/;"	m	class:BaseController
+get_joint_name	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def get_joint_name(self, joint_id):$/;"	m	class:XArmController
+get_joint_name	nuro-arm/nuro_arm/robot/base_controller.py	/^    def get_joint_name(self, joint_id):$/;"	m	class:BaseController
+get_joint_name	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def get_joint_name(self, joint_id):$/;"	m	class:XArmController
+get_joint_states	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def get_joint_states(self):$/;"	m	class:MotionPlanner
+get_joint_states	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def get_joint_states(self):$/;"	m	class:MotionPlanner
+get_obs	grasping_env.py	/^    def get_obs(self) -> Tuple[np.ndarray, np.ndarray]:$/;"	m	class:HandoverGraspingEnv
+get_obs	nuro-arm/nuro_arm/examples/gym_envs/grid_world_env.py	/^    def get_obs(self):$/;"	m	class:GridWorldEnv
+get_obs	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    def get_obs(self):$/;"	m	class:ImageBasedPickingEnv
+get_pb_client	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def get_pb_client(self):$/;"	m	class:Camera
+get_pb_client	nuro-arm/nuro_arm/camera/camera.py	/^    def get_pb_client(self):$/;"	m	class:Camera
+get_pose	nuro-arm/build/lib/nuro_arm/cube.py	/^    def get_pose(self):$/;"	m	class:Cube
+get_pose	nuro-arm/nuro_arm/cube.py	/^    def get_pose(self):$/;"	m	class:Cube
+get_position	nuro-arm/build/lib/nuro_arm/cube.py	/^    def get_position(self):$/;"	m	class:Cube
+get_position	nuro-arm/nuro_arm/cube.py	/^    def get_position(self):$/;"	m	class:Cube
+get_recording	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def get_recording(self):$/;"	m	class:Capturer
+get_recording	nuro-arm/nuro_arm/camera/capturer.py	/^    def get_recording(self):$/;"	m	class:Capturer
+get_rotation	nuro-arm/build/lib/nuro_arm/cube.py	/^    def get_rotation(self):$/;"	m	class:Cube
+get_rotation	nuro-arm/nuro_arm/cube.py	/^    def get_rotation(self):$/;"	m	class:Cube
+get_velocity	nuro-arm/build/lib/nuro_arm/cube.py	/^    def get_velocity(self):$/;"	m	class:Cube
+get_velocity	nuro-arm/nuro_arm/cube.py	/^    def get_velocity(self):$/;"	m	class:Cube
+get_view_matrix_from_pose	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def get_view_matrix_from_pose(self, pose_mtx=None):$/;"	m	class:SimCapturer
+get_view_matrix_from_pose	nuro-arm/nuro_arm/camera/capturer.py	/^    def get_view_matrix_from_pose(self, pose_mtx=None):$/;"	m	class:SimCapturer
+glob	grasping_env.py	/^import glob$/;"	i
+go_home	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^    def go_home(self):$/;"	m	class:GUI
+gripper_state	nuro-arm/nuro_arm/examples/read_joint_positions.py	/^    gripper_state = robot.get_gripper_state()$/;"	v
+gripper_thetas	nuro-arm/tests/find_workspace.py	/^gripper_thetas = np.linspace(-np.pi\/2, np.pi\/2, num=N_GRIPPER_THETAS)$/;"	v
+gspaces	equivariant_delta_pred.py	/^from e2cnn import gspaces$/;"	i
+gui	nuro-arm/nuro_arm/examples/record_movements.py	/^    gui = GUI(root, robot)$/;"	v	class:GUI
+gym	agent.py	/^import gym$/;"	i
+gym	grasping_env.py	/^import gym$/;"	i
+gym	nuro-arm/nuro_arm/examples/gym_envs/grid_world_env.py	/^import gym$/;"	i
+gym	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^import gym$/;"	i
+h5py	data_collection.py	/^import h5py$/;"	i
+h5py	grasping_env.py	/^import h5py$/;"	i
+h5py	segment_net.py	/^import h5py$/;"	i
+halfExtents	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^                           halfExtents=3*[CUBE_SIZE\/2],$/;"	v
+halfExtents	nuro-arm/tests/find_workspace.py	/^                           halfExtents=[0.005, 0.005, 0.01],$/;"	v
+hand_rot_as_quat	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def hand_rot_as_quat(self, pos, pitch, roll):$/;"	m	class:RobotArm
+hand_rot_as_quat	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def hand_rot_as_quat(self, pos, pitch, roll):$/;"	m	class:RobotArm
+hard_target_update	agent.py	/^    def hard_target_update(self):$/;"	m	class:DQNAgent
+help	data_collection.py	/^                        help='File path where data will be saved')$/;"	v
+help	data_collection.py	/^                        help='If true, render gui during dataset collection')$/;"	v
+help	data_collection.py	/^                        help='Number of image-label pairs in dataset')$/;"	v
+help	data_collection.py	/^                        help='Number of parallel processes')$/;"	v
+help	data_collection.py	/^                        help='Numpy random seed')$/;"	v
+help	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^                        help="aruco tag dictionary name")$/;"	v
+help	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^                        help="folder in which to save the pdfs")$/;"	v
+help	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^                        help="number of tags to generate")$/;"	v
+help	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^                        help="size of the tag in mm")$/;"	v
+help	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^                        help="tag number to begin with")$/;"	v
+help	nuro-arm/docs/make.bat	/^:help$/;"	l
+help	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^                        help="aruco tag dictionary name")$/;"	v
+help	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^                        help="folder in which to save the pdfs")$/;"	v
+help	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^                        help="number of tags to generate")$/;"	v
+help	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^                        help="size of the tag in mm")$/;"	v
+help	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^                        help="tag number to begin with")$/;"	v
+hid	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^            import hid$/;"	i
+hid	nuro-arm/nuro_arm/robot/xarm_controller.py	/^            import hid$/;"	i
+home	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def home(self):$/;"	m	class:RobotArm
+home	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def home(self):$/;"	m	class:RobotArm
+html_static_path	nuro-arm/docs/conf.py	/^html_static_path = ['_static']$/;"	v
+html_theme	nuro-arm/docs/conf.py	/^html_theme = 'sphinx_rtd_theme'$/;"	v
+id	nuro-arm/build/lib/nuro_arm/__init__.py	/^    id='nuroarm-simple-picking-v0',$/;"	v
+id	nuro-arm/nuro_arm/__init__.py	/^    id='nuroarm-simple-picking-v0',$/;"	v
+id_	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^id_ = pb.createVisualShape(pb.GEOM_BOX,$/;"	v
+id_	nuro-arm/tests/find_workspace.py	/^id_ = pb.createVisualShape(pb.GEOM_BOX,$/;"	v
+image_shape	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^        image_shape=(375,500),$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+image_shape	nuro-arm/nuro_arm/camera/calibrate.py	/^        image_shape=(375,500),$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+include_package_data	nuro-arm/setup.py	/^    include_package_data=True,$/;"	v
+initialize	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^    def initialize(self):$/;"	m	class:GUI
+initialize	nuro-arm/nuro_arm/examples/record_movements.py	/^    def initialize(self):$/;"	m	class:GUI
+initialize_robot	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^    def initialize_robot(self, pos, rot=[0,0,0,1]):$/;"	m	class:PybulletSimulator
+initialize_robot	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^    def initialize_robot(self, pos, rot=[0,0,0,1]):$/;"	m	class:PybulletSimulator
+insert	nuro-arm/nuro_arm/examples/record_movements.py	/^    def insert(self):$/;"	m	class:GUI
+install_requires	nuro-arm/setup.py	/^    install_requires=[$/;"	v
+invert_transformation_matrix	nuro-arm/build/lib/nuro_arm/transformation_utils.py	/^def invert_transformation_matrix(mtx):$/;"	f
+invert_transformation_matrix	nuro-arm/nuro_arm/transformation_utils.py	/^def invert_transformation_matrix(mtx):$/;"	f
+is_collision_free	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def is_collision_free(self, jpos, ignore_gripper=True):$/;"	m	class:MotionPlanner
+is_collision_free	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def is_collision_free(self, jpos, ignore_gripper=True):$/;"	m	class:MotionPlanner
+is_collision_free_trajectory	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def is_collision_free_trajectory(self,$/;"	m	class:MotionPlanner
+is_collision_free_trajectory	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def is_collision_free_trajectory(self,$/;"	m	class:MotionPlanner
+is_recording	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def is_recording(self):$/;"	m	class:Capturer
+is_recording	nuro-arm/nuro_arm/camera/capturer.py	/^    def is_recording(self):$/;"	m	class:Capturer
+is_safe_arm_jpos	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def is_safe_arm_jpos(self, jpos):$/;"	m	class:MotionPlanner
+is_safe_arm_jpos	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def is_safe_arm_jpos(self, jpos):$/;"	m	class:MotionPlanner
+is_safe_hand_position	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def is_safe_hand_position(self, pos):$/;"	m	class:MotionPlanner
+is_safe_hand_position	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def is_safe_hand_position(self, pos):$/;"	m	class:MotionPlanner
+itos	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^def itos(v):$/;"	f
+itos	nuro-arm/nuro_arm/robot/xarm_controller.py	/^def itos(v):$/;"	f
+joint_name	nuro-arm/nuro_arm/examples/read_joint_positions.py	/^        joint_name = robot.joint_names[i]$/;"	v
+joint_pos	nuro-arm/nuro_arm/examples/read_joint_positions.py	/^        joint_pos = arm_jpos[i]$/;"	v
+load	nuro-arm/nuro_arm/examples/record_movements.py	/^    def load(self):$/;"	m	class:GUI
+load_configs	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def load_configs(self):$/;"	m	class:Camera
+load_configs	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def load_configs(self):$/;"	m	class:XArmController
+load_configs	nuro-arm/nuro_arm/camera/camera.py	/^    def load_configs(self):$/;"	m	class:Camera
+load_configs	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def load_configs(self):$/;"	m	class:XArmController
+load_file	nuro-arm/nuro_arm/examples/record_movements.py	/^        def load_file():$/;"	f	function:GUI.load
+load_network	agent.py	/^    def load_network(self, model_path: str, map_location: str='cpu'):$/;"	m	class:DQNAgent
+makeTransform	segment_net.py	/^    def makeTransform(self, augmentations: Tuple[str]):$/;"	m	class:ObjectMaskDataset
+matplotlib	agent.py	/^import matplotlib.pyplot as plt$/;"	i
+matplotlib	grasping_env.py	/^import matplotlib.pyplot as plt$/;"	i
+matplotlib	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    import matplotlib.pyplot as plt$/;"	i
+max_episode_steps	nuro-arm/build/lib/nuro_arm/__init__.py	/^    max_episode_steps=5$/;"	v
+max_episode_steps	nuro-arm/nuro_arm/__init__.py	/^    max_episode_steps=5$/;"	v
+mirror	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def mirror(self, arm_jpos=None, gripper_state=None):$/;"	m	class:MotionPlanner
+mirror	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def mirror(self, arm_jpos=None, gripper_state=None):$/;"	m	class:MotionPlanner
+mirror_planner	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def mirror_planner(self):$/;"	m	class:RobotArm
+mirror_planner	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def mirror_planner(self):$/;"	m	class:RobotArm
+mode	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^    mode = 'sim' if args.sim else 'real'$/;"	v
+monitor	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def monitor(self, joint_ids, target_jpos, expected_duration):$/;"	m	class:BaseController
+monitor	nuro-arm/nuro_arm/examples/record_movements.py	/^    def monitor(self, thread):$/;"	m	class:GUI
+monitor	nuro-arm/nuro_arm/robot/base_controller.py	/^    def monitor(self, joint_ids, target_jpos, expected_duration):$/;"	m	class:BaseController
+move_arm	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^                move_arm = True$/;"	v
+move_arm	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^    move_arm = False$/;"	v
+move_arm_jpos	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def move_arm_jpos(self, jpos, speed=None):$/;"	m	class:RobotArm
+move_arm_jpos	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def move_arm_jpos(self, jpos, speed=None):$/;"	m	class:RobotArm
+move_down	nuro-arm/nuro_arm/examples/record_movements.py	/^    def move_down(self):$/;"	m	class:GUI
+move_hand_to	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def move_hand_to(self,$/;"	m	class:RobotArm
+move_hand_to	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def move_hand_to(self,$/;"	m	class:RobotArm
+move_hand_to_state	nuro-arm/nuro_arm/examples/gym_envs/grid_world_env.py	/^    def move_hand_to_state(self, state):$/;"	m	class:GridWorldEnv
+move_servos	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def move_servos(self, joint_ids, jpos, duration=1000):$/;"	m	class:XArmController
+move_servos	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def move_servos(self, joint_ids, jpos, duration=1000):$/;"	m	class:XArmController
+move_up	nuro-arm/nuro_arm/examples/record_movements.py	/^    def move_up(self):$/;"	m	class:GUI
+move_with_gui	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^def move_with_gui(mode):$/;"	f
+n_processes	data_collection.py	/^                    n_processes= args.n_processes,$/;"	v
+name	nuro-arm/setup.py	/^    name='nuro-arm',$/;"	v
+namedtuple	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^from collections import namedtuple$/;"	i
+namedtuple	nuro-arm/nuro_arm/camera/camera_utils.py	/^from collections import namedtuple$/;"	i
+napoleon_google_docstring	nuro-arm/docs/conf.py	/^napoleon_google_docstring = False$/;"	v
+new_val	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^        new_val = pb.readUserDebugParameter(prm, physicsClientId=client)$/;"	v
+nn	agent.py	/^import torch.nn as nn$/;"	i
+nn	equivariant_delta_pred.py	/^from e2cnn import nn$/;"	i
+nn	grasping_env.py	/^import torch.nn as nn$/;"	i
+np	agent.py	/^import numpy as np$/;"	i
+np	data_collection.py	/^import numpy as np$/;"	i
+np	grasping_env.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/constants.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/cube.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/robot/calibrate.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^import numpy as np$/;"	i
+np	nuro-arm/build/lib/nuro_arm/transformation_utils.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/camera/calibrate.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/camera/camera.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/camera/camera_utils.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/camera/capturer.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/camera/gui.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/constants.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/cube.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/examples/complex_motion.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/examples/gym_envs/grid_world_env.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/examples/pickup_cube.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/examples/record_movements.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/examples/throw_cube.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/robot/base_controller.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/robot/calibrate.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/robot/motion_planner.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/robot/robot_arm.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/robot/simulator_controller.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/robot/xarm_controller.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/tk_utils.py	/^import numpy as np$/;"	i
+np	nuro-arm/nuro_arm/transformation_utils.py	/^import numpy as np$/;"	i
+np	nuro-arm/tests/find_workspace.py	/^import numpy as np$/;"	i
+np	segment_net.py	/^import numpy as np$/;"	i
+nuro_arm	grasping_env.py	/^import nuro_arm$/;"	i
+nuro_arm	grasping_env.py	/^import nuro_arm.robot.robot_arm as robot$/;"	i
+nuro_arm	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+nuro_arm	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+nuro_arm	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+nuro_arm	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^import nuro_arm.constants as constants$/;"	i
+nuro_arm	nuro-arm/build/lib/nuro_arm/constants.py	/^import nuro_arm$/;"	i
+nuro_arm	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^import nuro_arm$/;"	i
+nuro_arm	nuro-arm/nuro_arm/camera/camera.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+nuro_arm	nuro-arm/nuro_arm/camera/camera_utils.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+nuro_arm	nuro-arm/nuro_arm/camera/capturer.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+nuro_arm	nuro-arm/nuro_arm/camera/gui.py	/^import nuro_arm.constants as constants$/;"	i
+nuro_arm	nuro-arm/nuro_arm/constants.py	/^import nuro_arm$/;"	i
+nuro_arm	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^import nuro_arm$/;"	i
+obs	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    obs = env.reset()$/;"	v	class:ImageBasedPickingEnv
+open_gripper	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def open_gripper(self):$/;"	m	class:RobotArm
+open_gripper	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def open_gripper(self):$/;"	m	class:RobotArm
+optimize	agent.py	/^    def optimize(self) -> float:$/;"	m	class:DQNAgent
+os	grasping_env.py	/^import os$/;"	i
+os	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^import os$/;"	i
+os	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^import os$/;"	i
+os	nuro-arm/build/lib/nuro_arm/constants.py	/^import os$/;"	i
+os	nuro-arm/build/lib/nuro_arm/cube.py	/^import os$/;"	i
+os	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^import os$/;"	i
+os	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^import os$/;"	i
+os	nuro-arm/docs/conf.py	/^import os$/;"	i
+os	nuro-arm/nuro_arm/camera/camera.py	/^import os$/;"	i
+os	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^import os$/;"	i
+os	nuro-arm/nuro_arm/constants.py	/^import os$/;"	i
+os	nuro-arm/nuro_arm/cube.py	/^import os$/;"	i
+os	nuro-arm/nuro_arm/examples/record_movements.py	/^import os$/;"	i
+os	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^import os$/;"	i
+os	nuro-arm/nuro_arm/robot/xarm_controller.py	/^import os$/;"	i
+packages	nuro-arm/setup.py	/^    packages=find_packages(),$/;"	v
+parser	data_collection.py	/^    parser = argparse.ArgumentParser()$/;"	v
+parser	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^    parser = argparse.ArgumentParser(description='Generate printable Aruco markers')$/;"	v
+parser	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^    parser = argparse.ArgumentParser(description='Generate printable Aruco markers')$/;"	v
+parser	nuro-arm/nuro_arm/examples/complex_motion.py	/^    parser = argparse.ArgumentParser()$/;"	v
+parser	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^    parser = argparse.ArgumentParser()$/;"	v
+passive_mode	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def passive_mode(self):$/;"	m	class:RobotArm
+passive_mode	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def passive_mode(self):$/;"	m	class:RobotArm
+pb	grasping_env.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/build/lib/nuro_arm/cube.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/camera/camera.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/camera/capturer.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/cube.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/examples/complex_motion.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/examples/real_sim_mirroring.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/examples/throw_cube.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/robot/motion_planner.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/nuro_arm/robot/simulator_controller.py	/^import pybullet as pb$/;"	i
+pb	nuro-arm/tests/find_workspace.py	/^import pybullet as pb$/;"	i
+physicsClientId	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^                                    physicsClientId=client)$/;"	v
+pickup_cube	nuro-arm/nuro_arm/examples/pickup_cube.py	/^def pickup_cube(camera, robot, cube_id):$/;"	f
+platform	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^import platform$/;"	i
+platform	nuro-arm/nuro_arm/robot/xarm_controller.py	/^import platform$/;"	i
+plot_curves	agent.py	/^from utils import ReplayBuffer, plot_predictions, plot_curves$/;"	i
+plot_obs	grasping_env.py	/^    def plot_obs(self):$/;"	m	class:HandoverGraspingEnv
+plot_predictions	agent.py	/^from utils import ReplayBuffer, plot_predictions, plot_curves$/;"	i
+plt	agent.py	/^import matplotlib.pyplot as plt$/;"	i
+plt	grasping_env.py	/^import matplotlib.pyplot as plt$/;"	i
+plt	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    import matplotlib.pyplot as plt$/;"	i
+policy	agent.py	/^    def policy(self, state: np.ndarray) -> np.ndarray:$/;"	m	class:DQNAgent
+popup	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^        popup = Popup($/;"	v	class:calibrate_camera.HighlightedCheckerboard
+popup	nuro-arm/nuro_arm/camera/calibrate.py	/^        popup = Popup($/;"	v	class:calibrate_camera.HighlightedCheckerboard
+pos	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^    pos = (dbg_values['x'],dbg_values['y'],dbg_values['z'])$/;"	v
+pos_body	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^pos_body = [0, 0, 0]$/;"	v
+pos_body	nuro-arm/tests/find_workspace.py	/^pos_body = [0, 0, 0]$/;"	v
+power_off_servo	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def power_off_servo(self, joint_id):$/;"	m	class:BaseController
+power_off_servo	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^    def power_off_servo(self, joint_id):$/;"	m	class:SimulatorController
+power_off_servo	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def power_off_servo(self, joint_id):$/;"	m	class:XArmController
+power_off_servo	nuro-arm/nuro_arm/robot/base_controller.py	/^    def power_off_servo(self, joint_id):$/;"	m	class:BaseController
+power_off_servo	nuro-arm/nuro_arm/robot/simulator_controller.py	/^    def power_off_servo(self, joint_id):$/;"	m	class:SimulatorController
+power_off_servo	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def power_off_servo(self, joint_id):$/;"	m	class:XArmController
+power_off_servos	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def power_off_servos(self):$/;"	m	class:BaseController
+power_off_servos	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^    def power_off_servos(self):$/;"	m	class:SimulatorController
+power_off_servos	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def power_off_servos(self):$/;"	m	class:XArmController
+power_off_servos	nuro-arm/nuro_arm/robot/base_controller.py	/^    def power_off_servos(self):$/;"	m	class:BaseController
+power_off_servos	nuro-arm/nuro_arm/robot/simulator_controller.py	/^    def power_off_servos(self):$/;"	m	class:SimulatorController
+power_off_servos	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def power_off_servos(self):$/;"	m	class:XArmController
+power_on_servo	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def power_on_servo(self, joint_id):$/;"	m	class:BaseController
+power_on_servo	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^    def power_on_servo(self, joint_id):$/;"	m	class:SimulatorController
+power_on_servo	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def power_on_servo(self, joint_id):$/;"	m	class:XArmController
+power_on_servo	nuro-arm/nuro_arm/robot/base_controller.py	/^    def power_on_servo(self, joint_id):$/;"	m	class:BaseController
+power_on_servo	nuro-arm/nuro_arm/robot/simulator_controller.py	/^    def power_on_servo(self, joint_id):$/;"	m	class:SimulatorController
+power_on_servo	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def power_on_servo(self, joint_id):$/;"	m	class:XArmController
+power_on_servos	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def power_on_servos(self):$/;"	m	class:BaseController
+power_on_servos	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^    def power_on_servos(self):$/;"	m	class:SimulatorController
+power_on_servos	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def power_on_servos(self):$/;"	m	class:XArmController
+power_on_servos	nuro-arm/nuro_arm/robot/base_controller.py	/^    def power_on_servos(self):$/;"	m	class:BaseController
+power_on_servos	nuro-arm/nuro_arm/robot/simulator_controller.py	/^    def power_on_servos(self):$/;"	m	class:SimulatorController
+power_on_servos	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def power_on_servos(self):$/;"	m	class:XArmController
+prepare_batch	agent.py	/^    def prepare_batch(self, s: np.ndarray, a: np.ndarray,$/;"	m	class:DQNAgent
+press	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^            def press():$/;"	f	function:Popup.__init__.press_gen
+press	nuro-arm/nuro_arm/tk_utils.py	/^            def press():$/;"	f	function:Popup.__init__.press_gen
+press_gen	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^        def press_gen(name):$/;"	f	function:Popup.__init__
+press_gen	nuro-arm/nuro_arm/tk_utils.py	/^        def press_gen(name):$/;"	f	function:Popup.__init__
+project	nuro-arm/docs/conf.py	/^project = 'NURO Arm'$/;"	v
+project_to_pixels	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^def project_to_pixels(pts, cam2world):$/;"	f
+project_to_pixels	nuro-arm/nuro_arm/camera/camera_utils.py	/^def project_to_pixels(pts, cam2world):$/;"	f
+project_world_points	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def project_world_points(self, pts_wframe):$/;"	m	class:Camera
+project_world_points	nuro-arm/nuro_arm/camera/camera.py	/^    def project_world_points(self, pts_wframe):$/;"	m	class:Camera
+pybullet_data	grasping_env.py	/^import pybullet_data$/;"	i
+pybullet_data	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^import pybullet_data$/;"	i
+pybullet_data	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^import pybullet_data$/;"	i
+python_requires	nuro-arm/setup.py	/^    python_requires='>3.6.0',$/;"	v
+read	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^        def read(self):$/;"	m	class:calibrate_camera.HighlightedCheckerboard
+read	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def read(self):$/;"	m	class:Capturer
+read	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def read(self, timeout):$/;"	m	class:Device
+read	nuro-arm/nuro_arm/camera/calibrate.py	/^        def read(self):$/;"	m	class:calibrate_camera.HighlightedCheckerboard
+read	nuro-arm/nuro_arm/camera/capturer.py	/^    def read(self):$/;"	m	class:Capturer
+read	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def read(self, timeout):$/;"	m	class:Device
+read_arm_jpos	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def read_arm_jpos(self):$/;"	m	class:BaseController
+read_arm_jpos	nuro-arm/nuro_arm/robot/base_controller.py	/^    def read_arm_jpos(self):$/;"	m	class:BaseController
+read_gripper_state	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def read_gripper_state(self):$/;"	m	class:BaseController
+read_gripper_state	nuro-arm/nuro_arm/robot/base_controller.py	/^    def read_gripper_state(self):$/;"	m	class:BaseController
+read_jpos	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def read_jpos(self, joint_ids):$/;"	m	class:BaseController
+read_jpos	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^    def read_jpos(self, joint_ids):$/;"	m	class:SimulatorController
+read_jpos	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def read_jpos(self, j_idxs):$/;"	m	class:XArmController
+read_jpos	nuro-arm/nuro_arm/robot/base_controller.py	/^    def read_jpos(self, joint_ids):$/;"	m	class:BaseController
+read_jpos	nuro-arm/nuro_arm/robot/simulator_controller.py	/^    def read_jpos(self, joint_ids):$/;"	m	class:SimulatorController
+read_jpos	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def read_jpos(self, j_idxs):$/;"	m	class:XArmController
+ready	grasping_env.py	/^    def ready(self):$/;"	m	class:HandoverArm
+register	nuro-arm/build/lib/nuro_arm/__init__.py	/^from gym.envs.registration import register$/;"	i
+register	nuro-arm/nuro_arm/__init__.py	/^from gym.envs.registration import register$/;"	i
+release	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def release(self):$/;"	m	class:Capturer
+release	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def release(self):$/;"	m	class:SimCapturer
+release	nuro-arm/docs/conf.py	/^release = '0.0.1'$/;"	v
+release	nuro-arm/nuro_arm/camera/capturer.py	/^    def release(self):$/;"	m	class:Capturer
+release	nuro-arm/nuro_arm/camera/capturer.py	/^    def release(self):$/;"	m	class:SimCapturer
+remove_collision_objects	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def remove_collision_objects(self):$/;"	m	class:Camera
+remove_collision_objects	nuro-arm/nuro_arm/camera/camera.py	/^    def remove_collision_objects(self):$/;"	m	class:Camera
+render	data_collection.py	/^                    render= args.render,$/;"	v
+replace_obs_background	data_collection.py	/^def replace_obs_background(original: np.ndarray, bkrd_path: str):$/;"	f
+required	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^                        required=True,$/;"	v
+required	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^                        required=True,$/;"	v
+reset	grasping_env.py	/^    def reset(self) -> np.ndarray:$/;"	m	class:HandoverGraspingEnv
+reset	nuro-arm/nuro_arm/examples/gym_envs/grid_world_env.py	/^    def reset(self):$/;"	m	class:GridWorldEnv
+reset	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    def reset(self):$/;"	m	class:ImageBasedPickingEnv
+reset_base_pose	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^    def reset_base_pose(self, pos, rot=(0,0,0,1)):$/;"	m	class:PybulletSimulator
+reset_base_pose	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^    def reset_base_pose(self, pos, rot=(0,0,0,1)):$/;"	m	class:PybulletSimulator
+reset_cube	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^                reset_cube = True$/;"	v
+reset_cube	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^    reset_cube = False$/;"	v
+reset_object_position	grasping_env.py	/^    def reset_object_position(self) -> None:$/;"	m	class:HandoverGraspingEnv
+reset_object_texture	grasping_env.py	/^    def reset_object_texture(self) -> None:$/;"	m	class:HandoverGraspingEnv
+reset_pose	nuro-arm/build/lib/nuro_arm/cube.py	/^    def reset_pose(self, pos, rot=[0,0,0,1]):$/;"	m	class:Cube
+reset_pose	nuro-arm/nuro_arm/cube.py	/^    def reset_pose(self, pos, rot=[0,0,0,1]):$/;"	m	class:Cube
+response	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    def response(self):$/;"	m	class:Popup
+response	nuro-arm/nuro_arm/tk_utils.py	/^    def response(self):$/;"	m	class:Popup
+rgbaColor	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^                           rgbaColor=[0.1,0.1,0.8,0.5])$/;"	v
+rgbaColor	nuro-arm/tests/find_workspace.py	/^                           rgbaColor=[0.1,0.8,0.2,0.5])$/;"	v
+robot	grasping_env.py	/^import nuro_arm.robot.robot_arm as robot$/;"	i
+robot	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^robot = RobotArm('sim', headless=False)$/;"	v
+robot	nuro-arm/nuro_arm/examples/pickup_cube.py	/^    robot = RobotArm()$/;"	v
+robot	nuro-arm/nuro_arm/examples/read_joint_positions.py	/^robot = RobotArm(robot_mode)$/;"	v
+robot	nuro-arm/nuro_arm/examples/real_sim_mirroring.py	/^robot = RobotArm(headless=False)$/;"	v
+robot	nuro-arm/nuro_arm/examples/record_movements.py	/^    robot = RobotArm()$/;"	v	class:GUI
+robot	nuro-arm/nuro_arm/examples/throw_cube.py	/^robot = RobotArm('real')$/;"	v
+robot	nuro-arm/tests/find_workspace.py	/^robot = RobotArm('sim', headless=False, realtime=False)$/;"	v
+robot_mode	nuro-arm/nuro_arm/examples/read_joint_positions.py	/^robot_mode = 'real'$/;"	v
+root	nuro-arm/nuro_arm/examples/record_movements.py	/^    root=tk.Tk()$/;"	v	class:GUI
+rot	nuro-arm/tests/find_workspace.py	/^        rot = R.from_euler('z', yaw) * R.from_euler('YZ', (np.pi, roll+np.pi))$/;"	v
+rot	nuro-arm/tests/find_workspace.py	/^        rot = rot.as_quat()$/;"	v
+rotmat_to_quaternion	nuro-arm/build/lib/nuro_arm/transformation_utils.py	/^def rotmat_to_quaternion(rotmat):$/;"	f
+rotmat_to_quaternion	nuro-arm/nuro_arm/transformation_utils.py	/^def rotmat_to_quaternion(rotmat):$/;"	f
+run	nuro-arm/nuro_arm/examples/record_movements.py	/^    def run(self):$/;"	m	class:MovementDispatcher
+save	nuro-arm/nuro_arm/examples/record_movements.py	/^    def save(self):$/;"	m	class:GUI
+save_network	agent.py	/^    def save_network(self, dest: str='q_network.pt'):$/;"	m	class:DQNAgent
+seed	data_collection.py	/^                    seed= args.seed,$/;"	v
+select_action	agent.py	/^    def select_action(self, state: np.ndarray, epsilon: float=0.) -> np.ndarray:$/;"	m	class:DQNAgent
+set_camera_id	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def set_camera_id(self, camera_id, run_async=True):$/;"	m	class:Capturer
+set_camera_id	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def set_camera_id(self, camera_id=0, run_async=True):$/;"	m	class:SimCapturer
+set_camera_id	nuro-arm/nuro_arm/camera/capturer.py	/^    def set_camera_id(self, camera_id, run_async=True):$/;"	m	class:Capturer
+set_camera_id	nuro-arm/nuro_arm/camera/capturer.py	/^    def set_camera_id(self, camera_id=0, run_async=True):$/;"	m	class:SimCapturer
+set_frame_rate	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def set_frame_rate(self, frame_rate):$/;"	m	class:Capturer
+set_frame_rate	nuro-arm/nuro_arm/camera/capturer.py	/^    def set_frame_rate(self, frame_rate):$/;"	m	class:Capturer
+set_gripper_state	nuro-arm/build/lib/nuro_arm/robot/robot_arm.py	/^    def set_gripper_state(self, state, backoff=-0.05, speed=None):$/;"	m	class:RobotArm
+set_gripper_state	nuro-arm/nuro_arm/robot/robot_arm.py	/^    def set_gripper_state(self, state, backoff=-0.05, speed=None):$/;"	m	class:RobotArm
+set_joint_states	nuro-arm/build/lib/nuro_arm/robot/motion_planner.py	/^    def set_joint_states(self, joint_states):$/;"	m	class:MotionPlanner
+set_joint_states	nuro-arm/nuro_arm/robot/motion_planner.py	/^    def set_joint_states(self, joint_states):$/;"	m	class:MotionPlanner
+set_location	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def set_location(self, pose_mtx):$/;"	m	class:Camera
+set_location	nuro-arm/nuro_arm/camera/camera.py	/^    def set_location(self, pose_mtx):$/;"	m	class:Camera
+set_pose_mtx	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def set_pose_mtx(self, pose_mtx):$/;"	m	class:SimCapturer
+set_pose_mtx	nuro-arm/nuro_arm/camera/capturer.py	/^    def set_pose_mtx(self, pose_mtx):$/;"	m	class:SimCapturer
+setup	nuro-arm/setup.py	/^from setuptools import setup, find_packages$/;"	i
+setup_requires	nuro-arm/setup.py	/^    setup_requires="wheel",$/;"	v
+show	nuro-arm/build/lib/nuro_arm/camera/gui.py	/^    def show(self,$/;"	m	class:GUI
+show	nuro-arm/nuro_arm/camera/gui.py	/^    def show(self,$/;"	m	class:GUI
+show_cubes	nuro-arm/nuro_arm/examples/show_cubes.py	/^def show_cubes():$/;"	f
+size	data_collection.py	/^                    size= args.size,$/;"	v
+start_async	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def start_async(self):$/;"	m	class:Capturer
+start_async	nuro-arm/nuro_arm/camera/capturer.py	/^    def start_async(self):$/;"	m	class:Capturer
+start_recording	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def start_recording(self, duration):$/;"	m	class:Camera
+start_recording	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def start_recording(self, duration):$/;"	m	class:Capturer
+start_recording	nuro-arm/nuro_arm/camera/camera.py	/^    def start_recording(self, duration):$/;"	m	class:Camera
+start_recording	nuro-arm/nuro_arm/camera/capturer.py	/^    def start_recording(self, duration):$/;"	m	class:Capturer
+step	grasping_env.py	/^    def step(self, action: np.ndarray):$/;"	m	class:HandoverGraspingEnv
+step	nuro-arm/nuro_arm/examples/gym_envs/grid_world_env.py	/^    def step(self, a):$/;"	m	class:GridWorldEnv
+step	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    def step(self, a):$/;"	m	class:ImageBasedPickingEnv
+stop_async	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def stop_async(self):$/;"	m	class:Capturer
+stop_async	nuro-arm/nuro_arm/camera/capturer.py	/^    def stop_async(self):$/;"	m	class:Capturer
+sys	nuro-arm/docs/conf.py	/^import sys$/;"	i
+t	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^t = time.time()$/;"	v
+tag_ids	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^    tag_ids = range(args.start_id, args.number)$/;"	v
+tag_ids	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^    tag_ids = range(args.start_id, args.number)$/;"	v
+templates_path	nuro-arm/docs/conf.py	/^templates_path = ['_templates']$/;"	v
+text	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^             'Click CONTINUE once you are ready (there should be rainbow highlighting).\\n\\n',$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+text	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^             'and you can now use the camera for finding object poses.',$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+text	nuro-arm/nuro_arm/camera/calibrate.py	/^             'Click CONTINUE once you are ready (there should be rainbow highlighting).\\n\\n',$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+text	nuro-arm/nuro_arm/camera/calibrate.py	/^             'and you can now use the camera for finding object poses.',$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+tfm	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+tfm	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+tfm	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+tfm	nuro-arm/nuro_arm/camera/camera.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+tfm	nuro-arm/nuro_arm/camera/camera_utils.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+tfm	nuro-arm/nuro_arm/camera/capturer.py	/^import nuro_arm.transformation_utils as tfm$/;"	i
+threading	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^import threading$/;"	i
+threading	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^import threading$/;"	i
+threading	nuro-arm/nuro_arm/camera/capturer.py	/^import threading$/;"	i
+threading	nuro-arm/nuro_arm/robot/xarm_controller.py	/^import threading$/;"	i
+time	grasping_env.py	/^import time$/;"	i
+time	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^import time$/;"	i
+time	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^import time$/;"	i
+time	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^import time$/;"	i
+time	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^import time$/;"	i
+time	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/camera/camera.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/camera/capturer.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/examples/complex_motion.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/examples/pickup_cube.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/examples/read_joint_positions.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/examples/real_sim_mirroring.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/examples/record_movements.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/examples/throw_cube.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/robot/base_controller.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/robot/simulator_controller.py	/^import time$/;"	i
+time	nuro-arm/nuro_arm/robot/xarm_controller.py	/^import time$/;"	i
+time	nuro-arm/tests/find_workspace.py	/^import time$/;"	i
+timestep	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def timestep(self):$/;"	m	class:BaseController
+timestep	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^    def timestep(self):$/;"	m	class:SimulatorController
+timestep	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def timestep(self):$/;"	m	class:XArmController
+timestep	nuro-arm/nuro_arm/robot/base_controller.py	/^    def timestep(self):$/;"	m	class:BaseController
+timestep	nuro-arm/nuro_arm/robot/simulator_controller.py	/^    def timestep(self):$/;"	m	class:SimulatorController
+timestep	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def timestep(self):$/;"	m	class:XArmController
+title	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^        title='Camera Set-up: step 2 of 2',$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+title	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^        title='Success',$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+title	nuro-arm/nuro_arm/camera/calibrate.py	/^        title='Camera Set-up: step 2 of 2',$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+title	nuro-arm/nuro_arm/camera/calibrate.py	/^        title='Success',$/;"	v	class:calibrate_camera.HighlightedCheckerboard
+tk	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^import tkinter as tk$/;"	i
+tk	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^import tkinter as tk$/;"	i
+tk	nuro-arm/nuro_arm/examples/record_movements.py	/^import tkinter as tk$/;"	i
+tk	nuro-arm/nuro_arm/tk_utils.py	/^import tkinter as tk$/;"	i
+toggle_mode	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^    def toggle_mode(self):$/;"	m	class:GUI
+toggle_move	nuro-arm/nuro_arm/examples/record_movements.py	/^    def toggle_move(self, mode):$/;"	m	class:GUI
+torch	agent.py	/^import torch$/;"	i
+torch	agent.py	/^import torch.nn as nn$/;"	i
+torch	equivariant_delta_pred.py	/^import torch$/;"	i
+torch	grasping_env.py	/^import torch$/;"	i
+torch	grasping_env.py	/^import torch.nn as nn$/;"	i
+torch	segment_net.py	/^import torch$/;"	i
+tqdm	agent.py	/^from tqdm import tqdm$/;"	i
+tqdm	data_collection.py	/^from tqdm import tqdm$/;"	i
+train	agent.py	/^    def train(self, num_steps: int, plotting_freq: int=0) -> None:$/;"	m	class:DQNAgent
+transformation_matrix	nuro-arm/build/lib/nuro_arm/transformation_utils.py	/^def transformation_matrix(rvec, tvec):$/;"	f
+transformation_matrix	nuro-arm/nuro_arm/transformation_utils.py	/^def transformation_matrix(rvec, tvec):$/;"	f
+transformation_utils	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^from nuro_arm import transformation_utils, constants$/;"	i
+transformation_utils	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^from nuro_arm import transformation_utils, constants$/;"	i
+ttk	nuro-arm/nuro_arm/examples/record_movements.py	/^from tkinter import ttk$/;"	i
+undistort_frame	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def undistort_frame(frame):$/;"	m	class:Capturer
+undistort_frame	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def undistort_frame(frame):$/;"	m	class:SimCapturer
+undistort_frame	nuro-arm/nuro_arm/camera/capturer.py	/^    def undistort_frame(frame):$/;"	m	class:Capturer
+undistort_frame	nuro-arm/nuro_arm/camera/capturer.py	/^    def undistort_frame(frame):$/;"	m	class:SimCapturer
+unpack_rvec_tvec	nuro-arm/build/lib/nuro_arm/transformation_utils.py	/^def unpack_rvec_tvec(mtx):$/;"	f
+unpack_rvec_tvec	nuro-arm/nuro_arm/transformation_utils.py	/^def unpack_rvec_tvec(mtx):$/;"	f
+update	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^    def update(self):$/;"	m	class:GUI
+update_image	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^    def update_image(self):$/;"	m	class:VideoPopup
+update_image	nuro-arm/nuro_arm/tk_utils.py	/^    def update_image(self):$/;"	m	class:VideoPopup
+url	nuro-arm/setup.py	/^    url='https:\/\/github.com\/dmklee\/nuro-arm',$/;"	v
+version	nuro-arm/setup.py	/^    version='0.0.1',$/;"	v
+wait_for_recording	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def wait_for_recording(self):$/;"	m	class:Camera
+wait_for_recording	nuro-arm/nuro_arm/camera/camera.py	/^    def wait_for_recording(self):$/;"	m	class:Camera
+waypts	nuro-arm/nuro_arm/examples/complex_motion.py	/^    waypts = generate_waypts()$/;"	v
+write	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def write(self, msg):$/;"	m	class:Device
+write	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def write(self, msg):$/;"	m	class:Device
+write_arm_jpos	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def write_arm_jpos(self, jpos, speed=None):$/;"	m	class:BaseController
+write_arm_jpos	nuro-arm/nuro_arm/robot/base_controller.py	/^    def write_arm_jpos(self, jpos, speed=None):$/;"	m	class:BaseController
+write_gripper_state	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def write_gripper_state(self, state, speed=None):$/;"	m	class:BaseController
+write_gripper_state	nuro-arm/nuro_arm/robot/base_controller.py	/^    def write_gripper_state(self, state, speed=None):$/;"	m	class:BaseController
+write_jpos	nuro-arm/build/lib/nuro_arm/robot/base_controller.py	/^    def write_jpos(self, joint_ids, jpos, speed):$/;"	m	class:BaseController
+write_jpos	nuro-arm/build/lib/nuro_arm/robot/simulator_controller.py	/^    def write_jpos(self, joint_ids, jpos, speed=None):$/;"	m	class:SimulatorController
+write_jpos	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    def write_jpos(self, joint_ids, jpos, speed=None):$/;"	m	class:XArmController
+write_jpos	nuro-arm/nuro_arm/robot/base_controller.py	/^    def write_jpos(self, joint_ids, jpos, speed):$/;"	m	class:BaseController
+write_jpos	nuro-arm/nuro_arm/robot/simulator_controller.py	/^    def write_jpos(self, joint_ids, jpos, speed=None):$/;"	m	class:SimulatorController
+write_jpos	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def write_jpos(self, joint_ids, jpos, speed=None):$/;"	m	class:XArmController
+x_points	nuro-arm/tests/find_workspace.py	/^x_points = np.arange(X_CENTER-HEIGHT, X_CENTER+HEIGHT+XY_SPACING, XY_SPACING)$/;"	v
+xarm	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    xarm = XArmController()$/;"	v
+xarm	nuro-arm/nuro_arm/examples/cube_pose_estimation.py	/^xarm = RobotArm(headless=False)$/;"	v
+xarm	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    xarm = XArmController()$/;"	v
+xyz_points	nuro-arm/tests/find_workspace.py	/^xyz_points = np.stack(np.meshgrid(x_points, y_points, base_heights)).T.reshape(-1,3)$/;"	v
+y_points	nuro-arm/tests/find_workspace.py	/^y_points = np.arange(Y_CENTER-WIDTH, Y_CENTER+WIDTH+XY_SPACING, XY_SPACING)$/;"	v
+yaw	nuro-arm/tests/find_workspace.py	/^        yaw = np.arctan2(pos[1], pos[0])$/;"	v

@@ -7,12 +7,15 @@ import numpy as np
 import pybullet as pb
 import pybullet_data
 import gym
+from gym.spaces.discrete import Discrete
 import time
 import h5py
 import matplotlib.pyplot as plt
+from scipy.spatial.transform.rotation import Rotation
 
 import os
 
+import nuro_arm
 import nuro_arm.robot.robot_arm as robot
 
 WORKSPACE = np.array(((0.10, -0.05, 0.2), # ((min_x, min_y, min_z)
@@ -74,25 +77,14 @@ class WristCamera:
         """
         Computes the view matrix and projection matrix based on the position and orientation of the robot's end effector
         """
-        cam_linkstate = pb.invertTransform( \
-                *(pb.getLinkState(self.robot._id, self.robot.camera_link_index)[:2]))
+        pos, quat = pb.getLinkState(self.robot._id, self.robot.camera_link_index)[:2]
 
-        self.position = cam_linkstate[0]
-        self.orientation = np.reshape(pb.getMatrixFromQuaternion(cam_linkstate[1]), (3, 3), order='F')
+        rotmat = Rotation.from_quat(quat).as_matrix().T
+        pos = - np.dot(rotmat, pos)
 
-        #print(self.orientation)
-
-        #pre-allocate view matrix
-        self.view_mtx = np.zeros(shape=(4,4))
-        for i in range(3):
-            for j in range(3):
-                self.view_mtx[i, j] = self.orientation[i, j]
-        for i in range(3):
-            self.view_mtx[3, i] = 0
-        for i in range(3):
-            self.view_mtx[i, 3] = self.position[i]
-        self.view_mtx[3,3] = 1
-        #print(self.view_mtx)
+        self.view_mtx = np.eye(4)
+        self.view_mtx[:3, :3] = rotmat
+        self.view_mtx[:3, 3] = pos
 
         self.view_mtx = np.ravel(self.view_mtx, order='F')
 
@@ -136,7 +128,7 @@ class HandoverGraspingEnv(gym.Env):
         self.camera = WristCamera(self.robot, img_size);
 
         # add object
-        self.object_id = pb.loadURDF("assets/urdf/object.urdf")
+        self.object_id = pb.loadURDF(os.path.join(nuro_arm.constants.URDF_DIR, "object.urdf"))
         pb.changeDynamics(self.object_id, -1,
                           lateralFriction=1,
                           spinningFriction=0.005,
@@ -155,10 +147,11 @@ class HandoverGraspingEnv(gym.Env):
 
         self.action_delta = DELTA
 
-       # self.x_action_space = gym.spaces.Discrete( 3, start=-1, dtype=int)
-       # self.y_action_space = gym.spaces.Discrete( 3, start=-1, dtype=int)
-       # self.z_action_space = gym.spaces.Discrete( 3, start=-1, dtype=int)
-       # self.theta_action_space = gym.spaces.Discrete( 3,start=-1, dtype=int)
+        #Four action spaces, each representing a positive, zero, or negative change
+        self.base_rotation_actions = Discrete( n=3, start=-1)
+        self.pitch_actions = Discrete( n=3, start=-1)
+        self.forward_actions = Discrete( n=3, start=-1)
+        self.wrist_rotation_actions = Discrete( n=3, start=-1)
 
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
@@ -181,10 +174,10 @@ class HandoverGraspingEnv(gym.Env):
             obs, reward, done, info
         '''
 
-        assert self.x_action_space.contains(action[0])
-        assert self.y_action_space.contains(action[2])
-        assert self.z_action_space.contains(action[3])
-        assert self.theta_action_space.contains(action[3])
+        assert self.base_rotation_actions.contains(action[0])
+        assert self.pitch_actions.contains(action[2])
+        assert self.forward_actions.contains(action[3])
+        assert self.wrist_rotation_actions.contains(action[3])
         
         current_effector_pos = pb.getLinkState(self.robot._id, self.robot.end_effector_link_index, calculateForwardKinematics=True)[0]
 
@@ -200,21 +193,6 @@ class HandoverGraspingEnv(gym.Env):
         info = {'success' : success}
 
         return obs, reward, done, info
-
-    def _convert_from_pixel(self, pxy: np.ndarray) -> np.ndarray:
-        xy_norm = pxy.astype(float) / self.img_size
-
-        xy = xy_norm * np.subtract(*self.workspace[::-1]) + self.workspace[0]
-        return xy
-
-    def _convert_to_pixel(self, xy: np.ndarray) -> np.ndarray:
-        xy_norm = np.subtract(xy, self.workspace[0]) \
-                    / np.subtract(*self.workspace[::-1])
-        xy_norm = np.clip(xy_norm, 0, 1)
-
-        #xy axis are flipped from world to image space
-        pxy = self.img_size * xy_norm
-        return pxy.astype(int)
 
 
     def reset_object_position(self) -> None:

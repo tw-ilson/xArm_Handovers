@@ -9,12 +9,12 @@ import matplotlib.pyplot as plt
 
 from networks import PixelWiseQNetwork, argmax2d
 from utils import ReplayBuffer, plot_predictions, plot_curves
-from torchvision.transforms import ToTensor
+from grasping_env import HandoverGraspingEnv
 
 
 class DQNAgent:
     def __init__(self,
-                 env: gym.Env,
+                 env: HandoverGraspingEnv,
                  gamma: float,
                  learning_rate: float,
                  buffer_size: int,
