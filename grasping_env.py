@@ -18,8 +18,8 @@ import os
 import nuro_arm
 import nuro_arm.robot.robot_arm as robot
 
-WORKSPACE = np.array(((0.10, -0.05, 0.2), # ((min_x, min_y, min_z)
-                      (0.20, 0.05, 0.3))) #  (max_x, max_y, max_z))
+from curriculum import ObjectRoutine
+
 
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
 
@@ -134,11 +134,11 @@ class HandoverGraspingEnv(gym.Env):
                           spinningFriction=0.005,
                           rollingFriction=0.005)
         self.object_width = 0.02
-        obj_orn = pb.getBasePositionAndOrientation(self.object_id)[1]
 
-        pb.resetBasePositionAndOrientation(self.object_id, (0.15, 0, 0), obj_orn)
+        #no options currently given
+        self.object_routine = ObjectRoutine()
 
-        self.workspace = WORKSPACE
+        pb.resetBasePositionAndOrientation(self.object_id, self.object_routine.getPos(), pb.getQuaternionFromEuler(self.object_routine.getOrn))
 
         self.t_step = 0
         self.episode_length = episode_length
@@ -156,7 +156,7 @@ class HandoverGraspingEnv(gym.Env):
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
         '''
-        self.reset_object_position()
+        self.object_routine.reset()
         #self.reset_object_texture()
         self.t_step = 0
 
@@ -164,7 +164,7 @@ class HandoverGraspingEnv(gym.Env):
 
     def step(self, action: np.ndarray):
         '''
-        Takes one small step in the environment.
+        Takes one step in the environment.
 
         Params
         ------
@@ -191,6 +191,8 @@ class HandoverGraspingEnv(gym.Env):
         reward = float(success)
         done = success or self.t_step >= self.episode_length
         info = {'success' : success}
+
+        self.object_routine.step()
 
         return obs, reward, done, info
 
@@ -242,7 +244,7 @@ class HandoverGraspingEnv(gym.Env):
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=False, img_size=200)
+    env = HandoverGraspingEnv(render=True, img_size=200)
     env.robot.ready()
     env.plot_obs()
 
