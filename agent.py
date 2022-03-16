@@ -7,8 +7,8 @@ import gym
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-from networks import PixelWiseQNetwork, argmax2d
-from utils import ReplayBuffer, plot_predictions, plot_curves
+from equivariant_delta_pred import EquivariantDeltaNetwork
+# from utils import ReplayBuffer, plot_predictions, plot_curves
 from grasping_env import HandoverGraspingEnv
 
 
@@ -21,12 +21,12 @@ class DQNAgent:
                  batch_size: int,
                  initial_epsilon: float,
                  final_epsilon: float,
-                 update_method: str='standard',
-                 exploration_fraction: float=0.9,
-                 target_network_update_freq: int=1000,
-                 seed: int=0,
-                 device: Union[str, torch.device]='cpu',
-                ) -> None:
+                 update_method: str = 'standard',
+                 exploration_fraction: float = 0.9,
+                 target_network_update_freq: int = 1000,
+                 seed: int = 0,
+                 device: Union[str, torch.device] = 'cpu',
+                 ) -> None:
         self.env = env
 
         self.gamma = gamma
@@ -43,19 +43,19 @@ class DQNAgent:
 
         self.device = device
         img_shape = (3, self.env.img_size, self.env.img_size)
-        self.network = PixelWiseQNetwork(img_shape).to(device)
-        self.target_network = PixelWiseQNetwork(img_shape).to(device)
+        self.network = EquivariantDeltaNetwork(img_shape).to(device)
+        self.target_network = EquivariantDeltaNetwork(img_shape).to(device)
         self.hard_target_update()
 
         self.optim = torch.optim.Adam(self.network.parameters(),
-                                      lr= learning_rate)
+                                      lr=learning_rate)
 
         np.random.seed(seed)
         torch.manual_seed(seed)
         if device == 'cuda':
             torch.cuda.manual_seed(seed)
 
-    def train(self, num_steps: int, plotting_freq: int=0) -> None:
+    def train(self, num_steps: int, plotting_freq: int = 0) -> None:
         '''Train q-function for given number of environment steps using
         q-learning with e-greedy action selection
 
@@ -130,22 +130,22 @@ class DQNAgent:
         s, a, r, sp, d = self.prepare_batch(*batch)
 
         q_map_pred = self.network(s)
-        q_pred = q_map_pred[np.arange(len(s)), 0, a[:,0], a[:,1]]
+        q_pred = q_map_pred[np.arange(len(s)), 0, a[:, 0], a[:, 1]]
 
         if self.update_method == 'standard':
             with torch.no_grad():
                 q_map_next = self.target_network(sp)
-                q_next = torch.max( torch.flatten(q_map_next, 1), dim=1)[0]
+                q_next = torch.max(torch.flatten(q_map_next, 1), dim=1)[0]
                 q_target = r + self.gamma * q_next * (1-d)
 
         elif self.update_method == 'double':
             with torch.no_grad():
                 q_map_next_est = self.target_network(sp)
                 pred_act = self.network.predict(sp)
-                q_next = q_map_next_est[np.arange(len(q_map_next_est)), \
-                                        0, 
-                                        pred_act[:,0], \
-                                        pred_act[:,1]]
+                q_next = q_map_next_est[np.arange(len(q_map_next_est)),
+                                        0,
+                                        pred_act[:, 0],
+                                        pred_act[:, 1]]
                 q_target = r + self.gamma * q_next * (1-d)
 
         assert q_pred.shape == q_target.shape
@@ -160,7 +160,7 @@ class DQNAgent:
 
     def prepare_batch(self, s: np.ndarray, a: np.ndarray,
                       r: np.ndarray, sp: np.ndarray, d: np.ndarray,
-                     ) -> Tuple[Tensor, Tensor, Tensor, Tensor, Tensor]:
+                      ) -> Tuple[Tensor, Tensor, Tensor, Tensor, Tensor]:
         '''Converts components of transition from numpy arrays to tensors
         that are ready to be passed to q-network.  Make sure you send tensors
         to the right device!
@@ -181,17 +181,19 @@ class DQNAgent:
         sp : tensor of next state images, dtype=torch.float32, shape=(B, C, H, W)
         d : tensor of done flags, dtype=torch.float32, shape=(B,)
         '''
-        s0 = torch.tensor(s, dtype=torch.float32, device=self.device).permute(0, 3, 1, 2)
+        s0 = torch.tensor(s, dtype=torch.float32,
+                          device=self.device).permute(0, 3, 1, 2)
         s0 = torch.div(s0, 255)
         a0 = torch.tensor(a, dtype=torch.long, device=self.device)
         r0 = torch.tensor(r, dtype=torch.float32, device=self.device)
-        sp0 = torch.tensor(sp, dtype=torch.float32, device=self.device).permute(0, 3, 1, 2)
+        sp0 = torch.tensor(sp, dtype=torch.float32,
+                           device=self.device).permute(0, 3, 1, 2)
         sp0 = torch.div(sp0, 255)
         d0 = torch.tensor(d, dtype=torch.float32, device=self.device)
-        
+
         return s0, a0, r0, sp0, d0
 
-    def select_action(self, state: np.ndarray, epsilon: float=0.) -> np.ndarray:
+    def select_action(self, state: np.ndarray, epsilon: float = 0.) -> np.ndarray:
         '''Returns action based on e-greedy action selection.  With probability
         of epsilon, choose random action in environment action space, otherwise
         select argmax of q-function at given state
@@ -215,12 +217,12 @@ class DQNAgent:
         -------
         pixel action (px, py); shape=(2,); dtype=int
         '''
-        t_state = torch.tensor(state, dtype=torch.float32).unsqueeze(0).permute(0, 3, 1, 2)
+        t_state = torch.tensor(state, dtype=torch.float32).unsqueeze(
+            0).permute(0, 3, 1, 2)
         t_state = torch.div(t_state, 255)
         t_state = t_state.to(self.device)
         return self.network.predict(t_state).squeeze().cpu().numpy()
-       
-    
+
     def compute_epsilon(self, fraction: float) -> float:
         '''Calculate epsilon value based on linear annealing schedule
 
@@ -231,16 +233,16 @@ class DQNAgent:
         '''
         fraction = np.clip(fraction, 0., 1.)
         return (1-fraction) * self.initial_epsilon \
-                    + fraction * self.final_epsilon
+            + fraction * self.final_epsilon
 
     def hard_target_update(self):
         '''Update target network by copying weights from online network'''
         self.target_network.load_state_dict(self.network.state_dict())
 
-    def save_network(self, dest: str='q_network.pt'):
+    def save_network(self, dest: str = 'q_network.pt'):
         torch.save(self.network.state_dict(), dest)
 
-    def load_network(self, model_path: str, map_location: str='cpu'):
+    def load_network(self, model_path: str, map_location: str = 'cpu'):
         self.network.load_state_dict(torch.load(model_path,
                                                 map_location=map_location))
         self.hard_target_update()
@@ -250,17 +252,17 @@ if __name__ == "__main__":
     from grasping_env import TopDownGraspingEnv
     env = TopDownGraspingEnv(render=False)
 
-    agent = DQNAgent(env= env,
-                     gamma= 0.5,
-                     learning_rate= 1e-3,
-                     buffer_size= 4000,
-                     batch_size= 64,
-                     initial_epsilon= 0.5,
+    agent = DQNAgent(env=env,
+                     gamma=0.5,
+                     learning_rate=1e-3,
+                     buffer_size=4000,
+                     batch_size=64,
+                     initial_epsilon=0.5,
                      final_epsilon=0.3,
                      update_method='double',
                      exploration_fraction=0.9,
-                     target_network_update_freq= 250,
-                     seed= 1,
-                     device= 'cpu')
+                     target_network_update_freq=250,
+                     seed=1,
+                     device='cpu')
 
     agent.train(1000, 100)

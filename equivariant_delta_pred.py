@@ -7,7 +7,7 @@ from e2cnn import nn
 # TODO experiment with kernel sizes for average pooling
 
 
-class EquivariantDeltas(torch.nn.Module):
+class EquivariantDeltaNetwork(torch.nn.Module):
     def __init__(self, input_shape, N=8) -> None:
         """Creates equivariant X, Y, Z prediction network for input image
 
@@ -19,19 +19,15 @@ class EquivariantDeltas(torch.nn.Module):
         """
         super().__init__()
         # (B, C, H, W)
-        assert (
-            input_shape[1] == input_shape[2],
-            "Input image should be square"
-        )
+        assert input_shape[1] == input_shape[2], "Input image should be square"
+
         self.N = N
-        self.actions = []
-        for _ in range(4):
-            self.actions.extend([-1, 0, 1])
+        self.actions = [-1, 0, 1]
 
         self.input_shape = input_shape
-        self.conv_out_channels = 8
+        self.conv_out_channels = 16
 
-        self.r2_rot = gspaces.Rot2dOnR2(N)
+        self.r2_act = gspaces.Rot2dOnR2(N)
         self.conv = torch.nn.Sequential(
             # 128x128
             nn.R2Conv(nn.FieldType(self.r2_act, input_shape[0]*[self.r2_act.trivial_repr]),
@@ -43,50 +39,34 @@ class EquivariantDeltas(torch.nn.Module):
                 self.r2_act, 16*[self.r2_act.regular_repr]), 2),
             # 64x64
             nn.R2Conv(nn.FieldType(self.r2_act, 16 * [self.r2_act.regular_repr]),
-                      nn.FieldType(self.r2_act, 32 * \
+                      nn.FieldType(self.r2_act, 16 * \
                                    [self.r2_act.regular_repr]),
                       kernel_size=3, padding=1),
-            nn.ReLU(nn.FieldType(self.r2_act, 32 * \
+            nn.ReLU(nn.FieldType(self.r2_act, 16 * \
                     [self.r2_act.regular_repr]), inplace=True),
             nn.PointwiseMaxPool(nn.FieldType(
-                self.r2_act, 32 * [self.r2_act.regular_repr]), 2),
+                self.r2_act, 16 * [self.r2_act.regular_repr]), 2),
             # 32x32
-            nn.R2Conv(nn.FieldType(self.r2_act, 32 * [self.r2_act.regular_repr]),
-                      nn.FieldType(self.r2_act, 64 * \
+            nn.R2Conv(nn.FieldType(self.r2_act, 16 * [self.r2_act.regular_repr]),
+                      nn.FieldType(self.r2_act, 16 * \
                                    [self.r2_act.regular_repr]),
                       kernel_size=3, padding=1),
-            nn.ReLU(nn.FieldType(self.r2_act, 64 * \
+            nn.ReLU(nn.FieldType(self.r2_act, 16 * \
                     [self.r2_act.regular_repr]), inplace=True),
             nn.PointwiseMaxPool(nn.FieldType(
-                self.r2_act, 64 * [self.r2_act.regular_repr]), 2),
+                self.r2_act, 16 * [self.r2_act.regular_repr]), 2),
             # 16x16
-            nn.R2Conv(nn.FieldType(self.r2_act, 64 * [self.r2_act.regular_repr]),
-                      nn.FieldType(self.r2_act, 128 * \
-                                   [self.r2_act.regular_repr]),
-                      kernel_size=3, padding=1),
-            nn.ReLU(nn.FieldType(self.r2_act, 128 * \
-                    [self.r2_act.regular_repr]), inplace=True),
-            nn.PointwiseMaxPool(nn.FieldType(
-                self.r2_act, 128 * [self.r2_act.regular_repr]), 2),
-            # 8x8
-            nn.R2Conv(nn.FieldType(self.r2_act, 128 * [self.r2_act.regular_repr]),
-                      nn.FieldType(self.r2_act, 256 * \
-                                   [self.r2_act.regular_repr]),
-                      kernel_size=3, padding=1),
-            nn.ReLU(nn.FieldType(self.r2_act, 256 * \
-                    [self.r2_act.regular_repr]), inplace=True),
-            nn.PointwiseMaxPool(nn.FieldType(
-                self.r2_act, 256 * [self.r2_act.regular_repr]), 2),
-
-            nn.R2Conv(nn.FieldType(self.r2_act, 256 * [self.r2_act.regular_repr]),
+            nn.R2Conv(nn.FieldType(self.r2_act, 16 * [self.r2_act.regular_repr]),
                       nn.FieldType(
                           self.r2_act, self.conv_out_channels * [self.r2_act.regular_repr]),
                       kernel_size=3, padding=1),
+            nn.ReLU(nn.FieldType(self.r2_act, self.conv_out_channels * \
+                    [self.r2_act.regular_repr])),
             # get equivariant feature vector, should be [B, conv_out_channels * N, 1, 1]
             nn.PointwiseAvgPool(nn.FieldType(
-                self.r2_act, 256 * [self.r2_act.regular_repr]), 11)
-
+                self.r2_act, self.conv_out_channels * [self.r2_act.regular_repr]), 4)
         )
+
         self.mlp = torch.nn.Sequential(
             torch.nn.Linear(self.conv_out_channels * self.N, 256),
             torch.nn.ReLU(inplace=True),
@@ -96,7 +76,9 @@ class EquivariantDeltas(torch.nn.Module):
             torch.nn.Linear(256, 12)
         )
 
-    def forward(self, x) -> tuple(torch.Tensor, torch.Tensor, torch.Tensor):
+        self.loss_fn = torch.nn.MSELoss()
+
+    def forward(self, x) -> torch.Tensor:
         """Creates equivariant pose prediction from observation
 
         Args:
@@ -107,27 +89,30 @@ class EquivariantDeltas(torch.nn.Module):
             z (float): the z position to move arm to
             theta (float): gripper roll
         """
-        assert(
-            x.shape[1:] == self.input_shape,
-            f"Observation shape must be {self.input_shape}, current is {x.shape[1:]}"
-        )
+        assert x.shape[1:
+                       ] == self.input_shape, f"Observation shape must be {self.input_shape}, current is {x.shape[1:]}"
+
         batch_size = x.shape[0]
         inp = nn.GeometricTensor(x, nn.FieldType(
-            self.r2_rot, self.input_shape[0]*[self.r2_act.trivial_repr]))
+            self.r2_act, self.input_shape[0]*[self.r2_act.trivial_repr]))
         conv_out = self.conv(inp).tensor.squeeze().reshape(batch_size, -1)
-        assert (
-            conv_out.size == torch.Size(
-                (batch_size, self.N * self.conv_out_channels)),
-            f"Conv size: {conv_out.size} != required: {torch.Size((batch_size, self.N * self.conv_out_channels))}"
-        )
-        # TODO see if permute to conv_out is required (shouldn't be though)
-        mlp_out = self.mlp(conv_out)
+        assert conv_out.shape == torch.Size((batch_size, self.N * self.conv_out_channels)
+                                            ), f"Conv size: {conv_out.shape} != required: {torch.Size((batch_size, self.N * self.conv_out_channels))}"
 
-        x_act = torch.max(mlp_out[0:3], dim=1)[1]
-        y_act = 3 + torch.max(mlp_out[3:6], dim=1)[1]
-        z_act = 6 + torch.max(mlp_out[6:9], dim=1)[1]
-        theta_act = 9 + torch.max(mlp_out[9:12], dim=1)[1]
+        mlp_out = self.mlp(conv_out).squeeze()
+        act = []
+        for i in range(0, 12, 3):
+            # argmax action within window of x, y, z, theta
+            act.append(self.actions[torch.max(
+                mlp_out[i:i+3], dim=0)[1]])
 
-        return torch.Tensor(self.actions[x_act], self.actions[y_act],
-                            self.actions[z_act], self.actions[theta_act],
-                            dtype=torch.float32)
+        return torch.tensor(act, dtype=torch.float32)
+
+    def compute_loss(self, q_pred: torch.Tensor, q_target: torch.Tensor) -> torch.Tensor:
+        return self.loss_fn(q_pred, q_target)
+
+
+if __name__ == "__main__":
+    inputs = torch.zeros((1, 3, 42, 42), dtype=torch.float32)
+    net = EquivariantDeltaNetwork((3, 42, 42))
+    print(net(inputs))
