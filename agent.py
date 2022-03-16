@@ -55,6 +55,12 @@ class DQNAgent:
         if device == 'cuda':
             torch.cuda.manual_seed(seed)
 
+    def isTerminal(self) -> bool:
+        ''' determines if the current state of the agent is a terminal state
+        '''
+        return self.env.isGraspPossible()
+
+
     def train(self, num_steps: int, plotting_freq: int=0) -> None:
         '''Train q-function for given number of environment steps using
         q-learning with e-greedy action selection

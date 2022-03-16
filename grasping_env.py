@@ -20,11 +20,10 @@ import nuro_arm.robot.robot_arm as robot
 
 from curriculum import ObjectRoutine
 
-
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
+TERMINAL_ERROR_MARGIN = 0.005
 
 DELTA = 0.02
-
 
 class HandoverArm(robot.RobotArm):
     def __init__(self, controller_type='sim', headless=True, realtime=False, workspace=None, pb_client=None, serial_number=None):
@@ -115,6 +114,7 @@ class WristCamera:
 class HandoverGraspingEnv(gym.Env):
     def __init__(self,
                  episode_length: int=3,
+                 sparse_reward: bool=True,
                  img_size: int=128,
                  render: bool=False,
                 ) -> None:
@@ -136,12 +136,13 @@ class HandoverGraspingEnv(gym.Env):
         self.object_width = 0.02
 
         #no options currently given
-        self.object_routine = ObjectRoutine()
+        self.object_routine = ObjectRoutine(self.object_id)
 
-        pb.resetBasePositionAndOrientation(self.object_id, self.object_routine.getPos(), pb.getQuaternionFromEuler(self.object_routine.getOrn))
+        pb.resetBasePositionAndOrientation(self.object_id, self.object_routine.getPos(), pb.getQuaternionFromEuler(self.object_routine.getOrn()))
 
         self.t_step = 0
         self.episode_length = episode_length
+        self.sparse = sparse_reward
 
         self.observation_space = gym.spaces.Box(0, 255, shape=(img_size, img_size, 3), dtype=np.float32)
 
@@ -188,41 +189,48 @@ class HandoverGraspingEnv(gym.Env):
         self.t_step += 1
 
         obs = self.get_obs()
-        reward = float(success)
-        done = success or self.t_step >= self.episode_length
-        info = {'success' : success}
+        reward, done = self.getReward()
+        done =  done or self.t_step >= self.episode_length
+
+        #info = {'success' : success}
 
         self.object_routine.step()
 
-        return obs, reward, done, info
+        return obs, reward, done 
 
-
-    def reset_object_position(self) -> None:
-        '''Places object randomly in workspace.  The x,y position should be
-        within the workspace, and the rotation performed only about z-axis.
-        The height of the object should be set such that it sits on the plane
+    def canGrasp(self) -> bool:
+        '''Determines if the current position of the gripper's is such that the object is within a small error margin of grasp point.
         '''
-        ws_padding = 0.01
-        x,y,z = np.random.uniform(self.workspace[0]+ws_padding,
-                                self.workspace[1]-ws_padding)
-                                
-        theta = np.random.uniform(-np.pi/2, np.pi/2)
 
-        pos = np.array((x,y,z))
-        quat = pb.getQuaternionFromEuler((np.random.randint(2)*np.pi,0, theta))
-        pb.resetBasePositionAndOrientation(self.object_id, pos, quat)  
+        grip_pos = pb.getLinkState(self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
+        obj_pos = pb.getLinkState(self.object_id, 0)[0]
 
-    def reset_object_texture(self) -> None:
-        '''Randomly assigns a texture to the object.  Available textures are
-        located within the `assets/textures` folder.
-        '''
-        tex_id = self.tex_ids[np.random.randint(len(self.tex_ids))]
-        r,g,b = np.random.uniform(0.5, 1, size=3)**0.8
-        pb.changeVisualShape(self.object_id, -1, -1,
-                             textureUniqueId=tex_id,
-                             rgbaColor=(r,g,b,1))
+        return np.allclose(grip_pos, obj_pos, atol=TERMINAL_ERROR_MARGIN)
 
-    def get_obs(self) -> Tuple[np.ndarray, np.ndarray]:
+    def distToGrasp(self) -> float:
+        ''' Euclidian distance to the grasping object '''
+
+        grip_pos = pb.getLinkState(self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
+        obj_pos = pb.getLinkState(self.object_id, 0)[0]
+
+        return float(np.linalg.norm(grip_pos - obj_pos))
+
+        
+
+    def getReward(self) -> Tuple[float, bool]:
+        ''' Defines the terminal states in the learning environment'''
+
+        #TODO: Issue penalty if runs into an obstacle
+
+        done = self.canGrasp()
+
+        if self.sparse:
+            return int(done), done
+        else:
+            return self.distToGrasp(), done
+
+
+    def get_obs(self, background_mask:Optional[np.ndarray]=None) -> np.ndarray:
         '''Takes picture using camera, returns rgb and segmentation mask of image
         Returns
         -------
@@ -232,23 +240,25 @@ class HandoverGraspingEnv(gym.Env):
         self.camera.computeView()
         rgb, mask = self.camera.get_image()
 
-        # remove robot parts from correct segmentation labelling
-        map_fn = lambda x: 0 if x == 1 else x
-        mask = np.vectorize(map_fn)(mask)
+        # add virtual background for augmentation purposes (untested)
+        if background_mask is not None:
+            map_fn = lambda pix, bkrd_pix, mask_i,: pix if mask_i != 0 else bkrd_pix
+            rgb = np.vectorize(map_fn)(zip(rgb[:2], background_mask[:2], mask))
 
-        return rgb, mask
+        return rgb
     
     def plot_obs(self):
-        plt.imshow(self.get_obs()[0])
+        plt.imshow(self.get_obs())
         plt.show()
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=True, img_size=200)
+    env = HandoverGraspingEnv(render=False, img_size=200)
     env.robot.ready()
     env.plot_obs()
 
     while True:
         [pb.stepSimulation() for _ in range(10)]
+        #env.object_routine.step()
         time.sleep(.01)
 

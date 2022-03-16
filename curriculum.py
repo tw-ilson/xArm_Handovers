@@ -6,6 +6,8 @@ from math import sin
 from time import time
 from perlin_noise import PerlinNoise
 
+from pybullet import resetBasePositionAndOrientation, getQuaternionFromEuler
+
 MOVE_OPTS = ['static', 'cyclic', 'noise']
 DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']
 
@@ -27,11 +29,32 @@ class ObjectRoutine():
         dimensions: list containing the dimensions along which to vary each timestep
     """
 
-    def __init__(self, random_start: bool=False, moving_mode: str='static', *dimensions) -> None:
+    def __init__(self, _id: int, random_start: bool=False, moving_mode: str='static', *dimensions) -> None:
+
+        assert(_id)
+
+        self._id = _id
 
         self.workspace = WORKSPACE
+        self.random_start = random_start
 
-        if random_start:
+        self.reset()
+
+        if moving_mode in MOVE_OPTS:
+            self.mode = moving_mode
+            if self.mode == 'noise':
+                self.noise = {dim :PerlinNoise() for dim in dimensions}
+        else:
+            raise ValueError("invalid mode")
+        
+        self.routine = set()
+        if len(dimensions) == 0 or all(arg in dimensions for arg in DIMS):
+            self.routine.update(dimensions)
+        else:
+            raise ValueError("invalid dimensions specified")
+
+    def reset(self):
+        if self.random_start:
             ws_padding = 0.01
             x,y,z = np.random.uniform(self.workspace[0,:]+ws_padding,
                     self.workspace[1,:]-ws_padding)
@@ -45,23 +68,12 @@ class ObjectRoutine():
             self.position = START_POS
             self.orientation = [0,0,0]
 
-        if moving_mode in MOVE_OPTS:
-            self.mode = moving_mode
-            if self.mode == 'noise':
-                self.noise = {dim :PerlinNoise() for dim in dimensions}
-        else:
-            raise ValueError("invalid mode")
-        
-        self.routine = set()
-        if all(arg in dimensions for arg in DIMS):
-            self.routine.update(dimensions)
-        else:
-            raise ValueError("invalid dimensions specified")
+        resetBasePositionAndOrientation(self._id, self.position, getQuaternionFromEuler(self.orientation))
 
     def getPos(self):
         return self.position
 
-    def getOrn(self):
+    def getOrn(self, simulated_background:bool=False):
         return self.orientation
 
     def step(self):
@@ -95,13 +107,4 @@ class ObjectRoutine():
                         self.noise[ax](time()), \
                         ax)
 
-
-
-        
-
-
-
-
-
-
-
+        resetBasePositionAndOrientation(self._id, self.position, getQuaternionFromEuler(self.orientation))
