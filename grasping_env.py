@@ -1,4 +1,5 @@
 from typing import Tuple, List, Optional, Dict, Callable
+import math
 import glob
 import argparse
 import torch
@@ -23,7 +24,10 @@ from curriculum import ObjectRoutine
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
 TERMINAL_ERROR_MARGIN = 0.005
 
-DELTA = 0.02
+ROTATION_DELTA = 0.02
+PITCH_DELTA = 0.02
+FORWARD_DELTA = 0.02
+ROLL_DELTA = 0.02
 
 class HandoverArm(robot.RobotArm):
     def __init__(self, controller_type='sim', headless=True, realtime=False, workspace=None, pb_client=None, serial_number=None):
@@ -36,6 +40,7 @@ class HandoverArm(robot.RobotArm):
             self._id = self._sim.robot_id;
 
         self.arm_ready_jpos = READY_JPOS
+        self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
 
     def ready(self):
         '''
@@ -43,6 +48,37 @@ class HandoverArm(robot.RobotArm):
         '''
         self.open_gripper()
         self.move_arm_jpos(self.arm_ready_jpos)
+
+    def execute_action(self, 
+            base_rotation:int,
+            pitch:int,
+            forward:int,
+            gripper_rotation:int):
+        '''takes an action returned from policy neural network and moves joints accordingly.
+        Params
+        ------
+
+        '''
+
+        cur_jpos = self.get_arm_jpos()
+        grip_pos = pb.getLinkState(self._id, self.end_effector_link_index, computeForwardKinematics=True)
+
+        self.base_rotation_radians += ROTATION_DELTA * base_rotation
+
+        overhead_dist = (grip_pos[1] * math.sin(PITCH_DELTA * pitch)) * (FORWARD_DELTA * forward)
+
+        y_p = overhead_dist * math.cos(self.base_rotation_radians)
+
+        x_p = overhead_dist * math.sin(self.base_rotation_radians)
+
+        z_p = grip_pos[2] * math.cos(PITCH_DELTA*pitch)
+
+        new_xyz = [x_p, y_p, z_p]
+
+        self.mp.calculate_ik(new_xyz)
+
+        self.base_rotation_radians = self.controller._to_radians(1, self.get_arm_jpos()[0])
+
 
 class WristCamera:
     def __init__(self, robot: HandoverArm, img_size: int) -> None:
