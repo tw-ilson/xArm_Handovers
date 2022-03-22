@@ -58,7 +58,7 @@ class DQNAgent:
     def isTerminal(self) -> bool:
         ''' determines if the current state of the agent is a terminal state
         '''
-        return self.env.isGraspPossible()
+        return self.env.canGrasp()
 
     def train(self, num_steps: int, plotting_freq: int = 0) -> None:
         '''Train q-function for given number of environment steps using

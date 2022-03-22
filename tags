@@ -91,7 +91,6 @@ Cube	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^from nuro_arm i
 DEFAULT_CAM_POSE_MTX	nuro-arm/build/lib/nuro_arm/constants.py	/^DEFAULT_CAM_POSE_MTX = np.array([$/;"	v
 DEFAULT_CAM_POSE_MTX	nuro-arm/nuro_arm/constants.py	/^DEFAULT_CAM_POSE_MTX = np.array([$/;"	v
 DELTA	curriculum.py	/^DELTA = 1$/;"	v
-DELTA	grasping_env.py	/^DELTA = 0.02$/;"	v
 DIMS	curriculum.py	/^DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']$/;"	v
 DQNAgent	agent.py	/^class DQNAgent:$/;"	c
 DataLoader	segment_net.py	/^from torch.utils.data import DataLoader, Dataset$/;"	i
@@ -102,7 +101,9 @@ Dict	data_collection.py	/^from typing import Tuple, List, Optional, Dict, Union$
 Dict	grasping_env.py	/^from typing import Tuple, List, Optional, Dict, Callable$/;"	i
 Dict	segment_net.py	/^from typing import Dict, Tuple, List$/;"	i
 Discrete	grasping_env.py	/^from gym.spaces.discrete import Discrete$/;"	i
-EquivariantDeltas	equivariant_delta_pred.py	/^class EquivariantDeltas(torch.nn.Module):$/;"	c
+EquivariantDeltaNetwork	agent.py	/^from equivariant_delta_pred import EquivariantDeltaNetwork$/;"	i
+EquivariantDeltaNetwork	equivariant_delta_pred.py	/^class EquivariantDeltaNetwork(torch.nn.Module):$/;"	c
+FORWARD_DELTA	grasping_env.py	/^FORWARD_DELTA = 0.02$/;"	v
 FRAME_RATE	nuro-arm/build/lib/nuro_arm/constants.py	/^FRAME_RATE = 20$/;"	v
 FRAME_RATE	nuro-arm/nuro_arm/constants.py	/^FRAME_RATE = 20$/;"	v
 GOAL	nuro-arm/build/lib/nuro_arm/examples/throw_cube.py	/^GOAL = np.array([-0.029,-0.671,-0.237,0.303,0])$/;"	v
@@ -213,6 +214,7 @@ PAPER_SHAPE	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^PAPER_SH
 PAPER_SHAPE	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^PAPER_SHAPE = (215, 279) # mm$/;"	v
 PICK	nuro-arm/build/lib/nuro_arm/examples/throw_cube.py	/^PICK = np.array([-0.029,0.385,-1.051,1.931,0])$/;"	v
 PICK	nuro-arm/nuro_arm/examples/throw_cube.py	/^PICK = np.array([-0.029,0.385,-1.051,1.931,0])$/;"	v
+PITCH_DELTA	grasping_env.py	/^PITCH_DELTA = 0.02$/;"	v
 POS2RADIANS	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    POS2RADIANS = np.pi \/ 180. * ( 240. \/ 1000. )$/;"	v	class:XArmController
 POS2RADIANS	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    POS2RADIANS = np.pi \/ 180. * ( 240. \/ 1000. )$/;"	v	class:XArmController
 POSITION_CORRECTION	nuro-arm/build/lib/nuro_arm/examples/pickup_cube.py	/^    POSITION_CORRECTION = [0, 0, 0.025]$/;"	v
@@ -222,7 +224,6 @@ POSITION_READ	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    POSITION_READ = 2
 POWER_OFF	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    POWER_OFF = 20$/;"	v	class:CmdLib
 POWER_OFF	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    POWER_OFF = 20$/;"	v	class:CmdLib
 PerlinNoise	curriculum.py	/^from perlin_noise import PerlinNoise$/;"	i
-PixelWiseQNetwork	agent.py	/^from networks import PixelWiseQNetwork, argmax2d$/;"	i
 Popup	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
 Popup	nuro-arm/build/lib/nuro_arm/robot/calibrate.py	/^from nuro_arm.tk_utils import ImagePopup, Popup, Colors$/;"	i
 Popup	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^class Popup:$/;"	c
@@ -244,7 +245,8 @@ R	nuro-arm/tests/find_workspace.py	/^from scipy.spatial.transform import Rotatio
 READY_JPOS	grasping_env.py	/^READY_JPOS = [0, -1, 1.2, 1.4, 0]$/;"	v
 RESOLUTION	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^RESOLUTION = 200$/;"	v
 RESOLUTION	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^RESOLUTION = 200$/;"	v
-ReplayBuffer	agent.py	/^from utils import ReplayBuffer, plot_predictions, plot_curves$/;"	i
+ROLL_DELTA	grasping_env.py	/^ROLL_DELTA = 0.02$/;"	v
+ROTATION_DELTA	grasping_env.py	/^ROTATION_DELTA = 0.02$/;"	v
 RobotArm	nuro-arm/build/lib/nuro_arm/__init__.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
 RobotArm	nuro-arm/build/lib/nuro_arm/examples/complex_motion.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
 RobotArm	nuro-arm/build/lib/nuro_arm/examples/cube_pose_estimation.py	/^from nuro_arm.robot.robot_arm import RobotArm$/;"	i
@@ -386,7 +388,7 @@ __hash__	nuro-arm/build/lib/nuro_arm/cube.py	/^    def __hash__(self):$/;"	m	cla
 __hash__	nuro-arm/nuro_arm/cube.py	/^    def __hash__(self):$/;"	m	class:Cube	file:
 __init__	agent.py	/^    def __init__(self,$/;"	m	class:DQNAgent
 __init__	curriculum.py	/^    def __init__(self, _id: int, random_start: bool=False, moving_mode: str='static', *dimensions) -> None:$/;"	m	class:ObjectRoutine
-__init__	equivariant_delta_pred.py	/^    def __init__(self, input_shape, N=8) -> None:$/;"	m	class:EquivariantDeltas
+__init__	equivariant_delta_pred.py	/^    def __init__(self, input_shape, N=8) -> None:$/;"	m	class:EquivariantDeltaNetwork
 __init__	grasping_env.py	/^    def __init__(self, controller_type='sim', headless=True, realtime=False, workspace=None, pb_client=None, serial_number=None):$/;"	m	class:HandoverArm
 __init__	grasping_env.py	/^    def __init__(self, robot: HandoverArm, img_size: int) -> None:$/;"	m	class:WristCamera
 __init__	grasping_env.py	/^    def __init__(self,$/;"	m	class:HandoverGraspingEnv
@@ -492,12 +494,11 @@ add_aruco_tag	nuro-arm/build/lib/nuro_arm/cube.py	/^    def add_aruco_tag(self,$
 add_aruco_tag	nuro-arm/nuro_arm/cube.py	/^    def add_aruco_tag(self,$/;"	m	class:Cube
 add_collision_objects	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def add_collision_objects(self):$/;"	m	class:Camera
 add_collision_objects	nuro-arm/nuro_arm/camera/camera.py	/^    def add_collision_objects(self):$/;"	m	class:Camera
-agent	agent.py	/^    agent = DQNAgent(env= env,$/;"	v	class:DQNAgent
+agent	agent.py	/^    agent = DQNAgent(env=env,$/;"	v	class:DQNAgent
 append	nuro-arm/build/lib/nuro_arm/examples/record_movements.py	/^    def append(self):$/;"	m	class:GUI
 append	nuro-arm/nuro_arm/examples/record_movements.py	/^    def append(self):$/;"	m	class:GUI
 apply_transformation	nuro-arm/build/lib/nuro_arm/transformation_utils.py	/^def apply_transformation(transform_mtx, pts):$/;"	f
 apply_transformation	nuro-arm/nuro_arm/transformation_utils.py	/^def apply_transformation(transform_mtx, pts):$/;"	f
-argmax2d	agent.py	/^from networks import PixelWiseQNetwork, argmax2d$/;"	i
 argparse	data_collection.py	/^import argparse$/;"	i
 argparse	grasping_env.py	/^import argparse$/;"	i
 argparse	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^import argparse$/;"	i
@@ -591,6 +592,7 @@ collect_dataset	data_collection.py	/^def collect_dataset(dataset_name: str,$/;"	
 collisions	nuro-arm/tests/find_workspace.py	/^        collisions = robot.mp.find_collisions(jpos, ignore_gripper=1)$/;"	v
 computeView	grasping_env.py	/^    def computeView(self):$/;"	m	class:WristCamera
 compute_epsilon	agent.py	/^    def compute_epsilon(self, fraction: float) -> float:$/;"	m	class:DQNAgent
+compute_loss	equivariant_delta_pred.py	/^    def compute_loss(self, q_pred: torch.Tensor, q_target: torch.Tensor) -> torch.Tensor:$/;"	m	class:EquivariantDeltaNetwork
 configs	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def configs(self):$/;"	m	class:Camera
 configs	nuro-arm/nuro_arm/camera/camera.py	/^    def configs(self):$/;"	m	class:Camera
 connect	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def connect(self, run_async):$/;"	m	class:Camera
@@ -682,6 +684,7 @@ env	grasping_env.py	/^    env = HandoverGraspingEnv(render=False, img_size=200)$
 env	nuro-arm/build/lib/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    env = ImageBasedPickingEnv()$/;"	v	class:ImageBasedPickingEnv
 env	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    env = ImageBasedPickingEnv()$/;"	v	class:ImageBasedPickingEnv
 exclude_patterns	nuro-arm/docs/conf.py	/^exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']$/;"	v
+execute_action	grasping_env.py	/^    def execute_action(self, $/;"	m	class:HandoverArm
 extensions	nuro-arm/docs/conf.py	/^extensions = [$/;"	v
 feasiblility	nuro-arm/tests/find_workspace.py	/^feasiblility = np.zeros(xyz_points.shape[:-1], dtype=int)$/;"	v
 find_arucotags	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^def find_arucotags(img, tag_size=None):$/;"	f
@@ -699,7 +702,7 @@ follow_waypts_real	nuro-arm/build/lib/nuro_arm/examples/complex_motion.py	/^def 
 follow_waypts_real	nuro-arm/nuro_arm/examples/complex_motion.py	/^def follow_waypts_real(waypts):$/;"	f
 follow_waypts_sim	nuro-arm/build/lib/nuro_arm/examples/complex_motion.py	/^def follow_waypts_sim(waypts):$/;"	f
 follow_waypts_sim	nuro-arm/nuro_arm/examples/complex_motion.py	/^def follow_waypts_sim(waypts):$/;"	f
-forward	equivariant_delta_pred.py	/^    def forward(self, x) -> tuple(torch.Tensor, torch.Tensor, torch.Tensor):$/;"	m	class:EquivariantDeltas
+forward	equivariant_delta_pred.py	/^    def forward(self, x) -> torch.Tensor:$/;"	m	class:EquivariantDeltaNetwork
 frame_rate	nuro-arm/build/lib/nuro_arm/camera/camera.py	/^    def frame_rate(self):$/;"	m	class:Camera
 frame_rate	nuro-arm/nuro_arm/camera/camera.py	/^    def frame_rate(self):$/;"	m	class:Camera
 generate_tag	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^def generate_tag(aruco_dict, tag_id, tag_size):$/;"	f
@@ -816,6 +819,7 @@ initialize	nuro-arm/nuro_arm/examples/move_arm_with_gui.py	/^    def initialize(
 initialize	nuro-arm/nuro_arm/examples/record_movements.py	/^    def initialize(self):$/;"	m	class:GUI
 initialize_robot	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^    def initialize_robot(self, pos, rot=[0,0,0,1]):$/;"	m	class:PybulletSimulator
 initialize_robot	nuro-arm/nuro_arm/robot/pybullet_simulator.py	/^    def initialize_robot(self, pos, rot=[0,0,0,1]):$/;"	m	class:PybulletSimulator
+inputs	equivariant_delta_pred.py	/^    inputs = torch.zeros((1, 3, 42, 42), dtype=torch.float32)$/;"	v
 insert	nuro-arm/build/lib/nuro_arm/examples/record_movements.py	/^    def insert(self):$/;"	m	class:GUI
 insert	nuro-arm/nuro_arm/examples/record_movements.py	/^    def insert(self):$/;"	m	class:GUI
 install_requires	nuro-arm/setup.py	/^    install_requires=[$/;"	v
@@ -847,8 +851,9 @@ load_configs	nuro-arm/nuro_arm/camera/camera.py	/^    def load_configs(self):$/;
 load_configs	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    def load_configs(self):$/;"	m	class:XArmController
 load_file	nuro-arm/build/lib/nuro_arm/examples/record_movements.py	/^        def load_file():$/;"	f	function:GUI.load
 load_file	nuro-arm/nuro_arm/examples/record_movements.py	/^        def load_file():$/;"	f	function:GUI.load
-load_network	agent.py	/^    def load_network(self, model_path: str, map_location: str='cpu'):$/;"	m	class:DQNAgent
+load_network	agent.py	/^    def load_network(self, model_path: str, map_location: str = 'cpu'):$/;"	m	class:DQNAgent
 makeTransform	segment_net.py	/^    def makeTransform(self, augmentations: Tuple[str]):$/;"	m	class:ObjectMaskDataset
+math	grasping_env.py	/^import math$/;"	i
 matplotlib	agent.py	/^import matplotlib.pyplot as plt$/;"	i
 matplotlib	grasping_env.py	/^import matplotlib.pyplot as plt$/;"	i
 matplotlib	nuro-arm/build/lib/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    import matplotlib.pyplot as plt$/;"	i
@@ -888,6 +893,7 @@ name	nuro-arm/setup.py	/^    name='nuro-arm',$/;"	v
 namedtuple	nuro-arm/build/lib/nuro_arm/camera/camera_utils.py	/^from collections import namedtuple$/;"	i
 namedtuple	nuro-arm/nuro_arm/camera/camera_utils.py	/^from collections import namedtuple$/;"	i
 napoleon_google_docstring	nuro-arm/docs/conf.py	/^napoleon_google_docstring = False$/;"	v
+net	equivariant_delta_pred.py	/^    net = EquivariantDeltaNetwork((3, 42, 42))$/;"	v
 new_val	nuro-arm/build/lib/nuro_arm/examples/inverse_kinematics_solutions.py	/^        new_val = pb.readUserDebugParameter(prm, physicsClientId=client)$/;"	v
 new_val	nuro-arm/nuro_arm/examples/inverse_kinematics_solutions.py	/^        new_val = pb.readUserDebugParameter(prm, physicsClientId=client)$/;"	v
 nn	agent.py	/^import torch.nn as nn$/;"	i
@@ -1026,9 +1032,7 @@ pickup_cube	nuro-arm/build/lib/nuro_arm/examples/pickup_cube.py	/^def pickup_cub
 pickup_cube	nuro-arm/nuro_arm/examples/pickup_cube.py	/^def pickup_cube(camera, robot, cube_id):$/;"	f
 platform	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^import platform$/;"	i
 platform	nuro-arm/nuro_arm/robot/xarm_controller.py	/^import platform$/;"	i
-plot_curves	agent.py	/^from utils import ReplayBuffer, plot_predictions, plot_curves$/;"	i
 plot_obs	grasping_env.py	/^    def plot_obs(self):$/;"	m	class:HandoverGraspingEnv
-plot_predictions	agent.py	/^from utils import ReplayBuffer, plot_predictions, plot_curves$/;"	i
 plt	agent.py	/^import matplotlib.pyplot as plt$/;"	i
 plt	grasping_env.py	/^import matplotlib.pyplot as plt$/;"	i
 plt	nuro-arm/build/lib/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    import matplotlib.pyplot as plt$/;"	i
@@ -1155,10 +1159,10 @@ run	nuro-arm/build/lib/nuro_arm/examples/record_movements.py	/^    def run(self)
 run	nuro-arm/nuro_arm/examples/record_movements.py	/^    def run(self):$/;"	m	class:MovementDispatcher
 save	nuro-arm/build/lib/nuro_arm/examples/record_movements.py	/^    def save(self):$/;"	m	class:GUI
 save	nuro-arm/nuro_arm/examples/record_movements.py	/^    def save(self):$/;"	m	class:GUI
-save_network	agent.py	/^    def save_network(self, dest: str='q_network.pt'):$/;"	m	class:DQNAgent
+save_network	agent.py	/^    def save_network(self, dest: str = 'q_network.pt'):$/;"	m	class:DQNAgent
 seed	curriculum.py	/^from random import seed$/;"	i
 seed	data_collection.py	/^                    seed= args.seed,$/;"	v
-select_action	agent.py	/^    def select_action(self, state: np.ndarray, epsilon: float=0.) -> np.ndarray:$/;"	m	class:DQNAgent
+select_action	agent.py	/^    def select_action(self, state: np.ndarray, epsilon: float = 0.) -> np.ndarray:$/;"	m	class:DQNAgent
 set_camera_id	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def set_camera_id(self, camera_id, run_async=True):$/;"	m	class:Capturer
 set_camera_id	nuro-arm/build/lib/nuro_arm/camera/capturer.py	/^    def set_camera_id(self, camera_id=0, run_async=True):$/;"	m	class:SimCapturer
 set_camera_id	nuro-arm/nuro_arm/camera/capturer.py	/^    def set_camera_id(self, camera_id, run_async=True):$/;"	m	class:Capturer
@@ -1272,7 +1276,7 @@ torch	grasping_env.py	/^import torch.nn as nn$/;"	i
 torch	segment_net.py	/^import torch$/;"	i
 tqdm	agent.py	/^from tqdm import tqdm$/;"	i
 tqdm	data_collection.py	/^from tqdm import tqdm$/;"	i
-train	agent.py	/^    def train(self, num_steps: int, plotting_freq: int=0) -> None:$/;"	m	class:DQNAgent
+train	agent.py	/^    def train(self, num_steps: int, plotting_freq: int = 0) -> None:$/;"	m	class:DQNAgent
 transformation_matrix	nuro-arm/build/lib/nuro_arm/transformation_utils.py	/^def transformation_matrix(rvec, tvec):$/;"	f
 transformation_matrix	nuro-arm/nuro_arm/transformation_utils.py	/^def transformation_matrix(rvec, tvec):$/;"	f
 transformation_utils	nuro-arm/build/lib/nuro_arm/robot/pybullet_simulator.py	/^from nuro_arm import transformation_utils, constants$/;"	i

@@ -24,6 +24,7 @@ from curriculum import ObjectRoutine
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
 TERMINAL_ERROR_MARGIN = 0.005
 
+#NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.02
 PITCH_DELTA = 0.02
 FORWARD_DELTA = 0.02
@@ -57,6 +58,7 @@ class HandoverArm(robot.RobotArm):
         '''takes an action returned from policy neural network and moves joints accordingly.
         Params
         ------
+        takes the four dimensions of the action space, all in {-1, 0, 1}
 
         '''
 
@@ -75,9 +77,16 @@ class HandoverArm(robot.RobotArm):
 
         new_xyz = [x_p, y_p, z_p]
 
-        self.mp.calculate_ik(new_xyz)
+        assert math.isclose(float(np.linalg.norm(grip_pos - new_xyz)), FORWARD_DELTA)
 
-        self.base_rotation_radians = self.controller._to_radians(1, self.get_arm_jpos()[0])
+        new_hand_rot = cur_jpos[5] + gripper_rotation * ROLL_DELTA
+        self.move_arm_jpos(cur_jpos[:4] + [new_hand_rot])
+
+        self.move_hand_to(new_xyz)
+        
+
+
+
 
 
 class WristCamera:
@@ -205,7 +214,7 @@ class HandoverGraspingEnv(gym.Env):
 
         Params
         ------
-            action: 4-vector with discre values in {-1, 0, 1}
+            action: 4-vector with discrete values in {-1, 0, 1}
         Returns
         ------
             obs, reward, done, info
@@ -215,12 +224,8 @@ class HandoverGraspingEnv(gym.Env):
         assert self.pitch_actions.contains(action[2])
         assert self.forward_actions.contains(action[3])
         assert self.wrist_rotation_actions.contains(action[3])
-        
-        current_effector_pos = pb.getLinkState(self.robot._id, self.robot.end_effector_link_index, calculateForwardKinematics=True)[0]
 
-        next_pos = [x + self.action_delta * a for x, a in zip(current_effector_pos, action[:3])]
-        
-        self.robot.move_hand_to(next_pos)
+        self.robot.execute_action(*action)
 
         self.t_step += 1
 
@@ -228,11 +233,11 @@ class HandoverGraspingEnv(gym.Env):
         reward, done = self.getReward()
         done =  done or self.t_step >= self.episode_length
 
-        #info = {'success' : success}
+        info = {'success' : 1} #diagnostic information, what should we put here?
 
         self.object_routine.step()
 
-        return obs, reward, done 
+        return obs, reward, done, info
 
     def canGrasp(self) -> bool:
         '''Determines if the current position of the gripper's is such that the object is within a small error margin of grasp point.
@@ -250,8 +255,6 @@ class HandoverGraspingEnv(gym.Env):
         obj_pos = pb.getLinkState(self.object_id, 0)[0]
 
         return float(np.linalg.norm(grip_pos - obj_pos))
-
-        
 
     def getReward(self) -> Tuple[float, bool]:
         ''' Defines the terminal states in the learning environment'''
