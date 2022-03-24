@@ -92,6 +92,7 @@ DEFAULT_CAM_POSE_MTX	nuro-arm/build/lib/nuro_arm/constants.py	/^DEFAULT_CAM_POSE
 DEFAULT_CAM_POSE_MTX	nuro-arm/nuro_arm/constants.py	/^DEFAULT_CAM_POSE_MTX = np.array([$/;"	v
 DELTA	curriculum.py	/^DELTA = 1$/;"	v
 DIMS	curriculum.py	/^DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']$/;"	v
+DISTANCE_DELTA	grasping_env.py	/^DISTANCE_DELTA = 0.05$/;"	v
 DQNAgent	agent.py	/^class DQNAgent:$/;"	c
 DataLoader	segment_net.py	/^from torch.utils.data import DataLoader, Dataset$/;"	i
 Dataset	segment_net.py	/^from torch.utils.data import DataLoader, Dataset$/;"	i
@@ -103,7 +104,6 @@ Dict	segment_net.py	/^from typing import Dict, Tuple, List$/;"	i
 Discrete	grasping_env.py	/^from gym.spaces.discrete import Discrete$/;"	i
 EquivariantDeltaNetwork	agent.py	/^from equivariant_delta_pred import EquivariantDeltaNetwork$/;"	i
 EquivariantDeltaNetwork	equivariant_delta_pred.py	/^class EquivariantDeltaNetwork(torch.nn.Module):$/;"	c
-FORWARD_DELTA	grasping_env.py	/^FORWARD_DELTA = 0.02$/;"	v
 FRAME_RATE	nuro-arm/build/lib/nuro_arm/constants.py	/^FRAME_RATE = 20$/;"	v
 FRAME_RATE	nuro-arm/nuro_arm/constants.py	/^FRAME_RATE = 20$/;"	v
 GOAL	nuro-arm/build/lib/nuro_arm/examples/throw_cube.py	/^GOAL = np.array([-0.029,-0.671,-0.237,0.303,0])$/;"	v
@@ -214,7 +214,6 @@ PAPER_SHAPE	nuro-arm/build/lib/nuro_arm/camera/generate_aruco_tags.py	/^PAPER_SH
 PAPER_SHAPE	nuro-arm/nuro_arm/camera/generate_aruco_tags.py	/^PAPER_SHAPE = (215, 279) # mm$/;"	v
 PICK	nuro-arm/build/lib/nuro_arm/examples/throw_cube.py	/^PICK = np.array([-0.029,0.385,-1.051,1.931,0])$/;"	v
 PICK	nuro-arm/nuro_arm/examples/throw_cube.py	/^PICK = np.array([-0.029,0.385,-1.051,1.931,0])$/;"	v
-PITCH_DELTA	grasping_env.py	/^PITCH_DELTA = 0.02$/;"	v
 POS2RADIANS	nuro-arm/build/lib/nuro_arm/robot/xarm_controller.py	/^    POS2RADIANS = np.pi \/ 180. * ( 240. \/ 1000. )$/;"	v	class:XArmController
 POS2RADIANS	nuro-arm/nuro_arm/robot/xarm_controller.py	/^    POS2RADIANS = np.pi \/ 180. * ( 240. \/ 1000. )$/;"	v	class:XArmController
 POSITION_CORRECTION	nuro-arm/build/lib/nuro_arm/examples/pickup_cube.py	/^    POSITION_CORRECTION = [0, 0, 0.025]$/;"	v
@@ -339,6 +338,7 @@ URDF_DIR	nuro-arm/nuro_arm/constants.py	/^URDF_DIR = os.path.join(os.path.dirnam
 URDF_DIR	nuro-arm/nuro_arm/cube.py	/^from nuro_arm.constants import URDF_DIR, CUBE_SIZE$/;"	i
 Union	agent.py	/^from typing import Optional, Union, Tuple$/;"	i
 Union	data_collection.py	/^from typing import Tuple, List, Optional, Dict, Union$/;"	i
+VERTICAL_DELTA	grasping_env.py	/^VERTICAL_DELTA = 0.02$/;"	v
 VideoPopup	nuro-arm/build/lib/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
 VideoPopup	nuro-arm/build/lib/nuro_arm/tk_utils.py	/^class VideoPopup(Popup):$/;"	c
 VideoPopup	nuro-arm/nuro_arm/camera/calibrate.py	/^from nuro_arm.tk_utils import Popup, VideoPopup, ImagePopup, Colors$/;"	i
@@ -680,7 +680,7 @@ end_recording	nuro-arm/nuro_arm/camera/capturer.py	/^    def end_recording(self)
 entry_point	nuro-arm/build/lib/nuro_arm/__init__.py	/^    entry_point='nuro_arm.examples.gym_envs.simple_picking_env:ImageBasedPickingEnv',$/;"	v
 entry_point	nuro-arm/nuro_arm/__init__.py	/^    entry_point='nuro_arm.examples.gym_envs.simple_picking_env:ImageBasedPickingEnv',$/;"	v
 env	agent.py	/^    env = TopDownGraspingEnv(render=False)$/;"	v	class:DQNAgent
-env	grasping_env.py	/^    env = HandoverGraspingEnv(render=False, img_size=200)$/;"	v
+env	grasping_env.py	/^    env = HandoverGraspingEnv(render=True, img_size=200)$/;"	v
 env	nuro-arm/build/lib/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    env = ImageBasedPickingEnv()$/;"	v	class:ImageBasedPickingEnv
 env	nuro-arm/nuro_arm/examples/gym_envs/simple_picking_env.py	/^    env = ImageBasedPickingEnv()$/;"	v	class:ImageBasedPickingEnv
 exclude_patterns	nuro-arm/docs/conf.py	/^exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']$/;"	v

@@ -26,8 +26,8 @@ TERMINAL_ERROR_MARGIN = 0.005
 
 #NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.02
-PITCH_DELTA = 0.02
-FORWARD_DELTA = 0.02
+VERTICAL_DELTA = 0.02
+DISTANCE_DELTA = 0.05
 ROLL_DELTA = 0.02
 
 class HandoverArm(robot.RobotArm):
@@ -41,53 +41,45 @@ class HandoverArm(robot.RobotArm):
             self._id = self._sim.robot_id;
 
         self.arm_ready_jpos = READY_JPOS
-        self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
+        # self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
 
     def ready(self):
         '''
         moves the arm to the 'ready' position (bent, pointing forward toward workspace)
         '''
-        self.open_gripper()
-        self.move_arm_jpos(self.arm_ready_jpos)
+        #self.open_gripper()
+        self.controller.write_arm_jpos(READY_JPOS)
 
     def execute_action(self, 
-            base_rotation:int,
-            pitch:int,
-            forward:int,
-            gripper_rotation:int):
+            rot_act:int,
+            z_act:int,
+            dist_act:int,
+            roll_act:int):
         '''takes an action returned from policy neural network and moves joints accordingly.
         Params
         ------
         takes the four dimensions of the action space, all in {-1, 0, 1}
 
         '''
+        xyz, rpy = self.get_hand_pose()
+        x, y, z = xyz
+        r, pt, yw = pb.getEulerFromQuaternion(rpy)
 
-        cur_jpos = self.get_arm_jpos()
-        grip_pos = pb.getLinkState(self._id, self.end_effector_link_index, computeForwardKinematics=True)
-
-        self.base_rotation_radians += ROTATION_DELTA * base_rotation
-
-        overhead_dist = (grip_pos[1] * math.sin(PITCH_DELTA * pitch)) * (FORWARD_DELTA * forward)
-
-        y_p = overhead_dist * math.cos(self.base_rotation_radians)
-
-        x_p = overhead_dist * math.sin(self.base_rotation_radians)
-
-        z_p = grip_pos[2] * math.cos(PITCH_DELTA*pitch)
-
-        new_xyz = [x_p, y_p, z_p]
-
-        assert math.isclose(float(np.linalg.norm(grip_pos - new_xyz)), FORWARD_DELTA)
-
-        new_hand_rot = cur_jpos[5] + gripper_rotation * ROLL_DELTA
-        self.move_arm_jpos(cur_jpos[:4] + [new_hand_rot])
-
-        self.move_hand_to(new_xyz)
+        if y > 0:
+            rot_p = math.atan(x/y) + ROTATION_DELTA * rot_act
+        else:
+            rot_p = ROTATION_DELTA * rot_act
+        z_p = z + VERTICAL_DELTA * z_act
+        dist_p = math.sqrt(x**2 + y**2) + DISTANCE_DELTA*dist_act
+        roll_p = r + ROLL_DELTA * roll_act
         
+        x_p = dist_p * math.sin(rot_p)
+        y_p = dist_p * math.cos(rot_p)
 
+        quat = pb.getQuaternionFromEuler((rot_p, 0, roll_p))
+        joint_pos = self.mp.calculate_ik([x_p, y_p, z_p], quat)[0]
 
-
-
+        self.controller.write_arm_jpos(joint_pos)
 
 class WristCamera:
     def __init__(self, robot: HandoverArm, img_size: int) -> None:
@@ -191,7 +183,6 @@ class HandoverGraspingEnv(gym.Env):
 
         self.observation_space = gym.spaces.Box(0, 255, shape=(img_size, img_size, 3), dtype=np.float32)
 
-        self.action_delta = DELTA
 
         #Four action spaces, each representing a positive, zero, or negative change
         self.base_rotation_actions = Discrete( n=3, start=-1)
@@ -233,9 +224,9 @@ class HandoverGraspingEnv(gym.Env):
         reward, done = self.getReward()
         done =  done or self.t_step >= self.episode_length
 
-        info = {'success' : 1} #diagnostic information, what should we put here?
+        info = {'s#uccess' : 1} #diagnostic information, what should we put here?
 
-        self.object_routine.step()
+        #self.object_routine.step()
 
         return obs, reward, done, info
 
@@ -292,12 +283,23 @@ class HandoverGraspingEnv(gym.Env):
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=False, img_size=200)
+    env = HandoverGraspingEnv(render=True, img_size=200)
+    # env.plot_obs()
     env.robot.ready()
-    env.plot_obs()
 
-    while True:
+    while not np.allclose(env.robot.get_arm_jpos(), READY_JPOS, atol=.05):
+        pb.stepSimulation()
+        time.sleep(.001)
+
+    # pose = env.robot.get_hand_pose()
+    # print(pose[0])
+    # print(pb.getEulerFromQuaternion(pose[1]))
+    env.robot.execute_action(0, 0, 1, 0)
+
+    print('here')
+    for _ in range(100):
         [pb.stepSimulation() for _ in range(10)]
-        #env.object_routine.step()
-        time.sleep(.01)
+        time.sleep(.001)
+    exit()
+
 
