@@ -81,7 +81,7 @@ class HandoverArm(robot.RobotArm):
         # quat = pb.getQuaternionFromEuler((rot_p, 0, roll_p))
         quat = pb.getQuaternionFromEuler((rot_p, np.pi / 2, roll_p))
 
-        joint_pos = self.mp.calculate_ik([x_p, y_p, z_p])[0]
+        joint_pos = self.mp.calculate_ik([x_p, y_p, z_p], quat)[0]
         print('before:', joint_pos)
 
         self.controller.write_arm_jpos(joint_pos)
