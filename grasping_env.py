@@ -76,7 +76,7 @@ class HandoverArm(robot.RobotArm):
         roll_p = r + ROLL_DELTA * roll_act
 
         x_p = dist_p * math.sin(rot_p)
-        y_p = dist_p * math.cos(rot_p)
+        y_p = (y/abs(y)) * dist_p * math.cos(rot_p)
 
         # quat = pb.getQuaternionFromEuler((rot_p, 0, roll_p))
         quat = pb.getQuaternionFromEuler((rot_p, np.pi / 2, roll_p))
@@ -311,7 +311,7 @@ if __name__ == "__main__":
     # pose = env.robot.get_hand_pose()
     # print(pose[0])
     # print(pb.getEulerFromQuaternion(pose[1]))
-    env.robot.execute_action(0, 0, -1, 0)
+    env.robot.execute_action(0, 0, 1, 0)
 
     for _ in range(100):
         [pb.stepSimulation() for _ in range(10)]
