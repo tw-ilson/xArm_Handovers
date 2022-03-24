@@ -75,7 +75,7 @@ class HandoverArm(robot.RobotArm):
         dist_p = math.sqrt(x**2 + y**2) + DISTANCE_DELTA*dist_act
         roll_p = r + ROLL_DELTA * roll_act
 
-        x_p = dist_p * math.sin(rot_p)
+        x_p = (x/abs(x)) * dist_p * math.sin(rot_p)
         y_p = (y/abs(y)) * dist_p * math.cos(rot_p)
 
         # quat = pb.getQuaternionFromEuler((rot_p, 0, roll_p))
