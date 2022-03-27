@@ -1,14 +1,16 @@
 from typing import Optional, Union, Tuple
 import numpy as np
+from sympy import Q
 import torch
 from torch import Tensor
 import torch.nn as nn
 import gym
 from tqdm import tqdm
+import pybullet as pb
 import matplotlib.pyplot as plt
 
 from equivariant_delta_pred import EquivariantDeltaNetwork
-# from utils import ReplayBuffer, plot_predictions, plot_curves
+from utils import ReplayBuffer  # , plot_predictions, plot_curves
 from grasping_env import HandoverGraspingEnv
 
 
@@ -115,10 +117,10 @@ class DQNAgent:
                 imgs = self.prepare_batch(*batch)[0]
 
                 with torch.no_grad():
-                    q_map_pred = self.network(imgs)
-                    actions = argmax2d(q_map_pred)
-                plot_predictions(imgs, q_map_pred, actions)
-                plot_curves(rewards_data, success_data, loss_data)
+                    actions = self.network(imgs)
+                    # actions = argmax2d(q_map_pred)
+                # plot_predictions(imgs, q_map_pred, actions)
+                # plot_curves(rewards_data, success_data, loss_data)
                 plt.show()
 
         return rewards_data, success_data, loss_data
@@ -134,24 +136,28 @@ class DQNAgent:
         batch = self.buffer.sample(self.batch_size)
         s, a, r, sp, d = self.prepare_batch(*batch)
 
-        q_map_pred = self.network(s)
-        q_pred = q_map_pred[np.arange(len(s)), 0, a[:, 0], a[:, 1]]
+        q_all_pred = self.network(s)
+
+        q_pred = torch.sum(torch.cat([torch.max(q_all_pred[:, i:i+3], dim=1)[0].unsqueeze(1)
+                                      for i in range(0, 12, 3)], dim=1), 1)
 
         if self.update_method == 'standard':
             with torch.no_grad():
-                q_map_next = self.target_network(sp)
-                q_next = torch.max(torch.flatten(q_map_next, 1), dim=1)[0]
+                q_all_pred_next = self.target_network(sp)
+                q_next = torch.sum(torch.cat([torch.max(q_all_pred_next[:, i:i+3], dim=1)[0].unsqueeze(1)
+                                              for i in range(0, 12, 3)], dim=1), 1)
                 q_target = r + self.gamma * q_next * (1-d)
 
-        elif self.update_method == 'double':
-            with torch.no_grad():
-                q_map_next_est = self.target_network(sp)
-                pred_act = self.network.predict(sp)
-                q_next = q_map_next_est[np.arange(len(q_map_next_est)),
-                                        0,
-                                        pred_act[:, 0],
-                                        pred_act[:, 1]]
-                q_target = r + self.gamma * q_next * (1-d)
+        # TODO implement
+        # elif self.update_method == 'double':
+        #     with torch.no_grad():
+        #         q_map_next_est = self.target_network(sp)
+        #         pred_act = self.network.predict(sp)
+        #         q_next = q_map_next_est[np.arange(len(q_map_next_est)),
+        #                                 0,
+        #                                 pred_act[:, 0],
+        #                                 pred_act[:, 1]]
+        #         q_target = r + self.gamma * q_next * (1-d)
 
         assert q_pred.shape == q_target.shape
         self.optim.zero_grad()
@@ -208,7 +214,7 @@ class DQNAgent:
         pixel action (px, py), dtype=int
         '''
         if np.random.random() < epsilon:
-            return np.array(self.env.action_space.sample())
+            return np.array(self.env.action_space.sample()) - 1
         else:
             return self.policy(state)
 
@@ -222,8 +228,10 @@ class DQNAgent:
         -------
         pixel action (px, py); shape=(2,); dtype=int
         '''
+
         t_state = torch.tensor(state, dtype=torch.float32).unsqueeze(
-            0).permute(0, 3, 1, 2)
+            0)
+        t_state = t_state.permute(0, 3, 1, 2)
         t_state = torch.div(t_state, 255)
         t_state = t_state.to(self.device)
         return self.network.predict(t_state).squeeze().cpu().numpy()
@@ -254,17 +262,25 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    from grasping_env import TopDownGraspingEnv
-    env = TopDownGraspingEnv(render=False)
+    env = HandoverGraspingEnv(render=True, sparse_reward=False)
+    # TODO questions reward logging?
+    # why is atol not working for all close? even with 0, still returning true eventually
+    # get object to float
+
+    pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 0)
+    pb.resetDebugVisualizerCamera(cameraDistance=.4,
+                                  cameraYaw=65.2,
+                                  cameraPitch=-40.6,
+                                  cameraTargetPosition=(.5, -0.36, 0.40))
 
     agent = DQNAgent(env=env,
                      gamma=0.5,
                      learning_rate=1e-3,
                      buffer_size=4000,
                      batch_size=64,
-                     initial_epsilon=0.5,
-                     final_epsilon=0.3,
-                     update_method='double',
+                     initial_epsilon=0.5,  # TODO change hyperparams
+                     final_epsilon=0.2,
+                     update_method='standard',
                      exploration_fraction=0.9,
                      target_network_update_freq=250,
                      seed=1,

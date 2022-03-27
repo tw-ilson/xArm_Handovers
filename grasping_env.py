@@ -1,3 +1,4 @@
+from dis import dis
 from typing import Tuple, List, Optional, Dict, Callable
 import math
 import glob
@@ -12,7 +13,7 @@ from gym.spaces.discrete import Discrete
 import time
 import h5py
 import matplotlib.pyplot as plt
-from scipy.spatial.transform.rotation import Rotation
+from scipy.spatial.transform import Rotation as R
 
 import os
 
@@ -27,7 +28,7 @@ TERMINAL_ERROR_MARGIN = 0.005
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.02
 VERTICAL_DELTA = 0.02
-DISTANCE_DELTA = 0.05
+DISTANCE_DELTA = 0.02
 ROLL_DELTA = 0.02
 
 
@@ -61,32 +62,30 @@ class HandoverArm(robot.RobotArm):
         Params
         ------
         takes the four dimensions of the action space, all in {-1, 0, 1}
+        rot_act: base rotation
+        z_act: up/down on z axis
+        dist_act: forward/backward from center of robot
+        roll_act: gripper roll
 
         '''
-        xyz, rpy = self.get_hand_pose()
-        x, y, z = xyz
-        r, pt, yw = pb.getEulerFromQuaternion(rpy)
+        (old_x, old_y, old_z), ee_quat = self.get_hand_pose()
+        old_roll = R.from_quat(ee_quat).as_euler('zyz')[0]
+        old_yaw = np.arctan2(old_y, old_x)
+        old_radius = np.linalg.norm((old_x, old_y))
 
-        if y > 0:
-            rot_p = math.atan(x/y) + ROTATION_DELTA * rot_act
-        else:
-            rot_p = ROTATION_DELTA * rot_act
-        z_p = z + VERTICAL_DELTA * z_act
-        dist_p = math.sqrt(x**2 + y**2) + DISTANCE_DELTA*dist_act
-        roll_p = r + ROLL_DELTA * roll_act
+        x = old_x + (dist_act * DISTANCE_DELTA) * np.cos(old_yaw)
+        y = old_y + (dist_act * DISTANCE_DELTA) * np.sin(old_yaw)
+        z = old_z + (z_act * VERTICAL_DELTA)
+        yaw = old_yaw + (rot_act * ROTATION_DELTA)
+        roll = old_roll + (roll_act * ROLL_DELTA)
 
-        x_p = (x/abs(x)) * dist_p * math.sin(rot_p)
-        y_p = (y/abs(y)) * dist_p * math.cos(rot_p)
+        new_pos = (x, y, z)
+        new_quat = R.from_euler('zyz', (roll, np.pi/2, yaw)).as_quat()
+        jpos = self.mp.calculate_ik(new_pos, new_quat)[0]
+        self.mp._teleport_arm(jpos)
 
-        # quat = pb.getQuaternionFromEuler((rot_p, 0, roll_p))
-        quat = pb.getQuaternionFromEuler((rot_p, np.pi / 2, roll_p))
-
-        joint_pos = self.mp.calculate_ik([x_p, y_p, z_p], quat)[0]
-        print('before:', joint_pos)
-
-        self.controller.write_arm_jpos(joint_pos)
         # self.mp._teleport_arm(joint_pos)
-        # self.controller.write_arm_jpos(joint_pos, speed=0.000001)
+        # self.controller.power_off_servos()
 
 
 class WristCamera:
@@ -124,7 +123,7 @@ class WristCamera:
         pos, quat = pb.getLinkState(
             self.robot._id, self.robot.camera_link_index)[:2]
 
-        rotmat = Rotation.from_quat(quat).as_matrix().T
+        rotmat = R.from_quat(quat).as_matrix().T
         pos = - np.dot(rotmat, pos)
 
         self.view_mtx = np.eye(4)
@@ -170,6 +169,7 @@ class HandoverGraspingEnv(gym.Env):
         self.robot = HandoverArm(headless=not render)
 
         self.camera = WristCamera(self.robot, img_size)
+        self.img_size = img_size
 
         # add object
         self.object_id = pb.loadURDF(os.path.join(
@@ -199,14 +199,18 @@ class HandoverGraspingEnv(gym.Env):
         self.forward_actions = Discrete(n=3, start=-1)
         self.wrist_rotation_actions = Discrete(n=3, start=-1)
 
+        # NOTE: if sampling, subtract 1
+        self.action_space = gym.spaces.MultiDiscrete([3, 3, 3, 3])
+
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
         '''
         self.object_routine.reset()
+        self.robot.move_arm_jpos(self.robot.arm_ready_jpos)
         # self.reset_object_texture()
         self.t_step = 0
 
-        return self.get_obs()[0]
+        return self.get_obs()
 
     def step(self, action: np.ndarray):
         '''
@@ -219,7 +223,6 @@ class HandoverGraspingEnv(gym.Env):
         ------
             obs, reward, done, info
         '''
-
         assert self.base_rotation_actions.contains(action[0])
         assert self.pitch_actions.contains(action[2])
         assert self.forward_actions.contains(action[3])
@@ -234,7 +237,8 @@ class HandoverGraspingEnv(gym.Env):
         done = done or self.t_step >= self.episode_length
 
         # diagnostic information, what should we put here?
-        info = {'s#uccess': 1}
+        print('done:', done)
+        info = {'success': done}
 
         # self.object_routine.step()
 
@@ -246,7 +250,7 @@ class HandoverGraspingEnv(gym.Env):
 
         grip_pos = pb.getLinkState(
             self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
-        obj_pos = pb.getLinkState(self.object_id, 0)[0]
+        obj_pos = pb.getBasePositionAndOrientation(self.object_id)[0]
 
         return np.allclose(grip_pos, obj_pos, atol=TERMINAL_ERROR_MARGIN)
 
@@ -255,9 +259,9 @@ class HandoverGraspingEnv(gym.Env):
 
         grip_pos = pb.getLinkState(
             self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
-        obj_pos = pb.getLinkState(self.object_id, 0)[0]
+        obj_pos = pb.getBasePositionAndOrientation(self.object_id)[0]
 
-        return float(np.linalg.norm(grip_pos - obj_pos))
+        return float(np.linalg.norm(np.subtract(grip_pos, obj_pos)))
 
     def getReward(self) -> Tuple[float, bool]:
         ''' Defines the terminal states in the learning environment'''
@@ -269,7 +273,7 @@ class HandoverGraspingEnv(gym.Env):
         if self.sparse:
             return int(done), done
         else:
-            return self.distToGrasp(), done
+            return -self.distToGrasp(), done
 
     def get_obs(self, background_mask: Optional[np.ndarray] = None) -> np.ndarray:
         '''Takes picture using camera, returns rgb and segmentation mask of image
@@ -286,7 +290,6 @@ class HandoverGraspingEnv(gym.Env):
             def map_fn(pix, bkrd_pix, mask_i,
                        ): return pix if mask_i != 0 else bkrd_pix
             rgb = np.vectorize(map_fn)(zip(rgb[:2], background_mask[:2], mask))
-
         return rgb
 
     def plot_obs(self):
@@ -308,13 +311,12 @@ if __name__ == "__main__":
         pb.stepSimulation()
         time.sleep(.001)
 
-    # pose = env.robot.get_hand_pose()
-    # print(pose[0])
-    # print(pb.getEulerFromQuaternion(pose[1]))
-    env.robot.execute_action(0, 0, 1, 0)
+    env.robot.execute_action(0, -1, 0, 0)
 
-    for _ in range(100):
+    for _ in range(1000):
         [pb.stepSimulation() for _ in range(10)]
         time.sleep(.001)
     print('after', env.robot.get_arm_jpos())
+    print('after hand pose', env.robot.get_hand_pose())
+
     exit()
