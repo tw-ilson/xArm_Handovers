@@ -23,7 +23,7 @@ import nuro_arm.robot.robot_arm as robot
 from curriculum import ObjectRoutine
 
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
-TERMINAL_ERROR_MARGIN = 0.000
+TERMINAL_ERROR_MARGIN = 0.003
 
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.02
@@ -156,7 +156,7 @@ class WristCamera:
 
 class HandoverGraspingEnv(gym.Env):
     def __init__(self,
-                 episode_length: int = 3,
+                 episode_length: int = 30,
                  sparse_reward: bool = True,
                  img_size: int = 128,
                  render: bool = False,
@@ -235,6 +235,7 @@ class HandoverGraspingEnv(gym.Env):
 
         obs = self.get_obs()
         reward, done = self.getReward()
+
         done = done or self.t_step >= self.episode_length
 
         # diagnostic information, what should we put here?
@@ -255,7 +256,7 @@ class HandoverGraspingEnv(gym.Env):
         obj_pos = pb.getBasePositionAndOrientation(self.object_id)[0]
         print('obj pos:', obj_pos)
 
-        return np.allclose(grip_pos, obj_pos, atol=TERMINAL_ERROR_MARGIN)
+        return np.allclose(grip_pos, obj_pos, atol=TERMINAL_ERROR_MARGIN, rtol=0)
 
     def distToGrasp(self) -> float:
         ''' Euclidian distance to the grasping object '''
@@ -276,6 +277,7 @@ class HandoverGraspingEnv(gym.Env):
         if self.sparse:
             return int(done), done
         else:
+            print('tup:', (-self.distToGrasp(), done))
             return -self.distToGrasp(), done
 
     def get_obs(self, background_mask: Optional[np.ndarray] = None) -> np.ndarray:
