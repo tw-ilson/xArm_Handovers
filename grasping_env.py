@@ -23,7 +23,7 @@ import nuro_arm.robot.robot_arm as robot
 from curriculum import ObjectRoutine
 
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
-TERMINAL_ERROR_MARGIN = 0.005
+TERMINAL_ERROR_MARGIN = 0.000
 
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.02
@@ -51,7 +51,7 @@ class HandoverArm(robot.RobotArm):
         moves the arm to the 'ready' position (bent, pointing forward toward workspace)
         '''
         # self.open_gripper()
-        self.controller.write_arm_jpos(READY_JPOS)
+        self.mp._teleport_arm(READY_JPOS)
 
     def execute_action(self,
                        rot_act: int,
@@ -167,6 +167,7 @@ class HandoverGraspingEnv(gym.Env):
         '''
         # add robot
         self.robot = HandoverArm(headless=not render)
+        pb.setGravity(0, 0, 0)
 
         self.camera = WristCamera(self.robot, img_size)
         self.img_size = img_size
@@ -206,7 +207,7 @@ class HandoverGraspingEnv(gym.Env):
         '''Resets environment by randomly placing object
         '''
         self.object_routine.reset()
-        self.robot.move_arm_jpos(self.robot.arm_ready_jpos)
+        self.robot.ready()
         # self.reset_object_texture()
         self.t_step = 0
 
@@ -250,7 +251,9 @@ class HandoverGraspingEnv(gym.Env):
 
         grip_pos = pb.getLinkState(
             self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
+        print('grip pos:', grip_pos)
         obj_pos = pb.getBasePositionAndOrientation(self.object_id)[0]
+        print('obj pos:', obj_pos)
 
         return np.allclose(grip_pos, obj_pos, atol=TERMINAL_ERROR_MARGIN)
 
