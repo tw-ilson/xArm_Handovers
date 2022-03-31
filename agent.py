@@ -261,12 +261,12 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=True, sparse_reward=True)
+    env = HandoverGraspingEnv(render=True, sparse_reward=False)
     # TODO questions reward logging?
     # why is atol not working for all close? even with 0, still returning true eventually
     # get object to float
 
-    pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 0)
+    pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 1)
     pb.resetDebugVisualizerCamera(cameraDistance=.4,
                                   cameraYaw=65.2,
                                   cameraPitch=-40.6,

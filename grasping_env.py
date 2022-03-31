@@ -23,13 +23,14 @@ import nuro_arm.robot.robot_arm as robot
 from curriculum import ObjectRoutine
 
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
-TERMINAL_ERROR_MARGIN = 0.003
+# under this euclidean distance, grasp will be considered success
+TERMINAL_ERROR_MARGIN = 0.03
 
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
-ROTATION_DELTA = 0.02
-VERTICAL_DELTA = 0.02
-DISTANCE_DELTA = 0.02
-ROLL_DELTA = 0.02
+ROTATION_DELTA = 0.01
+VERTICAL_DELTA = 0.01
+DISTANCE_DELTA = 0.01
+ROLL_DELTA = 0.01
 
 
 class HandoverArm(robot.RobotArm):
@@ -250,13 +251,11 @@ class HandoverGraspingEnv(gym.Env):
         '''Determines if the current position of the gripper's is such that the object is within a small error margin of grasp point.
         '''
 
-        grip_pos = pb.getLinkState(
-            self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
-        print('grip pos:', grip_pos)
-        obj_pos = pb.getBasePositionAndOrientation(self.object_id)[0]
-        print('obj pos:', obj_pos)
-
-        return np.allclose(grip_pos, obj_pos, atol=TERMINAL_ERROR_MARGIN, rtol=0)
+        # grip_pos = pb.getLinkState(
+        #     self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
+        # obj_pos = pb.getBasePositionAndOrientation(self.object_id)[0]
+        # return np.allclose(grip_pos, obj_pos, atol=TERMINAL_ERROR_MARGIN, rtol=0)
+        return self.distToGrasp() < TERMINAL_ERROR_MARGIN
 
     def distToGrasp(self) -> float:
         ''' Euclidian distance to the grasping object '''
@@ -277,7 +276,6 @@ class HandoverGraspingEnv(gym.Env):
         if self.sparse:
             return int(done), done
         else:
-            print('tup:', (-self.distToGrasp(), done))
             return -self.distToGrasp(), done
 
     def get_obs(self, background_mask: Optional[np.ndarray] = None) -> np.ndarray:
