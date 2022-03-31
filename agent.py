@@ -1,3 +1,4 @@
+import os
 from typing import Optional, Union, Tuple
 import numpy as np
 import torch
@@ -102,6 +103,8 @@ class DQNAgent:
             s = sp.copy()
             if done:
                 s = self.env.reset()
+                torch.save(self.network.state_dict(),
+                           os.path.join(os.getcwd(), "recent.pt"))
                 rewards_data.append(episode_rewards)
                 success_data.append(info['success'])
 
@@ -261,7 +264,7 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=True, sparse_reward=True)
+    env = HandoverGraspingEnv(render=False, sparse_reward=False)
     # TODO questions reward logging?
     # why is atol not working for all close? even with 0, still returning true eventually
     # get object to float
@@ -283,6 +286,6 @@ if __name__ == "__main__":
                      exploration_fraction=0.9,
                      target_network_update_freq=250,
                      seed=1,
-                     device='cpu')
+                     device='cuda')
 
-    agent.train(1000, 100)
+    agent.train(10000, 100)

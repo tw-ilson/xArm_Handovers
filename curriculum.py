@@ -11,17 +11,18 @@ from pybullet import resetBasePositionAndOrientation, getQuaternionFromEuler
 MOVE_OPTS = ['static', 'cyclic', 'noise']
 DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']
 
-WORKSPACE = np.array(((0.10, -0.05, 0.2), # ((min_x, min_y, min_z)
-                      (0.20, 0.05, 0.3))) #  (max_x, max_y, max_z))
+WORKSPACE = np.array(((0.10, -0.05, 0.2),  # ((min_x, min_y, min_z)
+                      (0.20, 0.05, 0.3)))  # (max_x, max_y, max_z))
 
-START_POS = [0.15, 0.0, 0.25]
+START_POS = [0.3, 0.0, 0.2]
 
 DELTA = 1
+
 
 class ObjectRoutine():
     """
     controls the routine which the object will follow throughout a training episode
-    
+
     Params
     ------
         random_start: boolean, should the object be placed at a random position from the start
@@ -29,7 +30,7 @@ class ObjectRoutine():
         dimensions: list containing the dimensions along which to vary each timestep
     """
 
-    def __init__(self, _id: int, random_start: bool=False, moving_mode: str='static', *dimensions) -> None:
+    def __init__(self, _id: int, random_start: bool = False, moving_mode: str = 'static', dimensions=[]) -> None:
 
         assert(_id)
 
@@ -43,12 +44,12 @@ class ObjectRoutine():
         if moving_mode in MOVE_OPTS:
             self.mode = moving_mode
             if self.mode == 'noise':
-                self.noise = {dim :PerlinNoise() for dim in dimensions}
+                self.noise = {dim: PerlinNoise() for dim in dimensions}
         else:
             raise ValueError("invalid mode")
-        
+
         self.routine = set()
-        if len(dimensions) == 0 or all(arg in dimensions for arg in DIMS):
+        if len(dimensions) == 0 or not all(arg in dimensions for arg in DIMS):
             self.routine.update(dimensions)
         else:
             raise ValueError("invalid dimensions specified")
@@ -56,24 +57,25 @@ class ObjectRoutine():
     def reset(self):
         if self.random_start:
             ws_padding = 0.01
-            x,y,z = np.random.uniform(self.workspace[0,:]+ws_padding,
-                    self.workspace[1,:]-ws_padding)
-                                    
+            x, y, z = np.random.uniform(self.workspace[0, :]+ws_padding,
+                                        self.workspace[1, :]-ws_padding)
+
             #theta = lambda: np.random.uniform(-np.pi/2, np.pi/2)
 
-            self.position = np.array((x,y,z))
+            self.position = np.array((x, y, z))
             #self.orientation = [theta(), 0, theta()]
-            self.orientation = [0,0,0] 
+            self.orientation = [0, 0, 0]
         else:
             self.position = START_POS
-            self.orientation = [0,0,0]
+            self.orientation = [0, 0, 0]
 
-        resetBasePositionAndOrientation(self._id, self.position, getQuaternionFromEuler(self.orientation))
+        resetBasePositionAndOrientation(
+            self._id, self.position, getQuaternionFromEuler(self.orientation))
 
     def getPos(self):
         return self.position
 
-    def getOrn(self, simulated_background:bool=False):
+    def getOrn(self, simulated_background: bool = False):
         return self.orientation
 
     def step(self):
@@ -97,14 +99,15 @@ class ObjectRoutine():
 
         elif self.mode == 'cyclic':
             for ax in self.routine:
-                issueUpdate( \
-                        sin(time()), \
-                        ax)
+                issueUpdate(
+                    sin(time()),
+                    ax)
 
         elif self.mode == 'noise':
             for ax in self.routine:
-                issueUpdate( \
-                        self.noise[ax](time()), \
-                        ax)
+                issueUpdate(
+                    0.03 * self.noise[ax](time()),
+                    ax)
 
-        resetBasePositionAndOrientation(self._id, self.position, getQuaternionFromEuler(self.orientation))
+        resetBasePositionAndOrientation(
+            self._id, self.position, getQuaternionFromEuler(self.orientation))
