@@ -1,3 +1,4 @@
+import os
 from typing import Optional, Union, Tuple
 import numpy as np
 import torch
@@ -86,22 +87,25 @@ class DQNAgent:
             progress_fraction = step/(self.exploration_fraction*num_steps)
             epsilon = self.compute_epsilon(progress_fraction)
             a = self.select_action(s, epsilon)
-
+            print('action:', a)
             sp, r, done, info = self.env.step(a)
             episode_rewards += r
 
             self.buffer.add_transition(s=s, a=a, r=r, sp=sp, d=done)
 
             # optimize
-            if len(self.buffer) > self.batch_size:
-                loss = self.optimize()
-                loss_data.append(loss)
-                if len(loss_data) % self.target_network_update_freq == 0:
-                    self.hard_target_update()
+            # if len(self.buffer) > self.batch_size:
+            #     loss = self.optimize()
+            #     loss_data.append(loss)
+            #     if len(loss_data) % self.target_network_update_freq == 0:
+            #         self.hard_target_update()
 
             s = sp.copy()
             if done:
                 s = self.env.reset()
+                torch.save(self.network.state_dict(),
+                           os.path.join(os.getcwd(), "recent.pt"))
+                print('saved')
                 rewards_data.append(episode_rewards)
                 success_data.append(info['success'])
 
@@ -212,10 +216,10 @@ class DQNAgent:
         -------
         pixel action (px, py), dtype=int
         '''
-        if np.random.random() < epsilon:
-            return np.array(self.env.action_space.sample()) - 1
-        else:
-            return self.policy(state)
+        # if np.random.random() < epsilon:
+        #     return np.array(self.env.action_space.sample()) - 1
+        # else:
+        return self.policy(state)
 
     def policy(self, state: np.ndarray) -> np.ndarray:
         '''Policy is the argmax over actions of the q-function at the given
@@ -261,12 +265,12 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=True, sparse_reward=True)
+    env = HandoverGraspingEnv(render=True, sparse_reward=False)
     # TODO questions reward logging?
     # why is atol not working for all close? even with 0, still returning true eventually
     # get object to float
 
-    pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 0)
+    pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 1)
     pb.resetDebugVisualizerCamera(cameraDistance=.4,
                                   cameraYaw=65.2,
                                   cameraPitch=-40.6,
@@ -284,5 +288,7 @@ if __name__ == "__main__":
                      target_network_update_freq=250,
                      seed=1,
                      device='cpu')
+    agent.network.load_state_dict(torch.load('recent.pt', map_location='cpu'))
 
     agent.train(1000, 100)
+    # TODO try moving object more in routine, lower deltas, more time, no conv network
