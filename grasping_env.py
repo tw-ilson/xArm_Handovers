@@ -24,7 +24,7 @@ from curriculum import ObjectRoutine
 
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
 # under this euclidean distance, grasp will be considered success
-TERMINAL_ERROR_MARGIN = 0.03
+TERMINAL_ERROR_MARGIN = 0.02
 
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.01
@@ -240,8 +240,7 @@ class HandoverGraspingEnv(gym.Env):
         done = done or self.t_step >= self.episode_length
 
         # diagnostic information, what should we put here?
-        print('done:', done)
-        info = {'success': done}
+        info = {'success': self.canGrasp()}
 
         # self.object_routine.step()
 
