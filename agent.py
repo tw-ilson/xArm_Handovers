@@ -291,4 +291,4 @@ if __name__ == "__main__":
     agent.network.load_state_dict(torch.load('recent.pt', map_location='cpu'))
 
     agent.train(1000, 100)
-    # TODO try moving object more in routine, lower deltas, more time, no conv network
+    # TODO more time, rewards NEEDS to be checked (make from neg to pos, try reciprocral w no conv)
