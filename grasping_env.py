@@ -21,8 +21,10 @@ import nuro_arm
 import nuro_arm.robot.robot_arm as robot
 
 from curriculum import ObjectRoutine
+from augmentations import Preprocess
 
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
+CAMERA_FOV = 60
 # under this euclidean distance, grasp will be considered success
 TERMINAL_ERROR_MARGIN = 0.02
 
@@ -47,6 +49,7 @@ class HandoverArm(robot.RobotArm):
         self.arm_ready_jpos = READY_JPOS
         # self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
 
+
     def ready(self):
         '''
         moves the arm to the 'ready' position (bent, pointing forward toward workspace)
@@ -58,7 +61,7 @@ class HandoverArm(robot.RobotArm):
                        rot_act: int,
                        z_act: int,
                        dist_act: int,
-                       roll_act: int):
+                       roll_act: int) -> bool:
         '''takes an action returned from policy neural network and moves joints accordingly.
         Params
         ------
@@ -68,7 +71,12 @@ class HandoverArm(robot.RobotArm):
         dist_act: forward/backward from center of robot
         roll_act: gripper roll
 
+        Returns
+        -------
+            True if collision-free action was predicted
+
         '''
+        start_jpos = self.get_arm_jpos()
         (old_x, old_y, old_z), ee_quat = self.get_hand_pose()
         old_roll = R.from_quat(ee_quat).as_euler('zyz')[0]
         old_yaw = np.arctan2(old_y, old_x)
@@ -82,8 +90,14 @@ class HandoverArm(robot.RobotArm):
 
         new_pos = (x, y, z)
         new_quat = R.from_euler('zyz', (roll, np.pi/2, yaw)).as_quat()
-        jpos = self.mp.calculate_ik(new_pos, new_quat)[0]
-        self.mp._teleport_arm(jpos)
+        next_jpos = self.mp.calculate_ik(new_pos, new_quat)[0]
+
+
+        valid_action, collisions = self.mp.is_collision_free_trajectory(start_jpos, next_jpos, ignore_gripper=False, n_substeps=4)
+        if valid_action:
+            self.mp._teleport_arm(next_jpos) 
+        return valid_action
+
 
         # self.mp._teleport_arm(joint_pos)
         # self.controller.power_off_servos()
@@ -133,7 +147,7 @@ class WristCamera:
 
         self.view_mtx = np.ravel(self.view_mtx, order='F')
 
-        self.proj_mtx = pb.computeProjectionMatrixFOV(fov=90,
+        self.proj_mtx = pb.computeProjectionMatrixFOV(fov=CAMERA_FOV,
                                                       aspect=1,
                                                       nearVal=0.01,
                                                       farVal=10)
@@ -170,6 +184,8 @@ class HandoverGraspingEnv(gym.Env):
         self.robot = HandoverArm(headless=not render)
         pb.setGravity(0, 0, 0)
 
+        self.prepro = Preprocess(('blur', 'brightness'))
+
         self.camera = WristCamera(self.robot, img_size)
         self.img_size = img_size
 
@@ -202,7 +218,12 @@ class HandoverGraspingEnv(gym.Env):
         self.wrist_rotation_actions = Discrete(n=3, start=-1)
 
         # NOTE: if sampling, subtract 1
-        self.action_space = gym.spaces.MultiDiscrete([3, 3, 3, 3])
+        self.action_space = gym.spaces.tuple.Tuple((
+                self.base_rotation_actions, 
+                self.pitch_actions, 
+                self.forward_actions, 
+                self.wrist_rotation_actions))
+        self.action_space_shape = tuple([space.shape for space in self.action_space.spaces])
 
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
@@ -225,19 +246,19 @@ class HandoverGraspingEnv(gym.Env):
         ------
             obs, reward, done, info
         '''
-        assert self.base_rotation_actions.contains(action[0])
-        assert self.pitch_actions.contains(action[2])
-        assert self.forward_actions.contains(action[3])
-        assert self.wrist_rotation_actions.contains(action[3])
+        self.action_space.contains(action)
 
-        self.robot.execute_action(*action)
+        if self.robot.execute_action(*action):
+            reward = self.getReward()
+        else:
+            reward = -100
 
         self.t_step += 1
 
-        obs = self.get_obs()
-        reward, done = self.getReward()
-
+        done = self.canGrasp()
         done = done or self.t_step >= self.episode_length
+
+        obs = self.get_obs()
 
         # diagnostic information, what should we put here?
         info = {'success': self.canGrasp()}
@@ -245,6 +266,12 @@ class HandoverGraspingEnv(gym.Env):
         # self.object_routine.step()
 
         return obs, reward, done, info
+
+    def getEEPosOrn(self):
+        ee_ls = pb.getLinkState(
+            self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)
+        return tuple(ee_ls[:2])
+
 
     def canGrasp(self) -> bool:
         '''Determines if the current position of the gripper's is such that the object is within a small error margin of grasp point.
@@ -259,8 +286,7 @@ class HandoverGraspingEnv(gym.Env):
     def distToGrasp(self) -> float:
         ''' Euclidian distance to the grasping object '''
 
-        grip_pos = pb.getLinkState(
-            self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
+        grip_pos, grip_orn = self.getEEPosOrn()
         obj_pos = pb.getBasePositionAndOrientation(self.object_id)[0]
 
         return float(np.linalg.norm(np.subtract(grip_pos, obj_pos)))
@@ -277,7 +303,7 @@ class HandoverGraspingEnv(gym.Env):
         else:
             return -self.distToGrasp(), done
 
-    def get_obs(self, background_mask: Optional[np.ndarray] = None) -> np.ndarray:
+    def get_obs(self) -> np.ndarray:
         '''Takes picture using camera, returns rgb and segmentation mask of image
         Returns
         -------
@@ -286,12 +312,7 @@ class HandoverGraspingEnv(gym.Env):
         '''
         self.camera.computeView()
         rgb, mask = self.camera.get_image()
-
-        # add virtual background for augmentation purposes (untested)
-        if background_mask is not None:
-            def map_fn(pix, bkrd_pix, mask_i,
-                       ): return pix if mask_i != 0 else bkrd_pix
-            rgb = np.vectorize(map_fn)(zip(rgb[:2], background_mask[:2], mask))
+        rgb = self.prepro(rgb)
         return rgb
 
     def plot_obs(self):
@@ -300,25 +321,13 @@ class HandoverGraspingEnv(gym.Env):
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=True, img_size=200)
+    env = HandoverGraspingEnv(render=False, img_size=86)
     pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 0)
     pb.resetDebugVisualizerCamera(cameraDistance=.4,
                                   cameraYaw=65.2,
                                   cameraPitch=-40.6,
                                   cameraTargetPosition=(.5, -0.36, 0.40))
-    # env.plot_obs()
     env.robot.ready()
-
-    while not np.allclose(env.robot.get_arm_jpos(), READY_JPOS, atol=.05):
-        pb.stepSimulation()
-        time.sleep(.001)
-
-    env.robot.execute_action(0, -1, 0, 0)
-
-    for _ in range(1000):
-        [pb.stepSimulation() for _ in range(10)]
-        time.sleep(.001)
-    print('after', env.robot.get_arm_jpos())
-    print('after hand pose', env.robot.get_hand_pose())
-
+    env.plot_obs()
+    
     exit()
