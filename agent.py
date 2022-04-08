@@ -9,7 +9,7 @@ import pybullet as pb
 import matplotlib.pyplot as plt
 
 from equivariant_delta_pred import EquivariantDeltaNetwork
-from utils import ReplayBuffer  # , plot_predictions, plot_curves
+from utils import ReplayBuffer, plot_curves
 from grasping_env import HandoverGraspingEnv
 
 
@@ -40,7 +40,7 @@ class DQNAgent:
 
         self.buffer = ReplayBuffer(buffer_size,
                                    env.observation_space.shape,
-                                   env.action_space.shape)
+                                   (len(env.action_space),))
 
         self.device = device
         img_shape = (3, self.env.img_size, self.env.img_size)
@@ -61,13 +61,13 @@ class DQNAgent:
         '''
         return self.env.canGrasp()
 
-    def train(self, num_steps: int, plotting_freq: int = 0) -> None:
+    def train(self, num_steps: int, plotting_freq: int = 0):
         '''Train q-function for given number of environment steps using
         q-learning with e-greedy action selection
 
         Parameters
         ----------
-        num_steps
+        num_steps  
             number of environment steps
         plotting_freq
             interval (in env steps) between plotting of training data, if 0
@@ -89,6 +89,9 @@ class DQNAgent:
 
             sp, r, done, info = self.env.step(a)
             episode_rewards += r
+
+            print(r)
+            print(self.env.getEEPosOrn()[0])
 
             self.buffer.add_transition(s=s, a=a, r=r, sp=sp, d=done)
 
@@ -117,12 +120,28 @@ class DQNAgent:
 
                 with torch.no_grad():
                     actions = self.network(imgs)
-                    # actions = argmax2d(q_map_pred)
-                # plot_predictions(imgs, q_map_pred, actions)
-                # plot_curves(rewards_data, success_data, loss_data)
+                    # actions = argmaxd(q_map_pred)
+                plot_curves(rewards_data, success_data, loss_data)
                 plt.show()
 
         return rewards_data, success_data, loss_data
+
+    def playout(self, num_steps):
+        
+        s = self.env.reset()
+        step = 0
+        done = 0
+        while step < num_steps and not done:
+            
+            a = self.select_action(s)
+
+            sp, r, done, info = self.env.step(a)
+            print(r)
+            print(self.env.getEEPosOrn()[0])
+
+            s = sp.copy()
+
+
 
     def optimize(self) -> float:
         '''Optimizes q-network by minimizing td-loss on a batch sampled from
@@ -132,19 +151,29 @@ class DQNAgent:
         -------
         mean squared td-loss across batch
         '''
+        def q_axis_sum(network_pred):
+            '''computes the sum of the optimal action for each dimension of the action space (across a batch)
+            Input
+            -----
+                12-vector of axis-wise q-values
+            Return
+            -----
+                Q-value of the state is the sum of the axis-wise 4 max actions
+            '''
+            return torch.sum(torch.cat([torch.max(network_pred[:, i:i+3], dim=1)[0].unsqueeze(1)
+                                      for i in range(0, 12, 3)], dim=1), 1)
+
         batch = self.buffer.sample(self.batch_size)
         s, a, r, sp, d = self.prepare_batch(*batch)
 
         q_all_pred = self.network(s)
 
-        q_pred = torch.sum(torch.cat([torch.max(q_all_pred[:, i:i+3], dim=1)[0].unsqueeze(1)
-                                      for i in range(0, 12, 3)], dim=1), 1)
+        q_pred = q_axis_sum(q_all_pred)
 
         if self.update_method == 'standard':
             with torch.no_grad():
                 q_all_pred_next = self.target_network(sp)
-                q_next = torch.sum(torch.cat([torch.max(q_all_pred_next[:, i:i+3], dim=1)[0].unsqueeze(1)
-                                              for i in range(0, 12, 3)], dim=1), 1)
+                q_next = q_axis_sum(q_all_pred_next)
                 q_target = r + self.gamma * q_next * (1-d)
 
         # TODO implement
@@ -210,12 +239,14 @@ class DQNAgent:
 
         Returns
         -------
-        pixel action (px, py), dtype=int
+        4-vector of discrete actions, each in {-1, 0, 1}
         '''
         if np.random.random() < epsilon:
-            return np.array(self.env.action_space.sample()) - 1
+            action = np.array(self.env.action_space.sample())
         else:
-            return self.policy(state)
+            action = self.policy(state)
+        print(action)
+        return action
 
     def policy(self, state: np.ndarray) -> np.ndarray:
         '''Policy is the argmax over actions of the q-function at the given
@@ -225,7 +256,7 @@ class DQNAgent:
 
         Returns
         -------
-        pixel action (px, py); shape=(2,); dtype=int
+
         '''
 
         t_state = torch.tensor(state, dtype=torch.float32).unsqueeze(
@@ -233,7 +264,8 @@ class DQNAgent:
         t_state = t_state.permute(0, 3, 1, 2)
         t_state = torch.div(t_state, 255)
         t_state = t_state.to(self.device)
-        return self.network.predict(t_state).squeeze().cpu().numpy()
+        action = self.network.predict(t_state).squeeze().cpu().numpy()
+        return action
 
     def compute_epsilon(self, fraction: float) -> float:
         '''Calculate epsilon value based on linear annealing schedule
@@ -261,7 +293,7 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=True, sparse_reward=False)
+    env = HandoverGraspingEnv(render=False, sparse_reward=False)
     # TODO questions reward logging?
     # why is atol not working for all close? even with 0, still returning true eventually
     # get object to float
@@ -276,7 +308,7 @@ if __name__ == "__main__":
                      gamma=0.5,
                      learning_rate=1e-3,
                      buffer_size=4000,
-                     batch_size=64,
+                     batch_size=8,
                      initial_epsilon=0.5,  # TODO change hyperparams
                      final_epsilon=0.2,
                      update_method='standard',
@@ -285,4 +317,5 @@ if __name__ == "__main__":
                      seed=1,
                      device='cpu')
 
-    agent.train(1000, 100)
+    # agent.train(1000, 100)
+    agent.playout(100)
