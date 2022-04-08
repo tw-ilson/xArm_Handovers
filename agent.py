@@ -94,17 +94,17 @@ class DQNAgent:
             self.buffer.add_transition(s=s, a=a, r=r, sp=sp, d=done)
 
             # optimize
-            if len(self.buffer) > self.batch_size:
-                loss = self.optimize()
-                loss_data.append(loss)
-                if len(loss_data) % self.target_network_update_freq == 0:
-                    self.hard_target_update()
+            # if len(self.buffer) > self.batch_size:
+            #     loss = self.optimize()
+            #     loss_data.append(loss)
+            #     if len(loss_data) % self.target_network_update_freq == 0:
+            #         self.hard_target_update()
 
             s = sp.copy()
             if done:
                 s = self.env.reset()
                 torch.save(self.network.state_dict(),
-                    os.path.join(os.getcwd(), "recent.pt"))
+                           os.path.join(os.getcwd(), "recent.pt"))
                 rewards_data.append(episode_rewards)
                 success_data.append(info['success'])
 
@@ -120,7 +120,7 @@ class DQNAgent:
 
 #                 with torch.no_grad():
 #                     actions = self.network(imgs)
-                    # actions = argmax2d(q_map_pred)
+                # actions = argmax2d(q_map_pred)
                 # plot_predictions(imgs, q_map_pred, actions)
 #                 plt.show()
 
@@ -264,7 +264,7 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=False, sparse_reward=False)
+    env = HandoverGraspingEnv(render=True, sparse_reward=False)
     # TODO questions reward logging?
     # why is atol not working for all close? even with 0, still returning true eventually
     # get object to float
@@ -274,7 +274,7 @@ if __name__ == "__main__":
                                   cameraYaw=65.2,
                                   cameraPitch=-40.6,
                                   cameraTargetPosition=(.5, -0.36, 0.40))
-
+    # TODO change render, device, and uncomment optimize
     agent = DQNAgent(env=env,
                      gamma=0.6,
                      learning_rate=1e-3,
@@ -286,6 +286,6 @@ if __name__ == "__main__":
                      exploration_fraction=0.9,
                      target_network_update_freq=250,
                      seed=1,
-                     device='cuda')
+                     device='cpu')
 
     agent.train(5000, 100)

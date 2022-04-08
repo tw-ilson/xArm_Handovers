@@ -68,7 +68,12 @@ class HandoverArm(robot.RobotArm):
         dist_act: forward/backward from center of robot
         roll_act: gripper roll
 
+        Returns
+        -------
+            True if collision-free action was predicted
+
         '''
+        start_jpos = self.get_arm_jpos()
         (old_x, old_y, old_z), ee_quat = self.get_hand_pose()
         old_roll = R.from_quat(ee_quat).as_euler('zyz')[0]
         old_yaw = np.arctan2(old_y, old_x)
@@ -82,8 +87,13 @@ class HandoverArm(robot.RobotArm):
 
         new_pos = (x, y, z)
         new_quat = R.from_euler('zyz', (roll, np.pi/2, yaw)).as_quat()
-        jpos = self.mp.calculate_ik(new_pos, new_quat)[0]
-        self.mp._teleport_arm(jpos)
+        next_jpos = self.mp.calculate_ik(new_pos, new_quat)[0]
+
+        valid_action, collisions = self.mp.is_collision_free_trajectory(
+            start_jpos, next_jpos, ignore_gripper=False, n_substeps=4)
+        if valid_action:
+            self.mp._teleport_arm(next_jpos)
+        return valid_action
 
         # self.mp._teleport_arm(joint_pos)
         # self.controller.power_off_servos()
@@ -183,7 +193,8 @@ class HandoverGraspingEnv(gym.Env):
         self.object_width = 0.02
 
         # no options currently given
-        self.object_routine = ObjectRoutine(self.object_id, moving_mode='noise', dimensions=['depth', 'horizontal'])
+        self.object_routine = ObjectRoutine(
+            self.object_id, moving_mode='noise', dimensions=['depth', 'horizontal'])
 
         pb.resetBasePositionAndOrientation(self.object_id, self.object_routine.getPos(
         ), pb.getQuaternionFromEuler(self.object_routine.getOrn()))
@@ -225,24 +236,26 @@ class HandoverGraspingEnv(gym.Env):
         ------
             obs, reward, done, info
         '''
-        assert self.base_rotation_actions.contains(action[0])
-        assert self.pitch_actions.contains(action[2])
-        assert self.forward_actions.contains(action[3])
-        assert self.wrist_rotation_actions.contains(action[3])
+        self.action_space.contains(action)
 
-        self.robot.execute_action(*action)
+        # TODO maybe different reward schema?
+        if self.robot.execute_action(*action):
+            collided = False
+        else:
+            collided = True
+            pass
 
         self.t_step += 1
 
         obs = self.get_obs()
         reward, done = self.getReward()
 
-        done = done or self.t_step >= self.episode_length
+        done = done or self.t_step >= self.episode_length or collided
 
         # diagnostic information, what should we put here?
         info = {'success': self.canGrasp()}
 
-        # self.object_routine.step()
+        self.object_routine.step()
 
         return obs, reward, done, info
 
@@ -288,10 +301,10 @@ class HandoverGraspingEnv(gym.Env):
         rgb, mask = self.camera.get_image()
 
         # add virtual background for augmentation purposes (untested)
-        if background_mask is not None:
-            def map_fn(pix, bkrd_pix, mask_i,
-                       ): return pix if mask_i != 0 else bkrd_pix
-            rgb = np.vectorize(map_fn)(zip(rgb[:2], background_mask[:2], mask))
+        # if background_mask is not None:
+        #     def map_fn(pix, bkrd_pix, mask_i,
+        #                ): return pix if mask_i != 0 else bkrd_pix
+        #     rgb = np.vectorize(map_fn)(zip(rgb[:2], background_mask[:2], mask))
         return rgb
 
     def plot_obs(self):
