@@ -24,9 +24,7 @@ from curriculum import ObjectRoutine
 from augmentations import Preprocess
 
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
-CAMERA_FOV = 60
-# under this euclidean distance, grasp will be considered success
-TERMINAL_ERROR_MARGIN = 0.02
+TERMINAL_ERROR_MARGIN = 0.004
 
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.01
@@ -55,6 +53,9 @@ class HandoverArm(robot.RobotArm):
         moves the arm to the 'ready' position (bent, pointing forward toward workspace)
         '''
         # self.open_gripper()
+        self.mp._teleport_gripper(1)
+        # [pb.resetJointState(self.robot_id, i, jp, physicsClientId=self._client)
+        #    for i,jp in zip(self.arm_joint_ids, arm_jpos)]
         self.mp._teleport_arm(READY_JPOS)
 
     def execute_action(self,
@@ -199,7 +200,8 @@ class HandoverGraspingEnv(gym.Env):
         self.object_width = 0.02
 
         # no options currently given
-        self.object_routine = ObjectRoutine(self.object_id)
+        self.object_routine = ObjectRoutine(
+            self.object_id)#, moving_mode='noise', dimensions=['vertical', 'horizontal', 'depth'])
 
         pb.resetBasePositionAndOrientation(self.object_id, self.object_routine.getPos(
         ), pb.getQuaternionFromEuler(self.object_routine.getOrn()))
@@ -255,15 +257,15 @@ class HandoverGraspingEnv(gym.Env):
 
         self.t_step += 1
 
-        done = self.canGrasp()
-        done = done or self.t_step >= self.episode_length
-
         obs = self.get_obs()
+        reward, done = self.getReward()
+
+        done = done or self.t_step >= self.episode_length
 
         # diagnostic information, what should we put here?
         info = {'success': self.canGrasp()}
 
-        # self.object_routine.step()
+        self.object_routine.step()
 
         return obs, reward, done, info
 
