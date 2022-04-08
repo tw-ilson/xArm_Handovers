@@ -14,7 +14,7 @@ DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']
 WORKSPACE = np.array(((0.10, -0.05, 0.2),  # ((min_x, min_y, min_z)
                       (0.20, 0.05, 0.3)))  # (max_x, max_y, max_z))
 
-START_POS = [0.3, 0.0, 0.2]
+START_POS = [0.2, 0.0, 0.25]
 
 DELTA = 1
 

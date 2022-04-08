@@ -103,9 +103,9 @@ class DQNAgent:
             s = sp.copy()
             if done:
                 s = self.env.reset()
-                torch.save(self.network.state_dict(),
-                           os.path.join(os.getcwd(), "recent.pt"))
-                print('saved')
+                # torch.save(self.network.state_dict(),
+                #            os.path.join(os.getcwd(), "recent.pt"))
+                # print('saved')
                 rewards_data.append(episode_rewards)
                 success_data.append(info['success'])
 
@@ -119,12 +119,12 @@ class DQNAgent:
                 batch = self.buffer.sample(self.batch_size)
                 imgs = self.prepare_batch(*batch)[0]
 
-                with torch.no_grad():
-                    actions = self.network(imgs)
-                    # actions = argmax2d(q_map_pred)
+                # with torch.no_grad():
+                # actions = self.network(imgs)
+                # actions = argmax2d(q_map_pred)
                 # plot_predictions(imgs, q_map_pred, actions)
                 # plot_curves(rewards_data, success_data, loss_data)
-                plt.show()
+                # plt.show()
 
         return rewards_data, success_data, loss_data
 
@@ -274,7 +274,7 @@ if __name__ == "__main__":
     pb.resetDebugVisualizerCamera(cameraDistance=.4,
                                   cameraYaw=65.2,
                                   cameraPitch=-40.6,
-                                  cameraTargetPosition=(.5, -0.36, 0.40))
+                                  cameraTargetPosition=(.5, -0.30, 0.40))
 
     agent = DQNAgent(env=env,
                      gamma=0.5,
@@ -288,7 +288,8 @@ if __name__ == "__main__":
                      target_network_update_freq=250,
                      seed=1,
                      device='cpu')
-    agent.network.load_state_dict(torch.load('recent.pt', map_location='cpu'))
+    agent.network.load_state_dict(torch.load(
+        'recent.pt', map_location='cpu'))
 
     agent.train(1000, 100)
     # TODO more time, rewards NEEDS to be checked (make from neg to pos, try reciprocral w no conv)

@@ -23,7 +23,7 @@ import nuro_arm.robot.robot_arm as robot
 from curriculum import ObjectRoutine
 
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
-TERMINAL_ERROR_MARGIN = 0.004
+TERMINAL_ERROR_MARGIN = 0.015
 
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.01
@@ -159,7 +159,7 @@ class WristCamera:
 
 class HandoverGraspingEnv(gym.Env):
     def __init__(self,
-                 episode_length: int = 30,
+                 episode_length: int = 60,
                  sparse_reward: bool = True,
                  img_size: int = 128,
                  render: bool = False,
@@ -186,7 +186,7 @@ class HandoverGraspingEnv(gym.Env):
 
         # no options currently given
         self.object_routine = ObjectRoutine(
-            self.object_id)  # , moving_mode='noise', dimensions=['vertical', 'horizontal', 'depth'])
+            self.object_id, moving_mode='noise', dimensions=['depth', 'horizontal'])
 
         pb.resetBasePositionAndOrientation(self.object_id, self.object_routine.getPos(
         ), pb.getQuaternionFromEuler(self.object_routine.getOrn()))
@@ -253,11 +253,12 @@ class HandoverGraspingEnv(gym.Env):
         '''Determines if the current position of the gripper's is such that the object is within a small error margin of grasp point.
         '''
 
-        grip_pos = pb.getLinkState(
-            self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
-        obj_pos = pb.getBasePositionAndOrientation(self.object_id)[0]
+        # grip_pos = pb.getLinkState(
+        #     self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
+        # obj_pos = pb.getBasePositionAndOrientation(self.object_id)[0]
 
-        return np.allclose(grip_pos, obj_pos, atol=TERMINAL_ERROR_MARGIN, rtol=0)
+        # return np.allclose(grip_pos, obj_pos, atol=TERMINAL_ERROR_MARGIN, rtol=0)
+        return self.distToGrasp() < TERMINAL_ERROR_MARGIN
 
     def distToGrasp(self) -> float:
         ''' Euclidian distance to the grasping object '''
