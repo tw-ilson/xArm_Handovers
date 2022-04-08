@@ -24,7 +24,7 @@ from curriculum import ObjectRoutine
 
 READY_JPOS = [0, -1, 1.2, 1.4, 0]
 # under this euclidean distance, grasp will be considered success
-TERMINAL_ERROR_MARGIN = 0.02
+TERMINAL_ERROR_MARGIN = 0.015
 
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.01
@@ -157,7 +157,7 @@ class WristCamera:
 
 class HandoverGraspingEnv(gym.Env):
     def __init__(self,
-                 episode_length: int = 30,
+                 episode_length: int = 60,
                  sparse_reward: bool = True,
                  img_size: int = 128,
                  render: bool = False,
@@ -183,7 +183,7 @@ class HandoverGraspingEnv(gym.Env):
         self.object_width = 0.02
 
         # no options currently given
-        self.object_routine = ObjectRoutine(self.object_id)
+        self.object_routine = ObjectRoutine(self.object_id, moving_mode='noise', dimensions=['depth', 'horizontal'])
 
         pb.resetBasePositionAndOrientation(self.object_id, self.object_routine.getPos(
         ), pb.getQuaternionFromEuler(self.object_routine.getOrn()))

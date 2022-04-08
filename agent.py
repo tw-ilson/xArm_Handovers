@@ -7,9 +7,10 @@ import gym
 from tqdm import tqdm
 import pybullet as pb
 import matplotlib.pyplot as plt
+import os
 
 from equivariant_delta_pred import EquivariantDeltaNetwork
-from utils import ReplayBuffer  # , plot_predictions, plot_curves
+from utils import ReplayBuffer, plot_curves  # , plot_predictions, plot_curves
 from grasping_env import HandoverGraspingEnv
 
 
@@ -102,6 +103,8 @@ class DQNAgent:
             s = sp.copy()
             if done:
                 s = self.env.reset()
+                torch.save(self.network.state_dict(),
+                    os.path.join(os.getcwd(), "recent.pt"))
                 rewards_data.append(episode_rewards)
                 success_data.append(info['success'])
 
@@ -115,13 +118,13 @@ class DQNAgent:
                 batch = self.buffer.sample(self.batch_size)
                 imgs = self.prepare_batch(*batch)[0]
 
-                with torch.no_grad():
-                    actions = self.network(imgs)
+#                 with torch.no_grad():
+#                     actions = self.network(imgs)
                     # actions = argmax2d(q_map_pred)
                 # plot_predictions(imgs, q_map_pred, actions)
-                # plot_curves(rewards_data, success_data, loss_data)
-                plt.show()
+#                 plt.show()
 
+        plot_curves(rewards_data, success_data, loss_data)
         return rewards_data, success_data, loss_data
 
     def optimize(self) -> float:
@@ -261,7 +264,7 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=True, sparse_reward=False)
+    env = HandoverGraspingEnv(render=False, sparse_reward=False)
     # TODO questions reward logging?
     # why is atol not working for all close? even with 0, still returning true eventually
     # get object to float
@@ -273,9 +276,9 @@ if __name__ == "__main__":
                                   cameraTargetPosition=(.5, -0.36, 0.40))
 
     agent = DQNAgent(env=env,
-                     gamma=0.5,
+                     gamma=0.6,
                      learning_rate=1e-3,
-                     buffer_size=4000,
+                     buffer_size=6000,
                      batch_size=64,
                      initial_epsilon=0.5,  # TODO change hyperparams
                      final_epsilon=0.2,
@@ -283,6 +286,6 @@ if __name__ == "__main__":
                      exploration_fraction=0.9,
                      target_network_update_freq=250,
                      seed=1,
-                     device='cpu')
+                     device='cuda')
 
-    agent.train(1000, 100)
+    agent.train(5000, 100)

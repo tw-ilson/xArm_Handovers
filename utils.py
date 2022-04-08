@@ -44,6 +44,7 @@ def plot_curves(rewards, success, loss):
     axs[2].set_xlabel('opt steps')
     axs[2].set_ylabel('td-loss')
     plt.tight_layout()
+    plt.savefig("curve.jpg")
 
 
 class ReplayBuffer:

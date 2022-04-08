@@ -14,7 +14,7 @@ DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']
 WORKSPACE = np.array(((0.10, -0.05, 0.2),  # ((min_x, min_y, min_z)
                       (0.20, 0.05, 0.3)))  # (max_x, max_y, max_z))
 
-START_POS = [0.25, 0.0, 0.25]
+START_POS = [0.2, 0.0, 0.25]
 
 DELTA = 1
 
@@ -30,7 +30,7 @@ class ObjectRoutine():
         dimensions: list containing the dimensions along which to vary each timestep
     """
 
-    def __init__(self, _id: int, random_start: bool = False, moving_mode: str = 'static', *dimensions) -> None:
+    def __init__(self, _id: int, random_start: bool = False, moving_mode: str = 'static', dimensions=[]) -> None:
 
         assert(_id)
 
@@ -49,7 +49,7 @@ class ObjectRoutine():
             raise ValueError("invalid mode")
 
         self.routine = set()
-        if len(dimensions) == 0 or all(arg in dimensions for arg in DIMS):
+        if len(dimensions) == 0 or not all(arg in dimensions for arg in DIMS):
             self.routine.update(dimensions)
         else:
             raise ValueError("invalid dimensions specified")
@@ -106,7 +106,7 @@ class ObjectRoutine():
         elif self.mode == 'noise':
             for ax in self.routine:
                 issueUpdate(
-                    self.noise[ax](time()),
+                    0.03 * self.noise[ax](time()),
                     ax)
 
         resetBasePositionAndOrientation(
