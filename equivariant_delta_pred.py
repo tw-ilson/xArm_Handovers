@@ -7,81 +7,27 @@ from e2cnn import nn
 
 # TODO experiment with kernel sizes for average pooling
 
+from augmentations import Preprocess
+
 
 class EquivariantDeltaNetwork(torch.nn.Module):
-    def __init__(self, input_shape, N=8) -> None:
+    def __init__(self, cnn) -> None:
         """Creates equivariant X, Y, Z prediction network for input image
 
         Args:
+            cnn: the feature extractor to apply to the image
             input_shape (tuple, optional): Shape of the image (C, H, W). Should be square.
-            N (int, optional): Number of discrete rotations, or -1 for continuous. Defaults to 8.
             NOTES: have 2 predictions of direct joint values: (base and gripper), two predictions
-            of combinations of motors: (forward z values, and pitch up down)
+            of combinations of motors: (forward z values, and vertical position adjust)
         """
         super().__init__()
         # (B, C, H, W)
-        assert input_shape[1] == input_shape[2], "Input image should be square"
 
-        self.N = N
+
         self.actions = [-1, 0, 1]
 
-        self.input_shape = input_shape
-        self.conv_out_channels = 16
-
-        self.r2_act = gspaces.Rot2dOnR2(N)
-
-        self.conv = tnn.Sequential(
-            tnn.Conv2d(input_shape[0], 16, kernel_size=3, padding=1),
-            tnn.ReLU(True),
-            tnn.MaxPool2d(kernel_size=3),
-            tnn.Conv2d(16, 16, kernel_size=3, padding=1),
-            tnn.ReLU(True),
-            tnn.MaxPool2d(kernel_size=2),
-            tnn.Conv2d(16, 16, kernel_size=3, padding=1),
-            tnn.ReLU(True),
-            tnn.MaxPool2d(kernel_size=2),
-            tnn.Conv2d(16, self.conv_out_channels, kernel_size=3, padding=1),
-            tnn.ReLU(True),
-            tnn.AvgPool2d(kernel_size=2)
-        )
-        # self.conv = torch.nn.Sequential(
-        #     # 128x128
-        #     nn.R2Conv(nn.FieldType(self.r2_act, input_shape[0]*[self.r2_act.trivial_repr]),
-        #               nn.FieldType(self.r2_act, 16*[self.r2_act.regular_repr]),
-        #               kernel_size=3, padding=1),
-        #     nn.ReLU(nn.FieldType(self.r2_act, 16 * \
-        #             [self.r2_act.regular_repr]), inplace=True),
-        #     nn.PointwiseMaxPool(nn.FieldType(
-        #         self.r2_act, 16*[self.r2_act.regular_repr]), 3),
-        #     # 64x64
-        #     nn.R2Conv(nn.FieldType(self.r2_act, 16 * [self.r2_act.regular_repr]),
-        #               nn.FieldType(self.r2_act, 16 * \
-        #                            [self.r2_act.regular_repr]),
-        #               kernel_size=3, padding=1),
-        #     nn.ReLU(nn.FieldType(self.r2_act, 16 * \
-        #             [self.r2_act.regular_repr]), inplace=True),
-        #     nn.PointwiseMaxPool(nn.FieldType(
-        #         self.r2_act, 16 * [self.r2_act.regular_repr]), 2),
-        #     # 32x32
-        #     nn.R2Conv(nn.FieldType(self.r2_act, 16 * [self.r2_act.regular_repr]),
-        #               nn.FieldType(self.r2_act, 16 * \
-        #                            [self.r2_act.regular_repr]),
-        #               kernel_size=3, padding=1),
-        #     nn.ReLU(nn.FieldType(self.r2_act, 16 * \
-        #             [self.r2_act.regular_repr]), inplace=True),
-        #     nn.PointwiseMaxPool(nn.FieldType(
-        #         self.r2_act, 16 * [self.r2_act.regular_repr]), 2),
-        #     # 16x16
-        #     nn.R2Conv(nn.FieldType(self.r2_act, 16 * [self.r2_act.regular_repr]),
-        #               nn.FieldType(
-        #                   self.r2_act, self.conv_out_channels * [self.r2_act.regular_repr]),
-        #               kernel_size=3, padding=1),
-        #     nn.ReLU(nn.FieldType(self.r2_act, self.conv_out_channels * \
-        #             [self.r2_act.regular_repr])),
-        #     # get equivariant feature vector
-        #     nn.PointwiseAvgPool(nn.FieldType(
-        #         self.r2_act, self.conv_out_channels * [self.r2_act.regular_repr]), 4)
-        # )
+        #Constructed with convolutional neural network feature extractor provided.
+        self.conv = cnn
 
         self.mlp = torch.nn.Sequential(
             torch.nn.Linear(400, 256),
@@ -105,8 +51,7 @@ class EquivariantDeltaNetwork(torch.nn.Module):
             z (float): the z position to move arm to
             theta (float): gripper roll
         """
-        assert x.shape[1:
-                       ] == self.input_shape, f"Observation shape must be {self.input_shape}, current is {x.shape[1:]}"
+        assert x.shape[1:] == self.input_shape, f"Observation shape must be {self.input_shape}, current is {x.shape[1:]}"
 
         batch_size = x.shape[0]
         # inp = nn.GeometricTensor(x, nn.FieldType(

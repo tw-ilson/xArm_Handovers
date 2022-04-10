@@ -8,9 +8,10 @@ from typing import Tuple, Optional
 
 class Preprocess:
 
-    def __init__(self, augmentations:Optional[Tuple[str]]=("",), bkrd_path: Optional[str]=None) -> None:
+    def __init__(self, *augmentations, bkrd_path: Optional[str]=None) -> None:
+        
         if augmentations:
-            self.transform = self.makeTransform(augmentations)
+            self.transform = self.makeTransform(*augmentations)
         if bkrd_path:
             self.bkrd_img = cv2.imread(bkrd_path)
 
@@ -45,10 +46,9 @@ class Preprocess:
             pipeline.append(
                     aug.OneOf(
                         [ 
-                            aug.Sharpen(p=1),
-                            aug.Blur(blur_limit=3, p=1),
-                            aug.MedianBlur(blur_limit=3, p=1),
-                            aug.MotionBlur(blur_limit=3, p=1),
+                            aug.Blur(blur_limit=30, p=1),
+                            aug.MedianBlur(blur_limit=31, p=1),
+                            aug.MotionBlur(blur_limit=30, p=1),
                         ],
                         p=1,
                     )  
@@ -58,11 +58,23 @@ class Preprocess:
             pipeline.append(
                     aug.OneOf(
                         [ 
-                            aug.CLAHE(p=1),
-                            aug.RandomBrightness(p=1),
-                            aug.RandomGamma(p=1),
+                            aug.CLAHE(tile_grid_size=(3, 3), p=1), # same size of kernel
+                            aug.RandomBrightness(0.5, p=1),
+                            aug.RandomGamma([0, 120], p=1),
+                            aug.RandomShadow(p=1)
                         ],
                         p=1,
+                    )
+            )
+
+        if 'noise' in augmentations:
+            pipeline.append(
+                    aug.OneOf(
+                        [ 
+                            aug.GaussNoise(var_limit=(20, 80), p=1),
+                            aug.ISONoise(intensity=[.2, .8], p=1)
+                        ],
+                        p=1
                     )
             )
 
@@ -71,7 +83,7 @@ class Preprocess:
                     aug.OneOf(
                         [ 
                             aug.RandomContrast(p=1),
-                            aug.HueSaturationValue(p=1),
+                            aug.HueSaturationValue( p=1),
                         ],
                         p=1
                     )

@@ -23,8 +23,10 @@ import nuro_arm.robot.robot_arm as robot
 from curriculum import ObjectRoutine
 from augmentations import Preprocess
 
-READY_JPOS = [0, -1, 1.2, 1.4, 0]
+HOME_JPOS = [0, -1, 1.2, 1.4, 0]
 TERMINAL_ERROR_MARGIN = 0.004
+
+CAMERA_FOV = 90
 
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.01
@@ -44,19 +46,18 @@ class HandoverArm(robot.RobotArm):
         if controller_type == 'sim':
             self._id = self._sim.robot_id
 
-        self.arm_ready_jpos = READY_JPOS
-        # self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
+        self.arm_home_jpos = HOME_JPOS
 
 
-    def ready(self):
+    def ready(self, randomize:bool=False):
         '''
         moves the arm to the 'ready' position (bent, pointing forward toward workspace)
         '''
         # self.open_gripper()
+
         self.mp._teleport_gripper(1)
-        # [pb.resetJointState(self.robot_id, i, jp, physicsClientId=self._client)
-        #    for i,jp in zip(self.arm_joint_ids, arm_jpos)]
-        self.mp._teleport_arm(READY_JPOS)
+
+        self.mp._teleport_arm(
 
     def execute_action(self,
                        rot_act: int,
@@ -185,7 +186,7 @@ class HandoverGraspingEnv(gym.Env):
         self.robot = HandoverArm(headless=not render)
         pb.setGravity(0, 0, 0)
 
-        self.prepro = Preprocess(('blur', 'brightness'))
+        self.prepro = Preprocess(['blur', 'brightness', 'noise', 'contrast'])
 
         self.camera = WristCamera(self.robot, img_size)
         self.img_size = img_size
@@ -323,7 +324,7 @@ class HandoverGraspingEnv(gym.Env):
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=False, img_size=86)
+    env = HandoverGraspingEnv(render=False, img_size=256)
     pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 0)
     pb.resetDebugVisualizerCamera(cameraDistance=.4,
                                   cameraYaw=65.2,
@@ -331,5 +332,10 @@ if __name__ == "__main__":
                                   cameraTargetPosition=(.5, -0.36, 0.40))
     env.robot.ready()
     env.plot_obs()
+
+    # while 1:
+    #     env.robot.ready() 
+    #     pb.stepSimulation()
+    #     time.sleep(0.01) 
     
     exit()
