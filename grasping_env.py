@@ -22,7 +22,7 @@ import nuro_arm.robot.robot_arm as robot
 
 from curriculum import ObjectRoutine
 
-READY_JPOS = [0, -1, 1.2, 1.4, 0]
+HOME_JPOS = [0, -1, 1.2, 1.4, 0]
 # under this euclidean distance, grasp will be considered success
 TERMINAL_ERROR_MARGIN = 0.015
 
@@ -47,12 +47,20 @@ class HandoverArm(robot.RobotArm):
         self.arm_ready_jpos = READY_JPOS
         # self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
 
-    def ready(self):
+    def ready(self, randomize=False):
         '''
         moves the arm to the 'ready' position (bent, pointing forward toward workspace)
         '''
-        # self.open_gripper()
-        self.mp._teleport_arm(READY_JPOS)
+
+        self.open_gripper()
+        self.mp._teleport_gripper(1)
+
+        self.mp._teleport_arm(HOME_JPOS)
+
+        if randomize:
+            rot_off = np.random.randint(-4, 4)
+            z_off = np.random.randint(-4, 4)
+            self.execute_action(rot_off, z_off, 0, 0)
 
     def execute_action(self,
                        rot_act: int,
