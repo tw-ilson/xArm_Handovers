@@ -9,16 +9,16 @@ class ContinuousActorNetwork(nn.Module):
     def __init__(self, cnn) -> None:
         super().__init__()
 
-        self.input_dim = state_space + 6
         # (mean, variance) for 4 action spaces
         self.output_dim = 8
 
         #import convolutional network feature extractor for state images
         self.conv = cnn
+
+        self.latent_dim = self.conv.output_size + 6
         
-          
         self.mlp = torch.nn.Sequential(
-            torch.nn.Linear(400, 256),
+            torch.nn.Linear(self.latent_dim, 256),
             torch.nn.ReLU(inplace=True),
             torch.nn.Linear(256, 256),
             torch.nn.ReLU(inplace=True),
@@ -27,6 +27,9 @@ class ContinuousActorNetwork(nn.Module):
             torch.nn.Linear(256, 8)
         )
 
+    def forward(self, x):
+
+
     def compute_score(self, state, action_sample):
         action_dist = self.forward(state)
 
@@ -34,11 +37,6 @@ class ContinuousActorNetwork(nn.Module):
         action_var = action_dist[1::2]
 
         t_val = lambda a, mu, var: (a - mu)/(var**2) 
-
-
-
-
-
 
 
 if __name__ == "__main__":

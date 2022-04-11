@@ -57,7 +57,13 @@ class HandoverArm(robot.RobotArm):
 
         self.mp._teleport_gripper(1)
 
-        self.mp._teleport_arm(
+        self.mp._teleport_arm(HOME_JPOS)
+
+        if randomize:
+            rot_off = np.random.randint(-4, 4)
+            z_off = np.random.randint(-4, 4)
+            self.execute_action(rot_off, z_off, 0, 0)
+
 
     def execute_action(self,
                        rot_act: int,
