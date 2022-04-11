@@ -250,7 +250,7 @@ class HandoverGraspingEnv(gym.Env):
         obs = self.get_obs()
         reward, done = self.getReward()
 
-        done = done or self.t_step >= self.episode_length or collided
+        done = done or self.t_step >= self.episode_length# or collided
 
         # diagnostic information, what should we put here?
         info = {'success': self.canGrasp()}

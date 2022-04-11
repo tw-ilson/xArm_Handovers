@@ -94,11 +94,11 @@ class DQNAgent:
             self.buffer.add_transition(s=s, a=a, r=r, sp=sp, d=done)
 
             # optimize
-            # if len(self.buffer) > self.batch_size:
-            #     loss = self.optimize()
-            #     loss_data.append(loss)
-            #     if len(loss_data) % self.target_network_update_freq == 0:
-            #         self.hard_target_update()
+            if len(self.buffer) > self.batch_size:
+                loss = self.optimize()
+                loss_data.append(loss)
+                if len(loss_data) % self.target_network_update_freq == 0:
+                    self.hard_target_update()
 
             s = sp.copy()
             if done:
@@ -264,7 +264,7 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=True, sparse_reward=False)
+    env = HandoverGraspingEnv(render=False, sparse_reward=False)
     # TODO questions reward logging?
     # why is atol not working for all close? even with 0, still returning true eventually
     # get object to float
@@ -276,7 +276,7 @@ if __name__ == "__main__":
                                   cameraTargetPosition=(.5, -0.36, 0.40))
     # TODO change render, device, and uncomment optimize
     agent = DQNAgent(env=env,
-                     gamma=0.6,
+                     gamma=0.5,
                      learning_rate=1e-3,
                      buffer_size=6000,
                      batch_size=64,
@@ -284,8 +284,8 @@ if __name__ == "__main__":
                      final_epsilon=0.2,
                      update_method='standard',
                      exploration_fraction=0.9,
-                     target_network_update_freq=250,
+                     target_network_update_freq=400,
                      seed=1,
-                     device='cpu')
+                     device='cuda')
 
-    agent.train(5000, 100)
+    agent.train(50000, 100)

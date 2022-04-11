@@ -106,7 +106,7 @@ class ObjectRoutine():
         elif self.mode == 'noise':
             for ax in self.routine:
                 issueUpdate(
-                    0.03 * self.noise[ax](time()),
+                    0.004 * self.noise[ax](0.1 * time()),
                     ax)
 
         resetBasePositionAndOrientation(
