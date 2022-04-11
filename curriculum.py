@@ -2,7 +2,7 @@ from random import seed
 import numpy as np
 from typing import Optional
 
-from math import sin
+from math import sin, cos
 from time import time
 from perlin_noise import PerlinNoise
 
@@ -11,8 +11,11 @@ from pybullet import resetBasePositionAndOrientation, getQuaternionFromEuler
 MOVE_OPTS = ['static', 'cyclic', 'noise']
 DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']
 
+#NOTE: relevant?
 WORKSPACE = np.array(((0.10, -0.05, 0.2),  # ((min_x, min_y, min_z)
                       (0.20, 0.05, 0.3)))  # (max_x, max_y, max_z))
+
+DIST_MAX = 0.2
 
 START_POS = [0.3, 0.0, 0.2]
 
@@ -57,13 +60,14 @@ class ObjectRoutine():
     def reset(self):
         if self.random_start:
             ws_padding = 0.01
-            x, y, z = np.random.uniform(self.workspace[0, :]+ws_padding,
-                                        self.workspace[1, :]-ws_padding)
+            # x, y, z = np.random.uniform(self.workspace[0, :]+ws_padding,
+            #                             self.workspace[1, :]-ws_padding)
 
-            #theta = lambda: np.random.uniform(-np.pi/2, np.pi/2)
+            #pick random start position based on radius around robot
+            theta = np.random.normal(-np.pi/2, np.pi/2)
+            r = np.random.uniform(.05, DIST_MAX)
+            self.position = list((r * cos(theta), r * sin(theta), np.random.uniform(0.1, 0.3)))
 
-            self.position = np.array((x, y, z))
-            #self.orientation = [theta(), 0, theta()]
             self.orientation = [0, 0, 0]
         else:
             self.position = START_POS
