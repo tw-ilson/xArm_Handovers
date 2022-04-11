@@ -44,10 +44,10 @@ class HandoverArm(robot.RobotArm):
         if controller_type == 'sim':
             self._id = self._sim.robot_id
 
-        self.arm_ready_jpos = READY_JPOS
+        self.arm_ready_jpos = HOME_JPOS
         # self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
 
-    def ready(self, randomize=False):
+    def ready(self, randomize=True):
         '''
         moves the arm to the 'ready' position (bent, pointing forward toward workspace)
         '''
@@ -251,7 +251,6 @@ class HandoverGraspingEnv(gym.Env):
             collided = False
         else:
             collided = True
-            pass
 
         self.t_step += 1
 
