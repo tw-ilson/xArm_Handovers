@@ -9,20 +9,20 @@ from tqdm import tqdm
 import pybullet as pb
 import matplotlib.pyplot as plt
 
-from equivariant_delta_pred import EquivariantDeltaNetwork
+from value_critic import ValueNetwork
+from continuous_actor import ContinuousActorNetwork
+from conv_nets import CNN, R2EquiCNN
 from utils import ReplayBuffer, plot_curves
 from grasping_env import HandoverGraspingEnv
 
 
-class DQNAgent:
+class ActorCriticAgent:
     def __init__(self,
                  env: HandoverGraspingEnv,
                  gamma: float,
                  learning_rate: float,
                  buffer_size: int,
                  batch_size: int,
-                 initial_epsilon: float,
-                 final_epsilon: float,
                  update_method: str = 'standard',
                  exploration_fraction: float = 0.9,
                  target_network_update_freq: int = 1000,
@@ -33,9 +33,10 @@ class DQNAgent:
 
         self.gamma = gamma
         self.batch_size = batch_size
-        self.initial_epsilon = initial_epsilon
-        self.final_epsilon = final_epsilon
+        # self.initial_epsilon = initial_epsilon
+        # self.final_epsilon = final_epsilon
         self.exploration_fraction = exploration_fraction
+
         self.target_network_update_freq = target_network_update_freq
         self.update_method = update_method
 
@@ -45,12 +46,18 @@ class DQNAgent:
 
         self.device = device
         img_shape = (3, self.env.img_size, self.env.img_size)
-        self.network = EquivariantDeltaNetwork(img_shape).to(device)
-        self.target_network = EquivariantDeltaNetwork(img_shape).to(device)
+        self.image_feature_extractor = CNN(img_shape)
+
+        self.policy_network = ContinuousActorNetwork(self.image_feature_extractor)
+        self.value_network = ValueNetwork(self.image_feature_extractor)
+        self.policy_target_network = ContinuousActorNetwork(self.image_feature_extractor)
+        self.value_target_network = ValueNetwork(self.image_feature_extractor)
+
         self.hard_target_update()
 
-        self.optim = torch.optim.Adam(self.network.parameters(),
-                                      lr=learning_rate)
+        self.policy_opt = torch.optim.Adam(self.policy_network.parameters(), lr=learning_rate)
+        self.value_opt = torch.optim.Adam(self.value_network.parameters(), lr=learning_rate)
+
 
         np.random.seed(seed)
         torch.manual_seed(seed)
@@ -85,20 +92,24 @@ class DQNAgent:
         pbar = tqdm(range(1, num_steps+1))
         for step in pbar:
             progress_fraction = step/(self.exploration_fraction*num_steps)
-            epsilon = self.compute_epsilon(progress_fraction)
-            a = self.select_action(s, epsilon)
+            a = self.select_action(s)
 
             sp, r, done, info = self.env.step(a)
             episode_rewards += r
 
-            print(r)
-            print(self.env.getEEPosOrn()[0])
+            # print(r)
+            # print(self.env.getEEPosOrn()[0])
 
             self.buffer.add_transition(s=s, a=a, r=r, sp=sp, d=done)
 
             # optimize
             if len(self.buffer) > self.batch_size:
-                loss = self.optimize()
+                
+                batch = self.buffer.sample(self.batch_size)
+                batch = self.prepare_batch(*batch)
+                critic_loss = self.optimize_critic(*batch)
+                actor_loss = self.optimize_policy(*batch)
+
                 loss_data.append(loss)
                 if len(loss_data) % self.target_network_update_freq == 0:
                     self.hard_target_update()
@@ -144,9 +155,13 @@ class DQNAgent:
 
             s = sp.copy()
 
+    def optimize_policy(self, s, a, r, sp, d):
+        self.policy_opt.zero_grad()
+        score = self.policy_network.compute_score(s, a, self.value_network(sp))
+        score.backward()
+        self.policy_opt.step()
 
-
-    def optimize(self) -> float:
+    def optimize_critic(self, s, a, r, sp, d) -> float:
         '''Optimizes q-network by minimizing td-loss on a batch sampled from
         replay buffer
 
@@ -166,16 +181,16 @@ class DQNAgent:
             return torch.sum(torch.cat([torch.max(network_pred[:, i:i+3], dim=1)[0].unsqueeze(1)
                                       for i in range(0, 12, 3)], dim=1), 1)
 
-        batch = self.buffer.sample(self.batch_size)
-        s, a, r, sp, d = self.prepare_batch(*batch)
+        # batch = self.buffer.sample(self.batch_size)
+        # s, a, r, sp, d = self.prepare_batch(*batch)
 
-        q_all_pred = self.network(s)
+        q_all_pred = self.value_network(s)
 
         q_pred = q_axis_sum(q_all_pred)
 
         if self.update_method == 'standard':
             with torch.no_grad():
-                q_all_pred_next = self.target_network(sp)
+                q_all_pred_next = self.value_target_network(sp)
                 q_next = q_axis_sum(q_all_pred_next)
                 q_target = r + self.gamma * q_next * (1-d)
 
@@ -191,12 +206,13 @@ class DQNAgent:
         #         q_target = r + self.gamma * q_next * (1-d)
 
         assert q_pred.shape == q_target.shape
-        self.optim.zero_grad()
-        loss = self.network.compute_loss(q_pred, q_target)
+        self.value_opt.zero_grad()
+        loss = self.value_network.compute_loss(q_pred, q_target)
         loss.backward()
 
-        nn.utils.clip_grad_norm_(self.network.parameters(), 10)
-        self.optim.step()
+        #NOTE: what is the purpose of this clipping?
+        nn.utils.clip_grad_norm_(self.value_network.parameters(), 10)
+        self.value_opt.step()
 
         return loss.item()
 
@@ -235,19 +251,21 @@ class DQNAgent:
 
         return s0, a0, r0, sp0, d0
 
-    def select_action(self, state: np.ndarray, epsilon: float = 0.) -> np.ndarray:
-        '''Returns action based on e-greedy action selection.  With probability
-        of epsilon, choose random action in environment action space, otherwise
-        select argmax of q-function at given state
-
+    def select_action(self, state: np.ndarray) -> np.ndarray:
+        '''Returns action based on stochastic sampling action selection. Given a policy function
+        output of a mean and variance, sample an action from the normal distribution for each axis
+        in the action space.
         Returns
         -------
         4-vector of discrete actions, each in {-1, 0, 1}
         '''
-        if np.random.random() < epsilon:
-            action = np.array(self.env.action_space.sample())
-        else:
-            action = self.policy(state)
+        action = np.zeros(4)
+        action_dist = self.policy(state) 
+        mu, var = action_dist[::2], action_dist[1::2]
+        for i in range(4):
+            action[i] = np.random.normal(mu[i], var[i]**2)
+
+
         print(action)
         return action
 
@@ -267,7 +285,7 @@ class DQNAgent:
         t_state = t_state.permute(0, 3, 1, 2)
         t_state = torch.div(t_state, 255)
         t_state = t_state.to(self.device)
-        action = self.network.predict(t_state).squeeze().cpu().numpy()
+        action = self.policy_network.predict(t_state).squeeze().cpu().numpy()
         return action
 
     def compute_epsilon(self, fraction: float) -> float:

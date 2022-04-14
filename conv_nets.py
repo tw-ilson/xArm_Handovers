@@ -14,7 +14,7 @@ class CNN(tnn.Module):
         super().__init__()
 
         self.input_shape = input_shape
-        self.conv_out_channels = 16
+        self.conv_out_channels = 4 
         
         self.conv = tnn.Sequential(
             tnn.Conv2d(3, 16, kernel_size=3, padding=1),
@@ -31,8 +31,10 @@ class CNN(tnn.Module):
             tnn.AvgPool2d(kernel_size=2)
         )
 
+        self.out_size = self.forward(torch.zeros(1, 3, input_shape, input_shape)).shape
+
     def forward(self, x):
-        return self.conv(x).flatten()
+        return self.conv(x).flatten(1)#flat on batch dim
 
 class R2EquiCNN(tnn.Module):
 
@@ -50,7 +52,7 @@ class R2EquiCNN(tnn.Module):
         self.N = N
 
         self.input_shape = input_shape
-        self.conv_out_channels = 16
+        self.conv_out_channels = 4
 
         self.r2_act = gspaces.Rot2dOnR2(N)
 
@@ -94,10 +96,8 @@ class R2EquiCNN(tnn.Module):
         )
 
     def forward(self, x):
-        return self.conv(x).flatten()
+        return self.conv(x).flatten(1)
 
 if __name__ == '__main__':
     conv = CNN(84)
-    x = torch.zeros(2, 3, 84, 84)
-
-    print(conv(x).shape)
+    print(conv.out_size)
