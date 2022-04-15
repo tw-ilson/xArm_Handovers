@@ -31,10 +31,12 @@ class CNN(tnn.Module):
             tnn.AvgPool2d(kernel_size=2)
         )
 
-        self.out_size = self.forward(torch.zeros(1, 3, input_shape, input_shape)).shape
+        self.output_size = self.forward(torch.zeros(*input_shape).unsqueeze(0)).shape[1]
 
     def forward(self, x):
-        return self.conv(x).flatten(1)#flat on batch dim
+        x = self.conv(x)
+        # print(x.shape)
+        return x.flatten(1)
 
 class R2EquiCNN(tnn.Module):
 

@@ -27,7 +27,7 @@ class ValueNetwork(torch.nn.Module):
         self.cnn = cnn
 
         self.mlp = torch.nn.Sequential(
-            torch.nn.Linear(self.cnn.out_size, 256),
+            torch.nn.Linear(self.cnn.output_size, 256),
             torch.nn.ReLU(inplace=True),
             torch.nn.Linear(256, 256),
             torch.nn.ReLU(inplace=True),
@@ -45,7 +45,7 @@ class ValueNetwork(torch.nn.Module):
         Returns:
             q-value estimation associated with the state-action pair
         """
-        assert state.shape[1:] == self.input_shape, f"Observation shape must be {self.input_shape}, current is {x.shape[1:]}"
+        # assert state.shape[1:] == self.input_shape, f"Observation shape must be {self.input_shape}, current is {x.shape[1:]}"
 
         batch_size = state.shape[0]
         # inp = nn.GeometricTensor(x, nn.FieldType(
@@ -54,7 +54,7 @@ class ValueNetwork(torch.nn.Module):
         # assert conv_out.shape == torch.Size((batch_size, self.N * self.cnn_out_channels)
         #                                     ), f"Conv size: {conv_out.shape} != required: {torch.Size((batch_size, self.N * self.cnn_out_channels))}"
 
-        mlp_out = self.mlp(conv_out, 1)
+        mlp_out = self.mlp(conv_out)
 
         return mlp_out
 

@@ -4,29 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot_predictions(images, qmaps, actions):
-    '''Allows user to compare the input images with the predicted qmaps (yellow
-    is higher value) and predicted actions during training
-    '''
-    f, axs = plt.subplots(2, 5, figsize=(7,2.5))
-
-    for ci in range(axs.shape[1]):
-        axs[0,ci].imshow(images[ci].permute((1,2,0)).cpu())
-        px, py = actions[ci].squeeze().cpu().numpy()
-        axs[0,ci].plot(py, px, 'w+', markersize=6, markeredgewidth=2)
-        axs[0,ci].plot(py, px, 'r+', markersize=5)
-
-        axs[1,ci].imshow(qmaps[ci,0].cpu())
-
-    axs[0,0].text(-8, 30, 'Images', rotation='vertical')
-    axs[1,0].text(-8, 30, 'Qmaps', rotation='vertical')
-
-    [a.axis('off') for a in axs.flatten()]
-    plt.tight_layout()
-
-
-def plot_curves(rewards, success, loss):
-    f, axs = plt.subplots(1, 3, figsize=(7,2.5))
+def plot_curves(rewards, success, critic_loss, actor_loss):
+    f, axs = plt.subplots(1, 4, figsize=(7,2.5))
     W = 50 # smoothing window
 
     [a.clear() for a in axs]
@@ -39,10 +18,16 @@ def plot_curves(rewards, success, loss):
     axs[1].set_ylabel('success rate')
     axs[1].set_ylim(0, 1)
 
-    if len(loss) > 0:
-        axs[2].plot(np.convolve(loss, np.ones(W)/W, 'valid'))
+    if len(critic_loss) > 0:
+        axs[2].plot(np.convolve(critic_loss, np.ones(W)/W, 'valid'))
     axs[2].set_xlabel('opt steps')
-    axs[2].set_ylabel('td-loss')
+    axs[2].set_ylabel('value est. td-loss')
+    plt.tight_layout()
+
+    if len(actor_loss) > 0:
+        axs[2].plot(np.convolve(actor_loss, np.ones(W)/W, 'valid'))
+    axs[2].set_xlabel('opt steps')
+    axs[2].set_ylabel('policy gradient loss score')
     plt.tight_layout()
 
 

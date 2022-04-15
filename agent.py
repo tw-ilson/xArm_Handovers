@@ -83,7 +83,8 @@ class ActorCriticAgent:
         '''
         rewards_data = []
         success_data = []
-        loss_data = []
+        critic_loss_data = []
+        policy_loss_data = []
 
         episode_count = 0
         episode_rewards = 0
@@ -108,17 +109,20 @@ class ActorCriticAgent:
                 batch = self.buffer.sample(self.batch_size)
                 batch = self.prepare_batch(*batch)
                 critic_loss = self.optimize_critic(*batch)
-                actor_loss = self.optimize_policy(*batch)
+                policy_loss = self.optimize_policy(*batch)
 
-                loss_data.append(loss)
-                if len(loss_data) % self.target_network_update_freq == 0:
+                critic_loss_data.append(critic_loss)
+                policy_loss_data.append(policy_loss)
+                if len(policy_loss_data) % self.target_network_update_freq == 0:
                     self.hard_target_update()
 
             s = sp.copy()
             if done:
                 s = self.env.reset()
-                torch.save(self.network.state_dict(),
-                           os.path.join(os.getcwd(), "recent.pt"))
+                torch.save(self.value_network.state_dict(),
+                           os.path.join(os.getcwd(), "recent_critic.pt"))
+                torch.save(self.policy_network.state_dict(),
+                           os.path.join(os.getcwd(), "recent_actor.pt"))
                 rewards_data.append(episode_rewards)
                 success_data.append(info['success'])
 
@@ -129,13 +133,7 @@ class ActorCriticAgent:
                 pbar.set_description(f'Success = {avg_success:.1%}')
 
             if plotting_freq > 0 and step % plotting_freq == 0:
-                batch = self.buffer.sample(self.batch_size)
-                imgs = self.prepare_batch(*batch)[0]
-
-                with torch.no_grad():
-                    actions = self.network(imgs)
-                    # actions = argmaxd(q_map_pred)
-                plot_curves(rewards_data, success_data, loss_data)
+                plot_curves(rewards_data, success_data, critic_loss_data, policy_loss_data)
                 plt.show()
 
         return rewards_data, success_data, loss_data
@@ -150,15 +148,15 @@ class ActorCriticAgent:
             a = self.select_action(s)
 
             sp, r, done, info = self.env.step(a)
-            print(r)
-            print(self.env.getEEPosOrn()[0])
+            # print(r)
+            # print(self.env.getEEPosOrn()[0])
 
             s = sp.copy()
 
     def optimize_policy(self, s, a, r, sp, d):
         self.policy_opt.zero_grad()
         score = self.policy_network.compute_score(s, a, self.value_network(sp))
-        score.backward()
+        score.sum().backward()
         self.policy_opt.step()
 
     def optimize_critic(self, s, a, r, sp, d) -> float:
@@ -169,30 +167,31 @@ class ActorCriticAgent:
         -------
         mean squared td-loss across batch
         '''
-        def q_axis_sum(network_pred):
-            '''computes the sum of the optimal action for each dimension of the action space (across a batch)
-            Input
-            -----
-                12-vector of axis-wise q-values
-            Return
-            -----
-                Q-value of the state is the sum of the axis-wise 4 max actions
-            '''
-            return torch.sum(torch.cat([torch.max(network_pred[:, i:i+3], dim=1)[0].unsqueeze(1)
-                                      for i in range(0, 12, 3)], dim=1), 1)
+        # def q_axis_sum(network_pred):
+        #     '''computes the sum of the optimal action for each dimension of the action space (across a batch)
+        #     Input
+        #     -----
+        #         12-vector of axis-wise q-values
+        #     Return
+        #     -----
+        #         Q-value of the state is the sum of the axis-wise 4 max actions
+        #     '''
+        #     return torch.sum(torch.cat([torch.max(network_pred[:, i:i+3], dim=1)[0].unsqueeze(1)
+        #                               for i in range(0, 12, 3)], dim=1), 1)
 
         # batch = self.buffer.sample(self.batch_size)
         # s, a, r, sp, d = self.prepare_batch(*batch)
 
-        q_all_pred = self.value_network(s)
+        r = r.unsqueeze(1)
+        d = d.unsqueeze(1)
 
-        q_pred = q_axis_sum(q_all_pred)
+        q_pred = self.value_network(s)
 
         if self.update_method == 'standard':
             with torch.no_grad():
-                q_all_pred_next = self.value_target_network(sp)
-                q_next = q_axis_sum(q_all_pred_next)
-                q_target = r + self.gamma * q_next * (1-d)
+                q_pred_next = self.value_target_network(sp)
+                # q_next = self.value_network(q_pred_next)
+                q_target = r + self.gamma * q_pred_next * (1-d)
 
         # TODO implement
         # elif self.update_method == 'double':
@@ -205,7 +204,7 @@ class ActorCriticAgent:
         #                                 pred_act[:, 1]]
         #         q_target = r + self.gamma * q_next * (1-d)
 
-        assert q_pred.shape == q_target.shape
+        assert q_pred.shape == q_target.shape, f"r: {r.shape}, q_target: {q_target.shape}, q_pred_next: {q_pred_next.shape}"
         self.value_opt.zero_grad()
         loss = self.value_network.compute_loss(q_pred, q_target)
         loss.backward()
@@ -266,7 +265,7 @@ class ActorCriticAgent:
             action[i] = np.random.normal(mu[i], var[i]**2)
 
 
-        print(action)
+        # print(action)
         return action
 
     def policy(self, state: np.ndarray) -> np.ndarray:
@@ -288,27 +287,20 @@ class ActorCriticAgent:
         action = self.policy_network.predict(t_state).squeeze().cpu().numpy()
         return action
 
-    def compute_epsilon(self, fraction: float) -> float:
-        '''Calculate epsilon value based on linear annealing schedule
-
-        Parameters
-        ----------
-        fraction
-            fraction of exploration time steps that have been taken
-        '''
-        fraction = np.clip(fraction, 0., 1.)
-        return (1-fraction) * self.initial_epsilon \
-            + fraction * self.final_epsilon
-
     def hard_target_update(self):
         '''Update target network by copying weights from online network'''
-        self.target_network.load_state_dict(self.network.state_dict())
+        self.policy_target_network.load_state_dict(self.policy_network.state_dict())
+        self.value_target_network.load_state_dict(self.value_network.state_dict())
 
-    def save_network(self, dest: str = 'q_network.pt'):
-        torch.save(self.network.state_dict(), dest)
+    def save_network(self, dests: Tuple[str, str] =('policy_network.pt', 'q_network.pt')):
+        assert len(dests) == 2
+        torch.save(self.policy_network.state_dict(), dests[0])
+        torch.save(self.value_network.state_dict(), dests[1])
 
-    def load_network(self, model_path: str, map_location: str = 'cpu'):
-        self.network.load_state_dict(torch.load(model_path,
+    def load_network(self, model_path: Tuple[str, str]= ('policy_network.pt', 'q_network.pt'), map_location: str = 'cpu'):
+        self.policy_network.load_state_dict(torch.load(model_path[0],
+                                                map_location=map_location))
+        self.value_network.load_state_dict(torch.load(model_path[1],
                                                 map_location=map_location))
         self.hard_target_update()
 
@@ -325,17 +317,15 @@ if __name__ == "__main__":
                                   cameraPitch=-40.6,
                                   cameraTargetPosition=(.5, -0.36, 0.40))
 
-    agent = DQNAgent(env=env,
+    agent = ActorCriticAgent(env=env,
                      gamma=0.5,
                      learning_rate=1e-3,
                      buffer_size=4000,
                      batch_size=8,
-                     initial_epsilon=0.5,  # TODO change hyperparams
-                     final_epsilon=0.2,
                      update_method='standard',
                      exploration_fraction=0.9,
                      target_network_update_freq=250,
                      seed=1,
-                     device='cuda')
+                     device='cpu')
 
     agent.train(10000, 100)
