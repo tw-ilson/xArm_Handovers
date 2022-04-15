@@ -53,7 +53,13 @@ class DQNAgent:
         self.optim = torch.optim.Adam(self.network.parameters(),
                                       lr=learning_rate)
 
+        # extra things to pickle
         self.global_step = 1
+        self.rewards_data = []
+        self.success_data = []
+        self.loss_data = []
+        self.episode_count = 0
+        self.episode_rewards = 0
 
         np.random.seed(seed)
         torch.manual_seed(seed)
@@ -85,12 +91,7 @@ class DQNAgent:
             interval (in env steps) between plotting of training data, if 0
             then never plots.
         '''
-        rewards_data = []
-        success_data = []
-        loss_data = []
 
-        episode_count = 0
-        episode_rewards = 0
         s = self.env.reset()
 
         pbar = tqdm(range(self.global_step, num_steps+1))
@@ -101,28 +102,28 @@ class DQNAgent:
             a = self.select_action(s, self.epsilon)
 
             sp, r, done, info = self.env.step(a)
-            episode_rewards += r
+            self.episode_rewards += r
 
             self.buffer.add_transition(s=s, a=a, r=r, sp=sp, d=done)
 
             # optimize
             if len(self.buffer) > self.batch_size:
                 loss = self.optimize()
-                loss_data.append(loss)
-                if len(loss_data) % self.target_network_update_freq == 0:
+                self.loss_data.append(loss)
+                if len(self.loss_data) % self.target_network_update_freq == 0:
                     self.hard_target_update()
 
             s = sp.copy()
             if done:
                 s = self.env.reset()
-                rewards_data.append(episode_rewards)
-                success_data.append(info['success'])
+                self.rewards_data.append(self.episode_rewards)
+                self.success_data.append(info['success'])
 
-                episode_rewards = 0
-                episode_count += 1
+                self.episode_rewards = 0
+                self.episode_count += 1
 
-                avg_success = np.mean(success_data[-min(episode_count, 50):])
-                avg_rewards = np.mean(rewards_data[-min(episode_count, 50):])
+                avg_success = np.mean(self.success_data[-min(self.episode_count, 50):])
+                avg_rewards = np.mean(self.rewards_data[-min(self.episode_count, 50):])
                 pbar.set_description(f'Success = {avg_success:.1%}, Rewards = {avg_rewards}')
 
             if plotting_freq > 0 and step % plotting_freq == 0:
@@ -133,7 +134,7 @@ class DQNAgent:
             # pickle every 10000 steps
                 torch.save(self.network.state_dict(), os.path.join(os.getcwd(), "recent.pt"))
                 snapshot = os.path.join(os.getcwd(), "snapshot.pt")
-                keys_to_save = ['epsilon', 'buffer', 'network', 'target_network', 'global_step']
+                keys_to_save = ['epsilon', 'buffer', 'network', 'target_network', 'global_step', 'rewards_data', 'success_data', 'loss_data', 'episode_count', 'episode_rewards']
                 payload = {k: self.__dict__[k] for k in keys_to_save}
                 torch.save(payload, snapshot)
 #                 with torch.no_grad():
@@ -142,8 +143,8 @@ class DQNAgent:
                 # plot_predictions(imgs, q_map_pred, actions)
 #                 plt.show()
 
-        plot_curves(rewards_data, success_data, loss_data)
-        return rewards_data, success_data, loss_data
+        plot_curves(self.rewards_data, self.success_data, self.loss_data)
+        return self.rewards_data, self.success_data, self.loss_data
 
     def optimize(self) -> float:
         '''Optimizes q-network by minimizing td-loss on a batch sampled from
