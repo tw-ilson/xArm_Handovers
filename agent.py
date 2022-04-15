@@ -129,8 +129,8 @@ class DQNAgent:
                 batch = self.buffer.sample(self.batch_size)
                 imgs = self.prepare_batch(*batch)[0]
 
-            if step == (num_steps // 2) or step == num_steps:
-            # pickle in the middle (to be safe) and at the end
+            if step % 10000 == 0:
+            # pickle every 10000 steps
                 torch.save(self.network.state_dict(), os.path.join(os.getcwd(), "recent.pt"))
                 snapshot = os.path.join(os.getcwd(), "snapshot.pt")
                 keys_to_save = ['epsilon', 'buffer', 'network', 'target_network', 'global_step']

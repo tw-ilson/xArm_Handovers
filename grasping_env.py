@@ -202,7 +202,7 @@ class HandoverGraspingEnv(gym.Env):
 
         # no options currently given
         self.object_routine = ObjectRoutine(
-            self.object_id)#, moving_mode='noise', dimensions=['horizontal'])
+            self.object_id, moving_mode='noise', dimensions=['depth', 'horizontal'])
 
         pb.resetBasePositionAndOrientation(self.object_id, self.object_routine.getPos(
         ), pb.getQuaternionFromEuler(self.object_routine.getOrn()))
