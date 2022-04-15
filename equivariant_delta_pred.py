@@ -28,7 +28,7 @@ class EquivariantDeltaNetwork(torch.nn.Module):
         self.input_shape = input_shape
         self.conv_out_channels = 16
 
-        self.r2_act = gspaces.Rot2dOnR2(N)
+#         self.r2_act = gspaces.Rot2dOnR2(N)
 
         self.conv = tnn.Sequential(
             tnn.Conv2d(input_shape[0], 16, kernel_size=3, padding=1),

@@ -34,6 +34,7 @@ class DQNAgent:
         self.gamma = gamma
         self.batch_size = batch_size
         self.initial_epsilon = initial_epsilon
+        self.epsilon = initial_epsilon
         self.final_epsilon = final_epsilon
         self.exploration_fraction = exploration_fraction
         self.target_network_update_freq = target_network_update_freq
@@ -52,10 +53,20 @@ class DQNAgent:
         self.optim = torch.optim.Adam(self.network.parameters(),
                                       lr=learning_rate)
 
+        self.global_step = 1
+
         np.random.seed(seed)
         torch.manual_seed(seed)
         if device == 'cuda':
             torch.cuda.manual_seed(seed)
+
+        # if snapshot exists, load all parameters
+        snapshot = os.path.join(os.getcwd(), "snapshot.pt")
+        if os.path.exists(snapshot):
+            print(f'resuming: {snapshot}')
+            payload = torch.load(snapshot)
+            for k, v in payload.items():
+                self.__dict__[k] = v
 
     def isTerminal(self) -> bool:
         ''' determines if the current state of the agent is a terminal state
@@ -82,11 +93,12 @@ class DQNAgent:
         episode_rewards = 0
         s = self.env.reset()
 
-        pbar = tqdm(range(1, num_steps+1))
+        pbar = tqdm(range(self.global_step, num_steps+1))
         for step in pbar:
+            self.global_step += 1
             progress_fraction = step/(self.exploration_fraction*num_steps)
-            epsilon = self.compute_epsilon(progress_fraction)
-            a = self.select_action(s, epsilon)
+            self.epsilon = self.compute_epsilon(progress_fraction)
+            a = self.select_action(s, self.epsilon)
 
             sp, r, done, info = self.env.step(a)
             episode_rewards += r
@@ -103,8 +115,6 @@ class DQNAgent:
             s = sp.copy()
             if done:
                 s = self.env.reset()
-                torch.save(self.network.state_dict(),
-                           os.path.join(os.getcwd(), "recent.pt"))
                 rewards_data.append(episode_rewards)
                 success_data.append(info['success'])
 
@@ -112,12 +122,20 @@ class DQNAgent:
                 episode_count += 1
 
                 avg_success = np.mean(success_data[-min(episode_count, 50):])
-                pbar.set_description(f'Success = {avg_success:.1%}')
+                avg_rewards = np.mean(rewards_data[-min(episode_count, 50):])
+                pbar.set_description(f'Success = {avg_success:.1%}, Rewards = {avg_rewards}')
 
             if plotting_freq > 0 and step % plotting_freq == 0:
                 batch = self.buffer.sample(self.batch_size)
                 imgs = self.prepare_batch(*batch)[0]
 
+            if step == (num_steps // 2) or step == num_steps:
+            # pickle in the middle (to be safe) and at the end
+                torch.save(self.network.state_dict(), os.path.join(os.getcwd(), "recent.pt"))
+                snapshot = os.path.join(os.getcwd(), "snapshot.pt")
+                keys_to_save = ['epsilon', 'buffer', 'network', 'target_network', 'global_step']
+                payload = {k: self.__dict__[k] for k in keys_to_save}
+                torch.save(payload, snapshot)
 #                 with torch.no_grad():
 #                     actions = self.network(imgs)
                 # actions = argmax2d(q_map_pred)
@@ -265,8 +283,6 @@ class DQNAgent:
 
 if __name__ == "__main__":
     env = HandoverGraspingEnv(render=False, sparse_reward=False)
-    # TODO questions reward logging?
-    # why is atol not working for all close? even with 0, still returning true eventually
     # get object to float
 
     pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 1)
@@ -276,7 +292,7 @@ if __name__ == "__main__":
                                   cameraTargetPosition=(.5, -0.36, 0.40))
     # TODO change render, device, and uncomment optimize
     agent = DQNAgent(env=env,
-                     gamma=0.5,
+                     gamma=0.0,
                      learning_rate=1e-3,
                      buffer_size=6000,
                      batch_size=64,
@@ -284,8 +300,8 @@ if __name__ == "__main__":
                      final_epsilon=0.2,
                      update_method='standard',
                      exploration_fraction=0.9,
-                     target_network_update_freq=400,
+                     target_network_update_freq=500,
                      seed=1,
                      device='cuda')
 
-    agent.train(50000, 100)
+    agent.train(1000000, 100)

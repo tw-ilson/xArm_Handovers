@@ -27,7 +27,7 @@ HOME_JPOS = [0, -1, 1.2, 1.4, 0]
 TERMINAL_ERROR_MARGIN = 0.015
 
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
-ROTATION_DELTA = 0.01
+ROTATION_DELTA = 0.02
 VERTICAL_DELTA = 0.01
 DISTANCE_DELTA = 0.01
 ROLL_DELTA = 0.01
@@ -202,7 +202,7 @@ class HandoverGraspingEnv(gym.Env):
 
         # no options currently given
         self.object_routine = ObjectRoutine(
-            self.object_id, moving_mode='noise', dimensions=['depth', 'horizontal'])
+            self.object_id)#, moving_mode='noise', dimensions=['horizontal'])
 
         pb.resetBasePositionAndOrientation(self.object_id, self.object_routine.getPos(
         ), pb.getQuaternionFromEuler(self.object_routine.getOrn()))
@@ -295,7 +295,7 @@ class HandoverGraspingEnv(gym.Env):
         if self.sparse:
             return int(done), done
         else:
-            return -self.distToGrasp(), done
+            return self.distToGrasp(), done
 
     def get_obs(self, background_mask: Optional[np.ndarray] = None) -> np.ndarray:
         '''Takes picture using camera, returns rgb and segmentation mask of image
