@@ -73,6 +73,8 @@ class DQNAgent:
             payload = torch.load(snapshot)
             for k, v in payload.items():
                 self.__dict__[k] = v
+            # might not be necessary but might as well
+            self.network.load_state_dict(torch.load(os.path.join(os.getcwd(), "recent.pt")))
 
     def isTerminal(self) -> bool:
         ''' determines if the current state of the agent is a terminal state
@@ -126,24 +128,22 @@ class DQNAgent:
                 avg_rewards = np.mean(self.rewards_data[-min(self.episode_count, 50):])
                 pbar.set_description(f'Success = {avg_success:.1%}, Rewards = {avg_rewards}')
 
-            if plotting_freq > 0 and step % plotting_freq == 0:
-                batch = self.buffer.sample(self.batch_size)
-                imgs = self.prepare_batch(*batch)[0]
-
             if step % 10000 == 0:
-            # pickle every 10000 steps
+            # pickle and plot every 10000 steps
                 torch.save(self.network.state_dict(), os.path.join(os.getcwd(), "recent.pt"))
                 snapshot = os.path.join(os.getcwd(), "snapshot.pt")
-                keys_to_save = ['epsilon', 'buffer', 'network', 'target_network', 'global_step', 'rewards_data', 'success_data', 'loss_data', 'episode_count', 'episode_rewards']
+                keys_to_save = ['epsilon', 'buffer', 'network', 'target_network', 'global_step', 
+                                'rewards_data', 'optim', 'success_data', 'loss_data', 
+                                'episode_count', 'episode_rewards']
                 payload = {k: self.__dict__[k] for k in keys_to_save}
                 torch.save(payload, snapshot)
+                plot_curves(self.rewards_data, self.success_data, self.loss_data)
 #                 with torch.no_grad():
 #                     actions = self.network(imgs)
                 # actions = argmax2d(q_map_pred)
                 # plot_predictions(imgs, q_map_pred, actions)
 #                 plt.show()
 
-        plot_curves(self.rewards_data, self.success_data, self.loss_data)
         return self.rewards_data, self.success_data, self.loss_data
 
     def optimize(self) -> float:
@@ -305,4 +305,5 @@ if __name__ == "__main__":
                      seed=1,
                      device='cuda')
 
+    # TODO change save frequency, plot_curve, and this train num
     agent.train(1000000, 100)
