@@ -128,7 +128,7 @@ class DQNAgent:
                 avg_rewards = np.mean(self.rewards_data[-min(self.episode_count, 50):])
                 pbar.set_description(f'Success = {avg_success:.1%}, Rewards = {avg_rewards}')
 
-            if step % 10000 == 0:
+            if step % 1000 == 0:
             # pickle and plot every 10000 steps
                 torch.save(self.network.state_dict(), os.path.join(os.getcwd(), "recent.pt"))
                 snapshot = os.path.join(os.getcwd(), "snapshot.pt")
@@ -138,6 +138,7 @@ class DQNAgent:
                 payload = {k: self.__dict__[k] for k in keys_to_save}
                 torch.save(payload, snapshot)
                 plot_curves(self.rewards_data, self.success_data, self.loss_data)
+                plt.show()
 #                 with torch.no_grad():
 #                     actions = self.network(imgs)
                 # actions = argmax2d(q_map_pred)
@@ -159,14 +160,24 @@ class DQNAgent:
 
         q_all_pred = self.network(s)
 
-        q_pred = torch.sum(torch.cat([torch.max(q_all_pred[:, i:i+3], dim=1)[0].unsqueeze(1)
-                                      for i in range(0, 12, 3)], dim=1), 1)
+        # q_pred = q_all_pred[torch.arange(len(s)), a]
+        # q_pred = torch.sum([q_all_pred[:, a[i]] for i in range(0, 4)], 1)
+        # print(q_pred.shape)
+
+        q_pred = torch.sum(q_all_pred.view(-1, 4, 3).gather(2, (a+1).unsqueeze(-1)).squeeze(), dim=1)
+
+        # q_pred = torch.cat(torch.split(q_all_pred, 4, dim=1), dim=-1).gather(1, a.unsqueeze(1)+1)
+        # print(q_pred.shape, torch.split(q_all_pred, 4, dim=1).shape)
 
         if self.update_method == 'standard':
             with torch.no_grad():
                 q_all_pred_next = self.target_network(sp)
-                q_next = torch.sum(torch.cat([torch.max(q_all_pred_next[:, i:i+3], dim=1)[0].unsqueeze(1)
-                                              for i in range(0, 12, 3)], dim=1), 1)
+                # print(q_all_pred_next)
+                # q_next = torch.max(q_all_pred_next, dim=1)[0]
+                # q_next = torch.sum(torch.cat([torch.max(q_all_pred_next[:, i:i+3], dim=1)[0].unsqueeze(1)
+                                              # for i in range(0, 12, 3)], dim=1), 1)
+                q_next = torch.sum(torch.max(q_all_pred_next.view(-1, 4, 3), dim=2)[0], dim=1).squeeze()
+                # print(q_pred.shape, q_next.shape)
                 q_target = r + self.gamma * q_next * (1-d)
 
         # TODO implement
@@ -283,7 +294,7 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=False, sparse_reward=False)
+    env = HandoverGraspingEnv(render=True, sparse_reward=True, img_size=64)
     # get object to float
 
     pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 1)
@@ -293,12 +304,12 @@ if __name__ == "__main__":
                                   cameraTargetPosition=(.5, -0.36, 0.40))
     # TODO change render, device, and uncomment optimize
     agent = DQNAgent(env=env,
-                     gamma=0.0,
+                     gamma=0.98,
                      learning_rate=1e-3,
-                     buffer_size=6000,
+                     buffer_size=20000,
                      batch_size=64,
                      initial_epsilon=0.5,  # TODO change hyperparams
-                     final_epsilon=0.2,
+                     final_epsilon=0.02,
                      update_method='standard',
                      exploration_fraction=0.9,
                      target_network_update_freq=500,
@@ -306,4 +317,4 @@ if __name__ == "__main__":
                      device='cuda')
 
     # TODO change save frequency, plot_curve, and this train num
-    agent.train(1000000, 100)
+    agent.train(10000, 100)

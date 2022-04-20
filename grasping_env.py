@@ -24,7 +24,7 @@ from curriculum import ObjectRoutine
 
 HOME_JPOS = [0, -1, 1.2, 1.4, 0]
 # under this euclidean distance, grasp will be considered success
-TERMINAL_ERROR_MARGIN = 0.015
+TERMINAL_ERROR_MARGIN = 0.035
 
 # NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.02
@@ -83,8 +83,9 @@ class HandoverArm(robot.RobotArm):
         '''
         start_jpos = self.get_arm_jpos()
         (old_x, old_y, old_z), ee_quat = self.get_hand_pose()
-        old_roll = R.from_quat(ee_quat).as_euler('zyz')[0]
-        old_yaw = np.arctan2(old_y, old_x)
+        old_roll, _, old_yaw = R.from_quat(ee_quat).as_euler('zyz')
+        # old_yaw = np.arctan2(old_y, old_x)
+        # print(old_yaw, R.from_quat(ee_quat).as_euler('zyz'))
         old_radius = np.linalg.norm((old_x, old_y))
 
         x = old_x + (dist_act * DISTANCE_DELTA) * np.cos(old_yaw)
@@ -95,12 +96,17 @@ class HandoverArm(robot.RobotArm):
 
         new_pos = (x, y, z)
         new_quat = R.from_euler('zyz', (roll, np.pi/2, yaw)).as_quat()
-        next_jpos = self.mp.calculate_ik(new_pos, new_quat)[0]
+        next_jpos, info = self.mp.calculate_ik(new_pos, new_quat)
+        
+        valid_action = info['ik_pos_error'] < 0.05 and info['ik_rot_error'] < 0.2
 
-        valid_action, collisions = self.mp.is_collision_free_trajectory(
-            start_jpos, next_jpos, ignore_gripper=False, n_substeps=4)
+        valid_action = valid_action and self.mp.is_collision_free(next_jpos, False)[0]
+
+        # valid_action, collisions = self.mp.is_collision_free_trajectory(
+            # start_jpos, next_jpos, ignore_gripper=False, n_substeps=4)
         if valid_action:
             self.mp._teleport_arm(next_jpos)
+
         return valid_action
 
         # self.mp._teleport_arm(joint_pos)
@@ -222,6 +228,7 @@ class HandoverGraspingEnv(gym.Env):
 
         # NOTE: if sampling, subtract 1
         self.action_space = gym.spaces.MultiDiscrete([3, 3, 3, 3])
+        # self.action_space = gym.spaces.Discrete(81)
 
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
@@ -247,6 +254,12 @@ class HandoverGraspingEnv(gym.Env):
         self.action_space.contains(action)
 
         # TODO maybe different reward schema?
+        # tmp = action
+        # action = []
+        # for i in range(4):
+            # action.append(tmp % 3 - 1)
+            # tmp = tmp // 3
+
         if self.robot.execute_action(*action):
             collided = False
         else:
@@ -295,7 +308,7 @@ class HandoverGraspingEnv(gym.Env):
         if self.sparse:
             return int(done), done
         else:
-            return self.distToGrasp(), done
+            return 0.001/self.distToGrasp(), done
 
     def get_obs(self, background_mask: Optional[np.ndarray] = None) -> np.ndarray:
         '''Takes picture using camera, returns rgb and segmentation mask of image

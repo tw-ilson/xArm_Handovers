@@ -17,7 +17,7 @@ WORKSPACE = np.array(((0.10, -0.05, 0.2),  # ((min_x, min_y, min_z)
 
 DIST_MAX = 0.2
 
-START_POS = [0.25, 0.0, 0.25]
+START_POS = [0.25, 0.0, 0.2]
 
 DELTA = 1
 
@@ -110,7 +110,7 @@ class ObjectRoutine():
         elif self.mode == 'noise':
             for ax in self.routine:
                 issueUpdate(
-                    0.006 * self.noise[ax](0.2 * time()),
+                    0.001 * self.noise[ax](0.2 * time()),
                     ax)
 
         resetBasePositionAndOrientation(

@@ -84,12 +84,13 @@ class EquivariantDeltaNetwork(torch.nn.Module):
         # )
 
         self.mlp = torch.nn.Sequential(
-            torch.nn.Linear(400, 256),
+            torch.nn.Linear(64, 256),
             torch.nn.ReLU(inplace=True),
             torch.nn.Linear(256, 256),
             torch.nn.ReLU(inplace=True),
             # predict q values of each action possibility
             torch.nn.Linear(256, 12)
+            # torch.nn.Linear(256, 81)
         )
 
         self.loss_fn = torch.nn.MSELoss()
@@ -128,6 +129,7 @@ class EquivariantDeltaNetwork(torch.nn.Module):
         actions = torch.cat([torch.max(mlp_out[:, i:i+3], dim=1)[1].unsqueeze(1)
                             for i in range(0, 12, 3)], dim=1) - 1
 
+        # actions = torch.max(mlp_out, dim=1)[1]
         return actions
 
     def compute_loss(self, q_pred: torch.Tensor, q_target: torch.Tensor) -> torch.Tensor:
