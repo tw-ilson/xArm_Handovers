@@ -1,12 +1,15 @@
 from random import seed
 import numpy as np
-from typing import Optional
+from typing import Optional, Tuple, List
+from os import path
 
 from math import sin, cos
 from time import time
 from perlin_noise import PerlinNoise
+from scipy.spatial.transform import Rotation as R
 
-from pybullet import resetBasePositionAndOrientation, getQuaternionFromEuler
+from pybullet import resetBasePositionAndOrientation, getQuaternionFromEuler, loadURDF, changeDynamics
+from nuro_arm.constants import URDF_DIR
 
 MOVE_OPTS = ['static', 'cyclic', 'noise']
 DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']
@@ -15,11 +18,14 @@ DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']
 WORKSPACE = np.array(((0.10, -0.05, 0.2),  # ((min_x, min_y, min_z)
                       (0.20, 0.05, 0.3)))  # (max_x, max_y, max_z))
 
+NOISE_GRANULARITY = 0.2
+NOISE_SCALING = 0.01
 DIST_MAX = 0.2
 
-START_POS = [0.25, 0.0, 0.2]
+DEFAULT_POS = (0.25, 0.0, 0.2)
 
-DELTA = 1
+POS_DELTA = 1
+OR_DELTA = 100
 
 
 class ObjectRoutine():
@@ -29,31 +35,41 @@ class ObjectRoutine():
     Params
     ------
         random_start: boolean, should the object be placed at a random position from the start
+        position: position to start the object at beginning of episode, obfuscated by random_start=True
         moving_mode: The way that the object will move along each varying dimension. Either static, cyclic or noisy.
         dimensions: list containing the dimensions along which to vary each timestep
     """
 
-    def __init__(self, _id: int, random_start: bool = False, moving_mode: str = 'static', dimensions=[]) -> None:
+    def __init__(self, 
+            random_start: bool = False, 
+            position:Optional[Tuple[float, float, float]]=DEFAULT_POS,
+            moving_mode: str = 'static',
+            moving_dimensions: List[str]=[]) -> None:
 
-        assert(_id)
 
-        self._id = _id
+        self._id = loadURDF(path.join(URDF_DIR, "object.urdf"))
+        changeDynamics(self._id, -1,
+                          lateralFriction=1,
+                          spinningFriction=0.005,
+                          rollingFriction=0.005)
+        assert self._id
 
         self.workspace = WORKSPACE
         self.random_start = random_start
+        self.position = [*position]
 
         self.reset()
 
         if moving_mode in MOVE_OPTS:
             self.mode = moving_mode
             if self.mode == 'noise':
-                self.noise = {dim: PerlinNoise() for dim in dimensions}
+                self.noise = {dim: PerlinNoise() for dim in moving_dimensions}
         else:
             raise ValueError("invalid mode")
 
         self.routine = set()
-        if len(dimensions) == 0 or not all(arg in dimensions for arg in DIMS):
-            self.routine.update(dimensions)
+        if len(moving_dimensions) == 0 or not all(arg in moving_dimensions for arg in DIMS):
+            self.routine.update(moving_dimensions)
         else:
             raise ValueError("invalid dimensions specified")
 
@@ -68,13 +84,13 @@ class ObjectRoutine():
             r = np.random.uniform(.05, DIST_MAX)
             self.position = list((r * cos(theta), r * sin(theta), np.random.uniform(0.1, 0.3)))
 
-            self.orientation = [0, 0, 0]
+            self.orientation = [0, np.pi/2, 0]
         else:
-            self.position = START_POS
-            self.orientation = [0, 0, 0]
+            self.orientation = [0, np.pi/2, 0]
 
+        print(self.position)
         resetBasePositionAndOrientation(
-            self._id, self.position, getQuaternionFromEuler(self.orientation))
+            self._id, self.position, R.from_euler('zyz', angles=self.orientation).as_quat())
 
     def getPos(self):
         return self.position
@@ -84,19 +100,18 @@ class ObjectRoutine():
 
     def step(self):
         def issueUpdate(n, ax):
-            n = DELTA * n
             if DIMS[0] == ax:
-                self.position[0] += n
+                self.position[0] += POS_DELTA * n
             if DIMS[1] == ax:
-                self.position[1] += n
+                self.position[1] += POS_DELTA * n
             if DIMS[2] == ax:
-                self.position[2] += n
+                self.position[2] += POS_DELTA * n 
             if DIMS[3] == ax:
-                self.orientation[0] += n
+                self.orientation[0] += OR_DELTA * n
             if DIMS[4] == ax:
-                self.orientation[1] += n
+                self.orientation[1] += OR_DELTA * n
             if DIMS[5] == ax:
-                self.orientation[2] += n
+                self.orientation[2] += OR_DELTA * n
 
         if self.mode == 'static':
             pass
@@ -110,8 +125,8 @@ class ObjectRoutine():
         elif self.mode == 'noise':
             for ax in self.routine:
                 issueUpdate(
-                    0.001 * self.noise[ax](0.2 * time()),
+                    NOISE_SCALING * self.noise[ax](NOISE_GRANULARITY * time()),
                     ax)
 
         resetBasePositionAndOrientation(
-            self._id, self.position, getQuaternionFromEuler(self.orientation))
+            self._id, self.position, R.from_euler('zyz', angles=self.orientation).as_quat())

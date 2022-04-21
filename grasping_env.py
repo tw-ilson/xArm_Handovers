@@ -198,20 +198,9 @@ class HandoverGraspingEnv(gym.Env):
         self.img_size = img_size
 
         # add object
-        self.object_id = pb.loadURDF(os.path.join(
-            nuro_arm.constants.URDF_DIR, "object.urdf"))
-        pb.changeDynamics(self.object_id, -1,
-                          lateralFriction=1,
-                          spinningFriction=0.005,
-                          rollingFriction=0.005)
         self.object_width = 0.02
 
-        # no options currently given
-        self.object_routine = ObjectRoutine(
-            self.object_id, moving_mode='noise', dimensions=['depth', 'horizontal'])
-
-        pb.resetBasePositionAndOrientation(self.object_id, self.object_routine.getPos(
-        ), pb.getQuaternionFromEuler(self.object_routine.getOrn()))
+        self.object_routine = ObjectRoutine(moving_mode='noise', moving_dimensions=['horizontal', 'vertical', 'roll'])
 
         self.t_step = 0
         self.episode_length = episode_length
@@ -294,7 +283,7 @@ class HandoverGraspingEnv(gym.Env):
 
         grip_pos = pb.getLinkState(
             self.robot._id, self.robot.end_effector_link_index, computeForwardKinematics=True)[0]
-        obj_pos = pb.getBasePositionAndOrientation(self.object_id)[0]
+        obj_pos = pb.getBasePositionAndOrientation(self.object_routine._id)[0]
 
         return float(np.linalg.norm(np.subtract(grip_pos, obj_pos)))
 
@@ -342,7 +331,7 @@ if __name__ == "__main__":
     # env.plot_obs()
     env.robot.ready()
 
-    while not np.allclose(env.robot.get_arm_jpos(), READY_JPOS, atol=.05):
+    while not np.allclose(env.robot.get_arm_jpos(), HOME_JPOS, atol=.05):
         pb.stepSimulation()
         time.sleep(.001)
 

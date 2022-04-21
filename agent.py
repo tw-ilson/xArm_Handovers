@@ -9,7 +9,7 @@ import pybullet as pb
 import matplotlib.pyplot as plt
 import os
 
-from equivariant_delta_pred import EquivariantDeltaNetwork
+from delta_q_net import DeltaQNetwork
 from utils import ReplayBuffer, plot_curves  # , plot_predictions, plot_curves
 from grasping_env import HandoverGraspingEnv
 
@@ -46,8 +46,8 @@ class DQNAgent:
 
         self.device = device
         img_shape = (3, self.env.img_size, self.env.img_size)
-        self.network = EquivariantDeltaNetwork(img_shape).to(device)
-        self.target_network = EquivariantDeltaNetwork(img_shape).to(device)
+        self.network = DeltaQNetwork(img_shape).to(device)
+        self.target_network = DeltaQNetwork(img_shape).to(device)
         self.hard_target_update()
 
         self.optim = torch.optim.Adam(self.network.parameters(),
@@ -160,36 +160,25 @@ class DQNAgent:
 
         q_all_pred = self.network(s)
 
-        # q_pred = q_all_pred[torch.arange(len(s)), a]
-        # q_pred = torch.sum([q_all_pred[:, a[i]] for i in range(0, 4)], 1)
-        # print(q_pred.shape)
 
         q_pred = torch.sum(q_all_pred.view(-1, 4, 3).gather(2, (a+1).unsqueeze(-1)).squeeze(), dim=1)
-
-        # q_pred = torch.cat(torch.split(q_all_pred, 4, dim=1), dim=-1).gather(1, a.unsqueeze(1)+1)
-        # print(q_pred.shape, torch.split(q_all_pred, 4, dim=1).shape)
 
         if self.update_method == 'standard':
             with torch.no_grad():
                 q_all_pred_next = self.target_network(sp)
-                # print(q_all_pred_next)
-                # q_next = torch.max(q_all_pred_next, dim=1)[0]
-                # q_next = torch.sum(torch.cat([torch.max(q_all_pred_next[:, i:i+3], dim=1)[0].unsqueeze(1)
-                                              # for i in range(0, 12, 3)], dim=1), 1)
                 q_next = torch.sum(torch.max(q_all_pred_next.view(-1, 4, 3), dim=2)[0], dim=1).squeeze()
-                # print(q_pred.shape, q_next.shape)
                 q_target = r + self.gamma * q_next * (1-d)
 
-        # TODO implement
-        # elif self.update_method == 'double':
-        #     with torch.no_grad():
-        #         q_map_next_est = self.target_network(sp)
-        #         pred_act = self.network.predict(sp)
-        #         q_next = q_map_next_est[np.arange(len(q_map_next_est)),
-        #                                 0,
-        #                                 pred_act[:, 0],
-        #                                 pred_act[:, 1]]
-        #         q_target = r + self.gamma * q_next * (1-d)
+        #TODO implement
+        elif self.update_method == 'double':
+            with torch.no_grad():
+                q_all_pred_next = self.target_network(sp)
+                q_next_act = (torch.argmax(q_all_pred_next.view(-1, 4, 3), dim=2)[0] - 1).unsqueeze(0)
+                # print(q_next_act)
+                pred_act = self.network(sp)
+                dbl_select = lambda q: torch.sum(q.view(-1, 4, 3).gather(2, (q_next_act+1).unsqueeze(-1)).squeeze(), 0)
+                q_next = dbl_select(pred_act[:])
+                q_target = r + self.gamma * q_next * (1-d)
 
         assert q_pred.shape == q_target.shape
         self.optim.zero_grad()
@@ -280,6 +269,19 @@ class DQNAgent:
         return (1-fraction) * self.initial_epsilon \
             + fraction * self.final_epsilon
 
+    def playout(self, num_steps):
+        
+        s = self.env.reset()
+        step = 0
+        done = 0
+        while step < num_steps and not done:
+            
+            a = self.select_action(s)
+
+            sp, r, done, info = self.env.step(a)
+
+            s = sp.copy()
+
     def hard_target_update(self):
         '''Update target network by copying weights from online network'''
         self.target_network.load_state_dict(self.network.state_dict())
@@ -307,14 +309,14 @@ if __name__ == "__main__":
                      gamma=0.98,
                      learning_rate=1e-3,
                      buffer_size=20000,
-                     batch_size=64,
+                     batch_size=4,
                      initial_epsilon=0.5,  # TODO change hyperparams
                      final_epsilon=0.02,
-                     update_method='standard',
+                     update_method='double',
                      exploration_fraction=0.9,
                      target_network_update_freq=500,
                      seed=1,
-                     device='cuda')
+                     device='cpu')
 
     # TODO change save frequency, plot_curve, and this train num
-    agent.train(10000, 100)
+    agent.playout(10000)
