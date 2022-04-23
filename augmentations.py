@@ -1,5 +1,8 @@
+import os
+import random
 
 import numpy as np
+from matplotlib import pyplot as plt
 import albumentations as aug
 import cv2
 from torchvision.transforms import ToTensor
@@ -25,11 +28,13 @@ class Preprocess:
     def replaceBackground(self, obs, obs_mask):
         """ Replaces the background for the current observation with the image provided
         """
-        # add virtual background for augmentation purposes (untested)
-        if obs_mask is not None:
-            def map_fn(pix, bkrd_pix, mask_i,
-                       ): return pix if mask_i != 0 else bkrd_pix
-            obs = np.vectorize(map_fn)(zip(obs[:2], self.bkrd_img[:2], obs_mask))
+        bkrd = self.bkrd_img
+        def map_fn(pix, bkrd_pix, mask_i): 
+            return pix if mask_i != 0 else bkrd_pix
+        
+        obs = [[map_fn(obs[i, j], bkrd[i, j], obs_mask[i, j]) 
+                for j in range(64)] 
+                for i in range(64)]
         return obs
 
     def makeTransform(self, augmentations: Tuple[str]):
@@ -78,3 +83,26 @@ class Preprocess:
             )
 
         return aug.Compose(transforms=pipeline)
+
+if __name__ == '__main__':
+    IMG_DIR =  "/Users/tom/Documents/tiny-imagenet-200/val/images"
+    filename = os.path.join(IMG_DIR, random.choice(os.listdir(IMG_DIR)))
+    print(filename)
+
+    prepro = Preprocess(bkrd_path=filename)
+    # print(prepro.bkrd_img)
+
+    img = np.zeros((64, 64, 3), dtype=np.uint8)
+    mask = np.zeros((64, 64), dtype=np.uint8)
+    mask[32:, 32:] = 1
+    # print(mask)
+
+    plt.imshow(prepro.bkrd_img)
+    plt.show()
+
+    obs = prepro.replaceBackground(img, mask)
+    
+    plt.imshow(obs)
+    plt.show()
+
+
