@@ -16,22 +16,21 @@ import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
 
 import os
-
 import nuro_arm
 import nuro_arm.robot.robot_arm as robot
 
 from curriculum import ObjectRoutine
+from augmentations import Preprocess
 
 HOME_JPOS = [0, -1, 1.2, 1.4, 0]
-# under this euclidean distance, grasp will be considered success
 TERMINAL_ERROR_MARGIN = 0.035
 
-# NOTE: Besides Forward, are these intended to be in radians or in joint units?
 ROTATION_DELTA = 0.02
 VERTICAL_DELTA = 0.01
 DISTANCE_DELTA = 0.01
 ROLL_DELTA = 0.01
 
+BACKGROUNDS_DIR =  "/Users/tom/Documents/tiny-imagenet-200/val/images"
 
 class HandoverArm(robot.RobotArm):
     def __init__(self, controller_type='sim', headless=True, realtime=False, workspace=None, pb_client=None, serial_number=None):
@@ -183,7 +182,7 @@ class HandoverGraspingEnv(gym.Env):
     def __init__(self,
                  episode_length: int = 60,
                  sparse_reward: bool = True,
-                 img_size: int = 128,
+                 img_size: int = 64,
                  render: bool = False,
                  ) -> None:
         '''Pybullet simulator with robot that performs top down grasps of a
@@ -196,6 +195,8 @@ class HandoverGraspingEnv(gym.Env):
 
         self.camera = WristCamera(self.robot, img_size)
         self.img_size = img_size
+
+        self.prepro = Preprocess(augmentations=('brightness', 'blur'), bkrd_dir=BACKGROUNDS_DIR)
 
         # add object
         self.object_width = 0.02
@@ -218,6 +219,8 @@ class HandoverGraspingEnv(gym.Env):
         # NOTE: if sampling, subtract 1
         self.action_space = gym.spaces.MultiDiscrete([3, 3, 3, 3])
         # self.action_space = gym.spaces.Discrete(81)
+
+        self.reset()
 
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
@@ -292,14 +295,15 @@ class HandoverGraspingEnv(gym.Env):
 
         # TODO: Issue penalty if runs into an obstacle
 
+        REWARD_SCALE = 1e-3
         done = self.canGrasp()
 
         if self.sparse:
             return int(done), done
         else:
-            return 0.001/self.distToGrasp(), done
+            return REWARD_SCALE/self.distToGrasp(), done
 
-    def get_obs(self, background_mask: Optional[np.ndarray] = None) -> np.ndarray:
+    def get_obs(self, background_replace=True) -> np.ndarray:
         '''Takes picture using camera, returns rgb and segmentation mask of image
         Returns
         -------
@@ -309,12 +313,7 @@ class HandoverGraspingEnv(gym.Env):
         self.camera.computeView()
         rgb, mask = self.camera.get_image()
 
-        # add virtual background for augmentation purposes (untested)
-        # if background_mask is not None:
-        #     def map_fn(pix, bkrd_pix, mask_i,
-        #                ): return pix if mask_i != 0 else bkrd_pix
-        #     rgb = np.vectorize(map_fn)(zip(rgb[:2], background_mask[:2], mask))
-        return rgb
+        return self.prepro(rgb, mask)
 
     def plot_obs(self):
         plt.imshow(self.get_obs())
@@ -322,25 +321,9 @@ class HandoverGraspingEnv(gym.Env):
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=True, img_size=200)
-    pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 0)
-    pb.resetDebugVisualizerCamera(cameraDistance=.4,
-                                  cameraYaw=65.2,
-                                  cameraPitch=-40.6,
-                                  cameraTargetPosition=(.5, -0.36, 0.40))
-    # env.plot_obs()
-    env.robot.ready()
+    env = HandoverGraspingEnv()
 
-    while not np.allclose(env.robot.get_arm_jpos(), HOME_JPOS, atol=.05):
-        pb.stepSimulation()
-        time.sleep(.001)
+    env.plot_obs()
 
-    env.robot.execute_action(0, -1, 0, 0)
-
-    for _ in range(1000):
-        [pb.stepSimulation() for _ in range(10)]
-        time.sleep(.001)
-    print('after', env.robot.get_arm_jpos())
-    print('after hand pose', env.robot.get_hand_pose())
 
     exit()

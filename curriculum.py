@@ -88,7 +88,6 @@ class ObjectRoutine():
         else:
             self.orientation = [0, np.pi/2, 0]
 
-        print(self.position)
         resetBasePositionAndOrientation(
             self._id, self.position, R.from_euler('zyz', angles=self.orientation).as_quat())
 
