@@ -18,14 +18,14 @@ DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']
 WORKSPACE = np.array(((0.10, -0.05, 0.2),  # ((min_x, min_y, min_z)
                       (0.20, 0.05, 0.3)))  # (max_x, max_y, max_z))
 
-NOISE_GRANULARITY = 0.2
-NOISE_SCALING = 0.01
+NOISE_GRANULARITY = 0.03
+NOISE_SCALING = 0.001
 DIST_MAX = 0.2
 
 DEFAULT_POS = (0.25, 0.0, 0.2)
 
 POS_DELTA = 1
-OR_DELTA = 100
+OR_DELTA = 20
 
 
 class ObjectRoutine():
@@ -83,8 +83,8 @@ class ObjectRoutine():
             #                             self.workspace[1, :]-ws_padding)
 
             #pick random start position based on radius around robot
-            theta = np.random.normal(-np.pi/2, np.pi/2)
-            r = np.random.uniform(.05, DIST_MAX)
+            theta = np.random.normal(-np.pi/4, np.pi/4)
+            r = np.random.uniform(.12, DIST_MAX)
             self.home_position = list((r * cos(theta), r * sin(theta), np.random.uniform(0.1, 0.3)))
             self.position = self.home_position
 
@@ -104,17 +104,17 @@ class ObjectRoutine():
     def step(self):
         def issueUpdate(n, ax):
             if DIMS[0] == ax:
-                self.position[0] = self.home_position + POS_DELTA * n
+                self.position[0] = self.home_position[0] + POS_DELTA * n
             if DIMS[1] == ax:
-                self.position[1] = self.home_position + POS_DELTA * n
+                self.position[1] = self.home_position[1] + POS_DELTA * n
             if DIMS[2] == ax:
-                self.position[2] = self.home_position + POS_DELTA * n 
+                self.position[2] = self.home_position[2] + POS_DELTA * n
             if DIMS[3] == ax:
-                self.orientation[0] =self.home_orientation + OR_DELTA * n
+                self.orientation[0] = self.home_orientation[0] + OR_DELTA * n
             if DIMS[4] == ax:
-                self.orientation[1] =self.home_orientation + OR_DELTA * n
+                self.orientation[1] = self.home_orientation[1] + OR_DELTA * n
             if DIMS[5] == ax:
-                self.orientation[2] =self.home_orientation + OR_DELTA * n
+                self.orientation[2] = self.home_orientation[2] + OR_DELTA * n
 
         if self.mode == 'static':
             pass
