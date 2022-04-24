@@ -3,6 +3,7 @@ import numpy as np
 import torch
 from torch import Tensor
 import torch.nn as nn
+import torchvision
 import gym
 from tqdm import tqdm
 import pybullet as pb
@@ -213,9 +214,11 @@ class DQNAgent:
         sp : tensor of next state images, dtype=torch.float32, shape=(B, C, H, W)
         d : tensor of done flags, dtype=torch.float32, shape=(B,)
         '''
+        crop = torchvision.transforms.RandomAffine(degrees=0)
         s0 = torch.tensor(s, dtype=torch.float32,
                           device=self.device).permute(0, 3, 1, 2)
         s0 = torch.div(s0, 255)
+        s0 = crop(s0)
         a0 = torch.tensor(a, dtype=torch.long, device=self.device)
         r0 = torch.tensor(r, dtype=torch.float32, device=self.device)
         sp0 = torch.tensor(sp, dtype=torch.float32,
@@ -309,14 +312,14 @@ if __name__ == "__main__":
                      gamma=0.98,
                      learning_rate=1e-3,
                      buffer_size=20000,
-                     batch_size=4,
+                     batch_size=64,
                      initial_epsilon=0.5,  # TODO change hyperparams
                      final_epsilon=0.02,
                      update_method='double',
                      exploration_fraction=0.9,
-                     target_network_update_freq=500,
+                     target_network_update_freq=10000,
                      seed=1,
                      device='cpu')
 
     # TODO change save frequency, plot_curve, and this train num
-    agent.playout(10000)
+    agent.train(10000)

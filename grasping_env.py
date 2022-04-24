@@ -51,7 +51,7 @@ class HandoverArm(robot.RobotArm):
         moves the arm to the 'ready' position (bent, pointing forward toward workspace)
         '''
 
-        self.open_gripper()
+        # self.open_gripper()
         self.mp._teleport_gripper(1)
 
         self.mp._teleport_arm(HOME_JPOS)
@@ -99,7 +99,7 @@ class HandoverArm(robot.RobotArm):
         
         valid_action = info['ik_pos_error'] < 0.05 and info['ik_rot_error'] < 0.2
 
-        valid_action = valid_action and self.mp.is_collision_free(next_jpos, False)[0]
+        valid_action = valid_action and self.mp.is_collision_free(next_jpos, False)[0]  
 
         # valid_action, collisions = self.mp.is_collision_free_trajectory(
             # start_jpos, next_jpos, ignore_gripper=False, n_substeps=4)
@@ -110,6 +110,10 @@ class HandoverArm(robot.RobotArm):
 
         # self.mp._teleport_arm(joint_pos)
         # self.controller.power_off_servos()
+
+    def try_grasp(self) -> bool:
+        self.close_gripper()
+        self.self.controller.read_gripper_state()
 
 
 class WristCamera:
@@ -201,7 +205,7 @@ class HandoverGraspingEnv(gym.Env):
         # add object
         self.object_width = 0.02
 
-        self.object_routine = ObjectRoutine(moving_mode='noise', moving_dimensions=['horizontal', 'vertical', 'roll'])
+        self.object_routine = ObjectRoutine(moving_mode='noise', moving_dimensions=['horizontal', 'vertical', 'roll'], random_start=True)
 
         self.t_step = 0
         self.episode_length = episode_length
