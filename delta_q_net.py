@@ -27,7 +27,7 @@ class DeltaQNetwork(torch.nn.Module):
             self.cnn = conv_nets.CNN(input_shape)
 
         self.mlp = torch.nn.Sequential(
-            torch.nn.Linear(self.cnn.output_size, 256),
+            torch.nn.Linear(self.cnn.output_size+5, 256),
             torch.nn.ReLU(inplace=True),
             torch.nn.Linear(256, 256),
             torch.nn.ReLU(inplace=True),
@@ -38,11 +38,12 @@ class DeltaQNetwork(torch.nn.Module):
 
         self.loss_fn = torch.nn.MSELoss()
 
-    def forward(self, x) -> torch.Tensor:
+    def forward(self, x, jpos) -> torch.Tensor:
         """Creates equivariant pose prediction from observation
 
         Args:
             x (torch.Tensor): Observation of image with block in it
+            jpos (torch.Tensor): Observation of current arm joint positions
         Returns:
             x (float): the x position to move arm to
             y (float): the y position to move arm to
@@ -51,17 +52,21 @@ class DeltaQNetwork(torch.nn.Module):
         """
         assert x.shape[1:
                        ] == self.input_shape, f"Observation shape must be {self.input_shape}, current is {x.shape[1:]}"
+        assert jpos.shape[1] == 5, f"invalid joint positions: \n{jpos}"
 
         batch_size = x.shape[0]
         conv_out = self.cnn(x)
-        mlp_out = self.mlp(conv_out)
+        print("conv_out", conv_out.shape[1])
+        state = torch.cat((conv_out, jpos), dim=1)
+
+        mlp_out = self.mlp(state)
 
         return mlp_out
 
     @torch.no_grad()
-    def predict(self, x: torch.Tensor) -> torch.Tensor:
+    def predict(self, x: torch.Tensor, jpos) -> torch.Tensor:
         "Predicts 4d action for an input state"
-        mlp_out = self.forward(x)
+        mlp_out = self.forward(x, jpos)
 
         # concatenated argmaxes of each window of possible actions, for each batch element
         actions = torch.cat([torch.max(mlp_out[:, i:i+3], dim=1)[1].unsqueeze(1)

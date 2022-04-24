@@ -107,7 +107,8 @@ class DQNAgent:
             sp, r, done, info = self.env.step(a)
             self.episode_rewards += r
 
-            self.buffer.add_transition(s=s, a=a, r=r, sp=sp, d=done)
+            print(s)
+            self.buffer.add_transition(s=s['rgb'], j=s['joints'], a=a, r=r, sp=sp['rgb'], jp=sp['joints'], d=done)
 
             # optimize
             if len(self.buffer) > self.batch_size:
@@ -157,26 +158,26 @@ class DQNAgent:
         mean squared td-loss across batch
         '''
         batch = self.buffer.sample(self.batch_size)
-        s, a, r, sp, d = self.prepare_batch(*batch)
+        s, j, a, r, sp, jp, d = self.prepare_batch(*batch)
 
-        q_all_pred = self.network(s)
+        q_all_pred = self.network(s, j)
 
 
         q_pred = torch.sum(q_all_pred.view(-1, 4, 3).gather(2, (a+1).unsqueeze(-1)).squeeze(), dim=1)
 
         if self.update_method == 'standard':
             with torch.no_grad():
-                q_all_pred_next = self.target_network(sp)
+                q_all_pred_next = self.target_network(sp, jp)
                 q_next = torch.sum(torch.max(q_all_pred_next.view(-1, 4, 3), dim=2)[0], dim=1).squeeze()
                 q_target = r + self.gamma * q_next * (1-d)
 
         #TODO implement
         elif self.update_method == 'double':
             with torch.no_grad():
-                q_all_pred_next = self.target_network(sp)
+                q_all_pred_next = self.target_network(sp, jp)
                 q_next_act = (torch.argmax(q_all_pred_next.view(-1, 4, 3), dim=2)[0] - 1).unsqueeze(0)
                 # print(q_next_act)
-                pred_act = self.network(sp)
+                pred_act = self.network(sp, jp)
                 dbl_select = lambda q: torch.sum(q.view(-1, 4, 3).gather(2, (q_next_act+1).unsqueeze(-1)).squeeze(), 0)
                 q_next = dbl_select(pred_act[:])
                 q_target = r + self.gamma * q_next * (1-d)
@@ -191,9 +192,9 @@ class DQNAgent:
 
         return loss.item()
 
-    def prepare_batch(self, s: np.ndarray, a: np.ndarray,
-                      r: np.ndarray, sp: np.ndarray, d: np.ndarray,
-                      ) -> Tuple[Tensor, Tensor, Tensor, Tensor, Tensor]:
+    def prepare_batch(self, s: np.ndarray, j: np.ndarray,  a: np.ndarray,
+            r: np.ndarray, sp: np.ndarray, jp: np.ndarray, d: np.ndarray,
+                      ) -> Tuple[Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor]:
         '''Converts components of transition from numpy arrays to tensors
         that are ready to be passed to q-network.  Make sure you send tensors
         to the right device!
@@ -219,16 +220,18 @@ class DQNAgent:
                           device=self.device).permute(0, 3, 1, 2)
         s0 = torch.div(s0, 255)
         s0 = crop(s0)
+        j0 = torch.tensor(j, dtype=torch.float32, device=self.device)
         a0 = torch.tensor(a, dtype=torch.long, device=self.device)
         r0 = torch.tensor(r, dtype=torch.float32, device=self.device)
         sp0 = torch.tensor(sp, dtype=torch.float32,
                            device=self.device).permute(0, 3, 1, 2)
         sp0 = torch.div(sp0, 255)
+        jp0 = torch.tensor(jp, dtype=torch.float32, device=self.device)
         d0 = torch.tensor(d, dtype=torch.float32, device=self.device)
 
-        return s0, a0, r0, sp0, d0
+        return s0, j0, a0, r0, sp0, jp0, d0
 
-    def select_action(self, state: np.ndarray, epsilon: float = 0.) -> np.ndarray:
+    def select_action(self, state: dict, epsilon: float = 0.) -> np.ndarray:
         '''Returns action based on e-greedy action selection.  With probability
         of epsilon, choose random action in environment action space, otherwise
         select argmax of q-function at given state
@@ -242,7 +245,7 @@ class DQNAgent:
         else:
             return self.policy(state)
 
-    def policy(self, state: np.ndarray) -> np.ndarray:
+    def policy(self, state: dict) -> np.ndarray:
         '''Policy is the argmax over actions of the q-function at the given
         state. You will need to convert state to tensor on the device (similar
         to `prepare_batch`), then use `network.predict`.  Make sure to convert
@@ -253,12 +256,13 @@ class DQNAgent:
         pixel action (px, py); shape=(2,); dtype=int
         '''
 
-        t_state = torch.tensor(state, dtype=torch.float32).unsqueeze(
+        t_state = torch.tensor(state['rgb'], dtype=torch.float32, device=self.device).unsqueeze(
             0)
+        t_joint = torch.tensor(state['joints'], dtype=torch.float32, device=self.device).unsqueeze(0)
         t_state = t_state.permute(0, 3, 1, 2)
         t_state = torch.div(t_state, 255)
-        t_state = t_state.to(self.device)
-        return self.network.predict(t_state).squeeze().cpu().numpy()
+
+        return self.network.predict(t_state, t_joint).squeeze().cpu().numpy()
 
     def compute_epsilon(self, fraction: float) -> float:
         '''Calculate epsilon value based on linear annealing schedule

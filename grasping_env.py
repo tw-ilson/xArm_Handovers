@@ -188,6 +188,7 @@ class HandoverGraspingEnv(gym.Env):
                  sparse_reward: bool = True,
                  img_size: int = 64,
                  render: bool = False,
+                 preprocess=False,
                  ) -> None:
         '''Pybullet simulator with robot that performs top down grasps of a
         single object.  A camera is positioned to take images of workspace
@@ -200,7 +201,9 @@ class HandoverGraspingEnv(gym.Env):
         self.camera = WristCamera(self.robot, img_size)
         self.img_size = img_size
 
-        self.prepro = Preprocess(augmentations=('brightness', 'blur'), bkrd_dir=BACKGROUNDS_DIR)
+        self.prepro = preprocess
+        if preprocess:
+            self.prepro = Preprocess(augmentations=('brightness', 'blur'), bkrd_dir=BACKGROUNDS_DIR)
 
         # add object
         self.object_width = 0.02
@@ -307,7 +310,7 @@ class HandoverGraspingEnv(gym.Env):
         else:
             return REWARD_SCALE/self.distToGrasp(), done
 
-    def get_obs(self, background_replace=True) -> np.ndarray:
+    def get_obs(self) -> dict:
         '''Takes picture using camera, returns rgb and segmentation mask of image
         Returns
         -------
@@ -317,7 +320,11 @@ class HandoverGraspingEnv(gym.Env):
         self.camera.computeView()
         rgb, mask = self.camera.get_image()
 
-        return self.prepro(rgb, mask)
+        jpos = self.robot.get_arm_jpos()
+        if self.prepro:
+            rgb = self.prepro(rgb, mask)
+
+        return {'rgb': rgb, 'joints':jpos}
 
     def plot_obs(self):
         plt.imshow(self.get_obs())

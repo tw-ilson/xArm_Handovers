@@ -67,8 +67,10 @@ class ReplayBuffer:
             shape of action (2,) since action is <px, py>, dtype=int
         '''
         self.data = {'state' : np.zeros((size, *state_shape), dtype=np.uint8),
+                     'state_jpos' : np.zeros((size, 5), dtype=np.float32),
                      'action' : np.zeros((size, *action_shape), dtype=np.int8),
                      'next_state' : np.zeros((size, *state_shape), dtype=np.uint8),
+                     'next_state_jpos' : np.zeros((size, 5), dtype=np.float32),
                      'reward' : np.zeros((size), dtype=np.float32),
                      'done' : np.zeros((size), dtype=np.bool8),
                     }
@@ -76,15 +78,17 @@ class ReplayBuffer:
         self.size = size
         self._next_idx = 0
 
-    def add_transition(self, s: np.ndarray, a: np.ndarray, r: float,
-                       sp: np.ndarray, d: bool) -> None:
+    def add_transition(self, s: np.ndarray, j:np.ndarray, a: np.ndarray, r: float,
+            sp: np.ndarray, jp: np.ndarray, d: bool) -> None:
         '''Add single transition to replay buffer, overwriting old transitions
         if buffer is full
         '''
         self.data['state'][self._next_idx] = s
+        self.data['state_jpos'][self._next_idx] = j
         self.data['action'][self._next_idx] = a
         self.data['reward'][self._next_idx] = r
         self.data['next_state'][self._next_idx] = sp
+        self.data['next_state_jpos'][self._next_idx] = jp
         self.data['done'][self._next_idx] = d
 
         self.length = min(self.length + 1, self.size)
@@ -100,25 +104,25 @@ class ReplayBuffer:
         '''
         idxs = np.random.randint(self.length, size=batch_size)
 
-        keys = ('state', 'action', 'reward', 'next_state', 'done')
-        s, a, r, sp, d = [self.data[k][idxs] for k in keys]
+        keys = ('state', 'state_jpos', 'action', 'reward', 'next_state', 'next_state_jpos', 'done')
+        s, j, a, r, sp, jp,  d = [self.data[k][idxs] for k in keys]
 
-        return s, a, r, sp, d
+        return s, j, a, r, sp, jp,  d
 
-    def load_transitions(self, hdf5_file: str):
-        '''loads pre-collected transitions into buffer. pybullet can be quite
-        slow so I am giving you transitions to prepopulate the buffer with
-        '''
-        with h5py.File(hdf5_file, 'r') as hf:
-            states = np.array(hf['states'])
-            actions = np.array(hf['actions'])
-            rewards = np.array(hf['rewards'])
-            next_states = np.array(hf['next_states'])
-            dones = np.array(hf['dones'])
-
-        for i in range(len(states)):
-            self.add_transition(states[i], actions[i], rewards[i],
-                                next_states[i], dones[i])
+    # def load_transitions(self, hdf5_file: str):
+    #     '''loads pre-collected transitions into buffer. pybullet can be quite
+    #     slow so I am giving you transitions to prepopulate the buffer with
+    #     '''
+    #     with h5py.File(hdf5_file, 'r') as hf:
+    #         states = np.array(hf['states'])
+    #         actions = np.array(hf['actions'])
+    #         rewards = np.array(hf['rewards'])
+    #         next_states = np.array(hf['next_states'])
+    #         dones = np.array(hf['dones'])
+    #
+    #     for i in range(len(states)):
+    #         self.add_transition(states[i], actions[i], rewards[i],
+    #                             next_states[i], dones[i])
 
     def __len__(self):
         return self.length
