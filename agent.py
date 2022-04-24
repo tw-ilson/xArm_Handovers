@@ -107,7 +107,6 @@ class DQNAgent:
             sp, r, done, info = self.env.step(a)
             self.episode_rewards += r
 
-            print(s)
             self.buffer.add_transition(s=s['rgb'], j=s['joints'], a=a, r=r, sp=sp['rgb'], jp=sp['joints'], d=done)
 
             # optimize
@@ -169,7 +168,6 @@ class DQNAgent:
                 q_all_pred_next = self.target_network(sp, jp)
                 q_next = torch.sum(torch.max(q_all_pred_next.view(-1, 4, 3), dim=2)[0], dim=1).squeeze()
                 q_target = r + self.gamma * q_next * (1-d)
-
 
         #TODO implement
         elif self.update_method == 'double':
@@ -320,7 +318,7 @@ if __name__ == "__main__":
                      initial_epsilon=1.0,  # TODO change hyperparams
                      final_epsilon=0.02,
                      update_method='standard',
-                     exploration_fraction=0.9,
+                     exploration_fraction=0.95,
                      target_network_update_freq=1000,
                      seed=1,
                      device='cpu')
