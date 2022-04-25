@@ -69,14 +69,20 @@ class DeltaQNetwork(torch.nn.Module):
     def predict(self, x: torch.Tensor, jpos, noise=False) -> torch.Tensor:
         "Predicts 4d action for an input state"
 
-        nu = np.random.normal(0, 1e-2, size= (len(x), 12)) if noise else 0
-        mlp_out = self.forward(x, jpos) + nu
+#         nu = np.random.normal(0, 1e-3, size= (len(x), 12)) if noise else 0
+        mlp_out = self.forward(x, jpos)# + nu
 
         # concatenated argmaxes of each window of possible actions, for each batch element
         actions = torch.cat([torch.max(mlp_out[:, i:i+3], dim=1)[1].unsqueeze(1)
                             for i in range(0, 12, 3)], dim=1) - 1
 
         # actions = torch.max(mlp_out, dim=1)[1]
+        rand = 1e-3
+        if np.random.rand() <= rand and noise:
+            switch_idx = np.random.choice(np.arange(len(actions)))
+            fill_val = np.random.choice([-1, 0, 1])
+            actions[switch_idx] = fill_val
+
         return actions
 
     def compute_loss(self, q_pred: torch.Tensor, q_target: torch.Tensor) -> torch.Tensor:

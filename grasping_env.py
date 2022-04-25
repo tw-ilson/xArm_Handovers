@@ -45,7 +45,7 @@ class HandoverArm(robot.RobotArm):
 
         self.arm_ready_jpos = HOME_JPOS
         # self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
-        self.object_id
+#         self.object_id
 
     def ready(self, randomize=True):
         '''
@@ -82,11 +82,11 @@ class HandoverArm(robot.RobotArm):
 
         '''
         start_jpos = self.get_arm_jpos()
-        collide_list = self.mp.is_collision_free(start_jpos, False)[1]
-        for collision in collide_list:
-            print(collision.__str__())
-        obj_collide = np.any(map(lambda x: x.other_body == self.object_id, collide_list))
-        print('obj collide:', obj_collide)
+#         collide_list = self.mp.is_collision_free(start_jpos, False)[1]
+#         for collision in collide_list:
+#             print(collision.__str__())
+#         obj_collide = np.any(map(lambda x: x.other_body == self.object_id, collide_list))
+#         print('obj collide:', obj_collide)
         # TODO add to valid_Action return, change definition of collission to object collision
         (old_x, old_y, old_z), ee_quat = self.get_hand_pose()
         old_roll, _, old_yaw = R.from_quat(ee_quat).as_euler('zyz')
