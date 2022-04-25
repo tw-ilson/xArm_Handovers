@@ -45,6 +45,7 @@ class HandoverArm(robot.RobotArm):
 
         self.arm_ready_jpos = HOME_JPOS
         # self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
+        self.object_id
 
     def ready(self, randomize=True):
         '''
@@ -81,6 +82,12 @@ class HandoverArm(robot.RobotArm):
 
         '''
         start_jpos = self.get_arm_jpos()
+        collide_list = self.mp.is_collision_free(start_jpos, False)[1]
+        for collision in collide_list:
+            print(collision.__str__())
+        obj_collide = np.any(map(lambda x: x.other_body == self.object_id, collide_list))
+        print('obj collide:', obj_collide)
+        # TODO add to valid_Action return, change definition of collission to object collision
         (old_x, old_y, old_z), ee_quat = self.get_hand_pose()
         old_roll, _, old_yaw = R.from_quat(ee_quat).as_euler('zyz')
         # old_yaw = np.arctan2(old_y, old_x)
@@ -205,10 +212,11 @@ class HandoverGraspingEnv(gym.Env):
         if preprocess:
             self.prepro = Preprocess(augmentations=('brightness', 'blur'), bkrd_dir=BACKGROUNDS_DIR)
 
+        self.object_routine = ObjectRoutine(moving_mode='noise', moving_dimensions=['horizontal', 'vertical', 'roll'], random_start=False)
+        self.robot.object_id = self.object_routine._id
+
         # add object
         self.object_width = 0.02
-
-        self.object_routine = ObjectRoutine(moving_mode='noise', moving_dimensions=['horizontal', 'vertical', 'roll'], random_start=False)
 
         self.t_step = 0
         self.episode_length = episode_length
@@ -271,7 +279,7 @@ class HandoverGraspingEnv(gym.Env):
         self.t_step += 1
 
         obs = self.get_obs()
-        reward, done = self.getReward()
+        reward, done = self.getReward(collided)
 
         done = done or self.t_step >= self.episode_length# or collided
 
@@ -301,7 +309,7 @@ class HandoverGraspingEnv(gym.Env):
 
         return float(np.linalg.norm(np.subtract(grip_pos, obj_pos)))
 
-    def getReward(self) -> Tuple[float, bool]:
+    def getReward(self, collided: bool) -> Tuple[float, bool]:
         ''' Defines the terminal states in the learning environment'''
 
         # TODO: Issue penalty if runs into an obstacle
@@ -310,6 +318,9 @@ class HandoverGraspingEnv(gym.Env):
         done = self.canGrasp()
 
         if self.sparse:
+#             if collided:
+#                 return -1, True
+#             else:
             return int(done), done
         else:
             return REWARD_SCALE/self.distToGrasp(), done
