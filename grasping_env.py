@@ -259,6 +259,7 @@ class HandoverGraspingEnv(gym.Env):
             # action.append(tmp % 3 - 1)
             # tmp = tmp // 3
 
+
         if self.robot.execute_action(*action):
             collided = False
         else:

@@ -104,17 +104,17 @@ class ObjectRoutine():
     def step(self):
         def issueUpdate(n, ax):
             if DIMS[0] == ax:
-                self.position[0] = self.home_position + POS_DELTA * n
+                self.position[0] = self.home_position[0] + POS_DELTA * n
             if DIMS[1] == ax:
-                self.position[1] = self.home_position + POS_DELTA * n
+                self.position[1] = self.home_position[1] + POS_DELTA * n
             if DIMS[2] == ax:
-                self.position[2] = self.home_position + POS_DELTA * n 
+                self.position[2] = self.home_position[2] + POS_DELTA * n 
             if DIMS[3] == ax:
-                self.orientation[0] =self.home_orientation + OR_DELTA * n
+                self.orientation[0] = self.home_orientation[0] + OR_DELTA * n
             if DIMS[4] == ax:
-                self.orientation[1] =self.home_orientation + OR_DELTA * n
+                self.orientation[1] = self.home_orientation[1] + OR_DELTA * n
             if DIMS[5] == ax:
-                self.orientation[2] =self.home_orientation + OR_DELTA * n
+                self.orientation[2] = self.home_orientation[2] + OR_DELTA * n
 
         if self.mode == 'static':
             pass
