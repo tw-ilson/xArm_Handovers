@@ -20,7 +20,7 @@ import nuro_arm
 import nuro_arm.robot.robot_arm as robot
 
 from curriculum import ObjectRoutine
-# from augmentations import Preprocess
+from augmentations import Preprocess
 
 HOME_JPOS = [0, -1, 1.2, 1.4, 0]
 TERMINAL_ERROR_MARGIN = 0.035
@@ -46,7 +46,7 @@ class HandoverArm(robot.RobotArm):
         self.arm_ready_jpos = HOME_JPOS
         # self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
 
-    def ready(self, randomize=True):
+    def ready(self, randomize=False):
         '''
         moves the arm to the 'ready' position (bent, pointing forward toward workspace)
         '''
@@ -201,9 +201,9 @@ class HandoverGraspingEnv(gym.Env):
         self.camera = WristCamera(self.robot, img_size)
         self.img_size = img_size
 
-        self.prepro = preprocess
+        self.prepro = None
         if preprocess:
-            self.prepro = Preprocess(augmentations=('brightness', 'blur'), bkrd_dir=BACKGROUNDS_DIR)
+            self.prepro = Preprocess()
 
         # add object
         self.object_width = 0.02
@@ -269,6 +269,7 @@ class HandoverGraspingEnv(gym.Env):
             collided = True
 
         self.t_step += 1
+        
 
         obs = self.get_obs()
         reward, done = self.getReward()
@@ -325,20 +326,25 @@ class HandoverGraspingEnv(gym.Env):
         rgb, mask = self.camera.get_image()
 
         jpos = self.robot.get_arm_jpos()
-        if self.prepro:
-            rgb = self.prepro(rgb, mask)
+        if self.prepro is not None:
+            quat = pb.getLinkState(self.robot._id, self.robot.camera_link_index)[1]
+            camrot = R.from_quat(quat).as_euler('zyz')[0]
+            print(camrot)
+            
+            rgb = self.prepro(rgb, mask, camrot)
 
         return {'rgb': rgb, 'joints':jpos}
 
     def plot_obs(self):
-        plt.imshow(self.get_obs())
+        plt.imshow(self.get_obs()['rgb'])
         plt.show()
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv()
+    env = HandoverGraspingEnv(preprocess=True)
+    for i in range(10):
+        env.robot.execute_action(0,0,0,1)
 
     env.plot_obs()
-
 
     exit()
