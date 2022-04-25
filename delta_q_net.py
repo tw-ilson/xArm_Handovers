@@ -1,6 +1,7 @@
 # pass through equivaraint CNN, PointwiseAvgPool, feed into MLP which predicts (xyz)
 import torch
 import torch.nn as nn
+import numpy as np
 
 import conv_nets
 
@@ -64,9 +65,11 @@ class DeltaQNetwork(torch.nn.Module):
         return mlp_out
 
     @torch.no_grad()
-    def predict(self, x: torch.Tensor, jpos) -> torch.Tensor:
+    def predict(self, x: torch.Tensor, jpos, noise=False) -> torch.Tensor:
         "Predicts 4d action for an input state"
-        mlp_out = self.forward(x, jpos)
+
+        nu = np.random.normal(0, 1e-2, size= (len(x), 12)) if noise else 0
+        mlp_out = self.forward(x, jpos) + nu
 
         # concatenated argmaxes of each window of possible actions, for each batch element
         actions = torch.cat([torch.max(mlp_out[:, i:i+3], dim=1)[1].unsqueeze(1)

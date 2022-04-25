@@ -102,7 +102,7 @@ class DQNAgent:
             self.global_step += 1
             progress_fraction = step/(self.exploration_fraction*num_steps)
             self.epsilon = self.compute_epsilon(progress_fraction)
-            a = self.select_action(s, self.epsilon)
+            a = self.select_action(s, self.epsilon, True)
 
             sp, r, done, info = self.env.step(a)
             self.episode_rewards += r
@@ -231,7 +231,7 @@ class DQNAgent:
 
         return s0, j0, a0, r0, sp0, jp0, d0
 
-    def select_action(self, state: dict, epsilon: float = 0.) -> np.ndarray:
+    def select_action(self, state: dict, epsilon: float = 0., has_noise=False) -> np.ndarray:
         '''Returns action based on e-greedy action selection.  With probability
         of epsilon, choose random action in environment action space, otherwise
         select argmax of q-function at given state
@@ -243,9 +243,9 @@ class DQNAgent:
         if np.random.random() < epsilon:
             return np.array(self.env.action_space.sample()) - 1
         else:
-            return self.policy(state)
+            return self.policy(state, has_noise)
 
-    def policy(self, state: dict) -> np.ndarray:
+    def policy(self, state: dict, has_noise) -> np.ndarray:
         '''Policy is the argmax over actions of the q-function at the given
         state. You will need to convert state to tensor on the device (similar
         to `prepare_batch`), then use `network.predict`.  Make sure to convert
@@ -262,7 +262,8 @@ class DQNAgent:
         t_state = t_state.permute(0, 3, 1, 2)
         t_state = torch.div(t_state, 255)
 
-        return self.network.predict(t_state, t_joint).squeeze().cpu().numpy()
+
+        return self.network.predict(t_state, t_joint, has_noise).squeeze().cpu().numpy()
 
     def compute_epsilon(self, fraction: float) -> float:
         '''Calculate epsilon value based on linear annealing schedule
