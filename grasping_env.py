@@ -20,17 +20,17 @@ import nuro_arm
 import nuro_arm.robot.robot_arm as robot
 
 from curriculum import ObjectRoutine
-from augmentations import Preprocess
+# from augmentations import Preprocess
 
 HOME_JPOS = [0, -1, 1.2, 1.4, 0]
 TERMINAL_ERROR_MARGIN = 0.035
 
-ROTATION_DELTA = 0.02
-VERTICAL_DELTA = 0.01
-DISTANCE_DELTA = 0.01
-ROLL_DELTA = 0.01
+ROTATION_DELTA = 0.10
+VERTICAL_DELTA = 0.02
+DISTANCE_DELTA = 0.02
+ROLL_DELTA = 0.04
 
-BACKGROUNDS_DIR =  "/Users/tom/Documents/tiny-imagenet-200/val/images"
+# BACKGROUNDS_DIR =  "/Users/tom/Documents/tiny-imagenet-200/val/images"
 
 class HandoverArm(robot.RobotArm):
     def __init__(self, controller_type='sim', headless=True, realtime=False, workspace=None, pb_client=None, serial_number=None):
@@ -208,7 +208,7 @@ class HandoverGraspingEnv(gym.Env):
         # add object
         self.object_width = 0.02
 
-        self.object_routine = ObjectRoutine(moving_mode='noise', moving_dimensions=['horizontal', 'vertical', 'roll'], random_start=True)
+        self.object_routine = ObjectRoutine(moving_mode='noise', moving_dimensions=['horizontal', 'vertical', 'roll'], random_start=False)
 
         self.t_step = 0
         self.episode_length = episode_length
@@ -232,7 +232,10 @@ class HandoverGraspingEnv(gym.Env):
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
         '''
-        self.object_routine.reset()
+        # self.object_routine.reset()
+        pos = np.random.uniform((0.15, -0.06, 0.1),(0.25, 0.06, 0.25))
+        quat = pb.getQuaternionFromEuler((0,np.pi/2, 0))
+        pb.resetBasePositionAndOrientation(self.object_routine._id, pos, quat)
         self.robot.ready()
         # self.reset_object_texture()
         self.t_step = 0
@@ -275,7 +278,7 @@ class HandoverGraspingEnv(gym.Env):
         # diagnostic information, what should we put here?
         info = {'success': self.canGrasp()}
 
-        self.object_routine.step()
+        # self.object_routine.step()
 
         return obs, reward, done, info
 

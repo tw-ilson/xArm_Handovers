@@ -28,7 +28,8 @@ class DeltaQNetwork(torch.nn.Module):
             self.cnn = conv_nets.CNN(input_shape)
 
         self.mlp = torch.nn.Sequential(
-            torch.nn.Linear(self.cnn.output_size+5, 256),
+            # torch.nn.Linear(self.cnn.output_size+5, 256),
+            torch.nn.Linear(self.cnn.output_size, 256),
             torch.nn.ReLU(inplace=True),
             torch.nn.Linear(256, 256),
             torch.nn.ReLU(inplace=True),
@@ -57,8 +58,8 @@ class DeltaQNetwork(torch.nn.Module):
 
         batch_size = x.shape[0]
         conv_out = self.cnn(x)
-        print("conv_out", conv_out.shape[1])
-        state = torch.cat((conv_out, jpos), dim=1)
+        state = conv_out
+        # state = torch.cat((conv_out, jpos), dim=1)
 
         mlp_out = self.mlp(state)
 

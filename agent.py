@@ -107,11 +107,10 @@ class DQNAgent:
             sp, r, done, info = self.env.step(a)
             self.episode_rewards += r
 
-            print(s)
             self.buffer.add_transition(s=s['rgb'], j=s['joints'], a=a, r=r, sp=sp['rgb'], jp=sp['joints'], d=done)
 
             # optimize
-            if len(self.buffer) > self.batch_size:
+            if len(self.buffer) > self.batch_size and step % 5 == 0:
                 loss = self.optimize()
                 self.loss_data.append(loss)
                 if len(self.loss_data) % self.target_network_update_freq == 0:
@@ -161,7 +160,6 @@ class DQNAgent:
         s, j, a, r, sp, jp, d = self.prepare_batch(*batch)
 
         q_all_pred = self.network(s, j)
-
 
         q_pred = torch.sum(q_all_pred.view(-1, 4, 3).gather(2, (a+1).unsqueeze(-1)).squeeze(), dim=1)
 
@@ -215,7 +213,7 @@ class DQNAgent:
         sp : tensor of next state images, dtype=torch.float32, shape=(B, C, H, W)
         d : tensor of done flags, dtype=torch.float32, shape=(B,)
         '''
-        crop = torchvision.transforms.RandomAffine(degrees=0)
+        crop = torchvision.transforms.RandomAffine(degrees=0, translate=(0.05, 0.05))
         s0 = torch.tensor(s, dtype=torch.float32,
                           device=self.device).permute(0, 3, 1, 2)
         s0 = torch.div(s0, 255)
@@ -318,13 +316,13 @@ if __name__ == "__main__":
                      learning_rate=1e-3,
                      buffer_size=20000,
                      batch_size=64,
-                     initial_epsilon=0.5,  # TODO change hyperparams
+                     initial_epsilon=1.0,  # TODO change hyperparams
                      final_epsilon=0.02,
-                     update_method='double',
-                     exploration_fraction=0.9,
-                     target_network_update_freq=10000,
+                     update_method='standard',
+                     exploration_fraction=0.95,
+                     target_network_update_freq=1000,
                      seed=1,
                      device='cpu')
 
     # TODO change save frequency, plot_curve, and this train num
-    agent.train(10000)
+    agent.train(20000)
