@@ -10,6 +10,7 @@ import pybullet as pb
 import pybullet_data
 import gym
 from gym.spaces.discrete import Discrete
+from cv2 import VideoCapture, CAP_PROP_FRAME_WIDTH, CAP_PROP_FRAME_HEIGHT, CAP_PROP_CONVERT_RGB
 import time
 import h5py
 import matplotlib.pyplot as plt
@@ -147,9 +148,13 @@ class WristCamera:
         '''
         self.img_size = img_size
         self.robot = robot
-        self.type = robot.controller_type
+        self.type = robot.controller_type 
+        self.capture = VideoCapture(0)
+        self.capture.set(CAP_PROP_FRAME_HEIGHT, self.img_size)
+        self.capture.set(CAP_PROP_FRAME_WIDTH, self.img_size)
+        self.capture.set(CAP_PROP_CONVERT_RGB, 1.0)
 
-        self.computeView()
+        # self.computeView()
 
     def computeView(self):
         """
@@ -171,6 +176,7 @@ class WristCamera:
                                                       aspect=1,
                                                       nearVal=0.01,
                                                       farVal=10)
+    
 
     def get_image(self) -> Tuple[np.ndarray, np.ndarray]:
         '''Takes rgb image
@@ -179,15 +185,16 @@ class WristCamera:
         np.ndarray
             shape (H,W,3) with dtype=np.uint8
         '''
-        rgba, _, mask = tuple(
-            pb.getCameraImage(width=self.img_size,
-                              height=self.img_size,
-                              viewMatrix=self.view_mtx,
-                              projectionMatrix=self.proj_mtx,
-                              renderer=pb.ER_TINY_RENDERER)[2:5])
+        # rgba, _, mask = tuple(
+        #     pb.getCameraImage(width=self.img_size,
+        #                       height=self.img_size,
+        #                       viewMatrix=self.view_mtx,
+        #                       projectionMatrix=self.proj_mtx,
+        #                       renderer=pb.ER_TINY_RENDERER)[2:5])
 
+        ret, rgba = self.capture.read()
+        mask = np.array(0) 
         return rgba[..., :3], mask
-
 
 class HandoverGraspingEnv(gym.Env):
     def __init__(self,
@@ -208,10 +215,10 @@ class HandoverGraspingEnv(gym.Env):
         self.camera = WristCamera(self.robot, img_size)
         self.img_size = img_size
 
-        self.prepro = None
-        if preprocess:
-            self.prepro = Preprocess(
-                bkrd_dir='/Users/nsortur/Downloads/images/')
+        # self.prepro = None
+        # if preprocess:
+        #     self.prepro = Preprocess(
+        #         bkrd_dir='/Users/nsortur/Downloads/images/')
 
         # add object
         self.object_width = 0.02
@@ -243,8 +250,8 @@ class HandoverGraspingEnv(gym.Env):
         '''Resets environment by randomly placing object
         '''
         self.object_routine.reset()
-        if self.prepro is not None:
-            self.prepro.reset()
+        # if self.prepro is not None:
+        #     self.prepro.reset()
         # pos = np.random.uniform((0.15, -0.06, 0.1), (0.25, 0.06, 0.25))
         # quat = pb.getQuaternionFromEuler((0, np.pi/2, 0))
         # pb.resetBasePositionAndOrientation(
@@ -337,12 +344,13 @@ class HandoverGraspingEnv(gym.Env):
         rgb, mask = self.camera.get_image()
 
         jpos = self.robot.get_arm_jpos()
-        if self.prepro is not None:
-            quat = pb.getLinkState(
-                self.robot._id, self.robot.camera_link_index)[1]
-            camrot = R.from_quat(quat).as_euler('zyz')[0]
 
-            rgb = self.prepro(rgb, mask, camrot)
+        # if self.prepro is not None:
+        #     quat = pb.getLinkState(
+        #         self.robot._id, self.robot.camera_link_index)[1]
+        #     camrot = R.from_quat(quat).as_euler('zyz')[0]
+        #
+        #     rgb = self.prepro(rgb, mask, camrot)
 
         return {'rgb': rgb, 'joints': jpos}
 
