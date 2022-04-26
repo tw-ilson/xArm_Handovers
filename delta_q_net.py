@@ -7,8 +7,9 @@ import conv_nets
 
 # TODO experiment with kernel sizes for average pooling
 
+
 class DeltaQNetwork(torch.nn.Module):
-    def __init__(self, input_shape, equivariant=False)  -> None:
+    def __init__(self, input_shape, equivariant=False) -> None:
         """Creates equivariant X, Y, Z prediction network for input image
 
         Args:
@@ -69,15 +70,17 @@ class DeltaQNetwork(torch.nn.Module):
     def predict(self, x: torch.Tensor, jpos, noise=False) -> torch.Tensor:
         "Predicts 4d action for an input state"
 
-        nu = np.random.normal(0, 1e-2, size= (len(x), 12)) if noise else 0
-        mlp_out = self.forward(x, jpos) + nu
+        # nu = np.random.normal(0, 1e-2, size= (len(x), 12)) if noise else 0
+        mlp_out = self.forward(x, jpos)  # + nu
 
         # concatenated argmaxes of each window of possible actions, for each batch element
         actions = torch.cat([torch.max(mlp_out[:, i:i+3], dim=1)[1].unsqueeze(1)
                             for i in range(0, 12, 3)], dim=1) - 1
 
         # actions = torch.max(mlp_out, dim=1)[1]
-        return actions
+
+        return actions, sum([torch.max(mlp_out[:, i:i+3], dim=1)[0].cpu().numpy()
+                             for i in range(0, 12, 3)])
 
     def compute_loss(self, q_pred: torch.Tensor, q_target: torch.Tensor) -> torch.Tensor:
         return self.loss_fn(q_pred, q_target)

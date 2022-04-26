@@ -12,12 +12,12 @@ import os
 
 from delta_q_net import DeltaQNetwork
 from utils import ReplayBuffer, plot_curves  # , plot_predictions, plot_curves
-from grasping_env import HandoverGraspingEnv
+from grasping_env import RealHandoverGraspingEnv
 
 
 class DQNAgent:
     def __init__(self,
-                 env: HandoverGraspingEnv,
+                 env: RealHandoverGraspingEnv,
                  gamma: float,
                  learning_rate: float,
                  buffer_size: int,
@@ -104,24 +104,25 @@ class DQNAgent:
             self.global_step += 1
             progress_fraction = step/(self.exploration_fraction*num_steps)
             self.epsilon = self.compute_epsilon(progress_fraction)
-            a = self.select_action(s, self.epsilon, True)
 
-            sp, r, done, info = self.env.step(a)
+            a, q = self.select_action(s, self.epsilon, True)
+
+            sp, r, done, info = self.env.step(a, q)
             self.episode_rewards += r
 
             self.buffer.add_transition(
                 s=s['rgb'], j=s['joints'], a=a, r=r, sp=sp['rgb'], jp=sp['joints'], d=done)
 
             # optimize
-            if len(self.buffer) > self.batch_size and step % 5 == 0:
-                loss = self.optimize()
-                self.loss_data.append(loss)
-                if len(self.loss_data) % self.target_network_update_freq == 0:
-                    self.hard_target_update()
+            # if len(self.buffer) > self.batch_size and step % 5 == 0:
+            #     loss = self.optimize()
+            #     self.loss_data.append(loss)
+            #     if len(self.loss_data) % self.target_network_update_freq == 0:
+            #         self.hard_target_update()
 
             s = sp.copy()
             if done:
-                self.env.plot_obs()
+                # done on the real robot is either grasped, or timed out
                 s = self.env.reset()
                 self.rewards_data.append(self.episode_rewards)
                 self.success_data.append(info['success'])
@@ -259,9 +260,10 @@ class DQNAgent:
         pixel action (px, py), dtype=int
         '''
         if np.random.random() < epsilon:
-            return np.array(self.env.action_space.sample()) - 1
+            return np.array(self.env.action_space.sample()) - 1, 0
         else:
-            return self.policy(state, has_noise)
+            policy = self.policy(state, has_noise)
+            return policy[0], policy[1]
 
     def policy(self, state: dict, has_noise) -> np.ndarray:
         '''Policy is the argmax over actions of the q-function at the given
@@ -281,7 +283,8 @@ class DQNAgent:
         t_state = t_state.permute(0, 3, 1, 2)
         t_state = torch.div(t_state, 255)
 
-        return self.network.predict(t_state, t_joint, has_noise).squeeze().cpu().numpy()
+        pred = self.network.predict(t_state, t_joint, has_noise)
+        return pred[0].squeeze().cpu().numpy(), pred[1]
 
     def compute_epsilon(self, fraction: float) -> float:
         '''Calculate epsilon value based on linear annealing schedule
@@ -302,9 +305,9 @@ class DQNAgent:
         done = 0
         while step < num_steps and not done:
 
-            a = self.select_action(s)
+            a, q = self.select_action(s)
 
-            sp, r, done, info = self.env.step(a)
+            sp, r, done, info = self.env.step(a, q)
 
             s = sp.copy()
 
@@ -322,8 +325,8 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(
-        render=False, sparse_reward=True, img_size=64, preprocess=True)
+    env = RealHandoverGraspingEnv(
+        render=True, sparse_reward=True, img_size=64, preprocess=True)
     # get object to float
 
     pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 1)
@@ -344,6 +347,8 @@ if __name__ == "__main__":
                      target_network_update_freq=1000,
                      seed=1,
                      device='cpu')
+    agent.network.load_state_dict(torch.load(
+        'good_weights/lotta-stuff-best.pt', 'cpu'))
 
     # TODO change save frequency, plot_curve, and this train num
-    agent.train(60000)
+    agent.playout(60000)
