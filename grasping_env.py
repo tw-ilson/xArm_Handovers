@@ -8,7 +8,7 @@ import torch.nn as nn
 import numpy as np
 import pybullet as pb
 import pybullet_data
-from cv2 import VideoCapture, CAP_PROP_FRAME_WIDTH, CAP_PROP_FRAME_HEIGHT, CAP_PROP_CONVERT_RGB
+import cv2
 import gym
 from gym.spaces.discrete import Discrete
 import time
@@ -318,10 +318,7 @@ class WristCamera:
         self.img_size = img_size
         self.robot = robot
         self.type = robot.controller_type
-        self.capture = VideoCapture(0)
-        self.capture.set(CAP_PROP_FRAME_HEIGHT, self.img_size)
-        self.capture.set(CAP_PROP_FRAME_WIDTH, self.img_size)
-        self.capture.set(CAP_PROP_CONVERT_RGB, 1.0)
+        self.capture = cv2.VideoCapture(0)
 
         # self.computeView()
 
@@ -340,6 +337,7 @@ class WristCamera:
         #                       renderer=pb.ER_TINY_RENDERER)[2:5])
 
         ret, rgba = self.capture.read()
+        rgba = cv2.cvtColor(rgba, cv2.COLOR_BGR2RGB)
         mask = np.array(0)
         return rgba[..., :3], mask
 
@@ -443,7 +441,7 @@ class RealHandoverGraspingEnv(gym.Env):
         '''Determines if the current position of the gripper's is such that the object is within a small error margin of grasp point.
         '''
 
-        print('q val for action:', q)
+        # print('q val for action:', q)
         return q > 0.8
 
     def getReward(self, collided: bool, q) -> Tuple[float, bool]:
@@ -462,11 +460,13 @@ class RealHandoverGraspingEnv(gym.Env):
             rgb image of shape (H,W,3) and dtype of np.uint8
         '''
         rgb, mask = self.camera.get_image()
-        crop = rgb[-64:, 128:192]
-
+        rgb = rgb[:, 40:280, :]
+        rgb = cv2.resize(rgb, (64,64))
+        # plt.imshow(rgb)
+        # plt.show()
         jpos = self.robot.get_arm_jpos()
 
-        return {'rgb': crop, 'joints': jpos}
+        return {'rgb': rgb, 'joints': jpos}
 
     def plot_obs(self):
         plt.imshow(self.get_obs()['rgb'])
