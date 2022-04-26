@@ -46,6 +46,8 @@ class HandoverArm(robot.RobotArm):
         self.arm_ready_jpos = HOME_JPOS
         # self.base_rotation_radians = self.controller._to_radians(1, READY_JPOS[0])
 
+        self.object_id = 0
+
     def ready(self, randomize=False):
         '''
         moves the arm to the 'ready' position (bent, pointing forward toward workspace)
@@ -77,10 +79,12 @@ class HandoverArm(robot.RobotArm):
 
         Returns
         -------
-            True if collision-free action was predicted
+            True if collision-free action was predicted with respect to object
 
         '''
         start_jpos = self.get_arm_jpos()
+        collide_list = self.mp.is_collision_free(start_jpos, False)[1]
+        obj_collide = np.any(list(map(lambda x: x.other_body == self.object_id, collide_list)))
         (old_x, old_y, old_z), ee_quat = self.get_hand_pose()
         old_roll, _, old_yaw = R.from_quat(ee_quat).as_euler('zyz')
         # old_yaw = np.arctan2(old_y, old_x)
@@ -106,7 +110,7 @@ class HandoverArm(robot.RobotArm):
         if valid_action:
             self.mp._teleport_arm(next_jpos)
 
-        return valid_action
+        return obj_collide
 
         # self.mp._teleport_arm(joint_pos)
         # self.controller.power_off_servos()
@@ -209,6 +213,7 @@ class HandoverGraspingEnv(gym.Env):
         self.object_width = 0.02
 
         self.object_routine = ObjectRoutine(moving_mode='noise', moving_dimensions=['horizontal', 'vertical', 'roll'], random_start=False)
+        self.robot.object_id = self.object_routine._id
 
         self.t_step = 0
         self.episode_length = episode_length
@@ -263,18 +268,15 @@ class HandoverGraspingEnv(gym.Env):
             # tmp = tmp // 3
 
 
-        if self.robot.execute_action(*action):
-            collided = False
-        else:
-            collided = True
+        collided = self.robot.execute_action(*action)
 
         self.t_step += 1
         
 
         obs = self.get_obs()
-        reward, done = self.getReward()
+        reward, done = self.getReward(collided)
 
-        done = done or self.t_step >= self.episode_length# or collided
+        done = done or self.t_step >= self.episode_length or collided
 
         # diagnostic information, what should we put here?
         info = {'success': self.canGrasp()}
@@ -302,7 +304,7 @@ class HandoverGraspingEnv(gym.Env):
 
         return float(np.linalg.norm(np.subtract(grip_pos, obj_pos)))
 
-    def getReward(self) -> Tuple[float, bool]:
+    def getReward(self, collided: bool) -> Tuple[float, bool]:
         ''' Defines the terminal states in the learning environment'''
 
         # TODO: Issue penalty if runs into an obstacle
@@ -311,7 +313,10 @@ class HandoverGraspingEnv(gym.Env):
         done = self.canGrasp()
 
         if self.sparse:
-            return int(done), done
+            if collided:
+                return -1, True
+            else:
+                return int(done), done
         else:
             return REWARD_SCALE/self.distToGrasp(), done
 

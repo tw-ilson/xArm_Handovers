@@ -96,6 +96,7 @@ class DQNAgent:
         '''
 
         s = self.env.reset()
+        best_avg = float('-inf')
 
         pbar = tqdm(range(self.global_step, num_steps+1))
         for step in pbar:
@@ -127,19 +128,23 @@ class DQNAgent:
 
                 avg_success = np.mean(self.success_data[-min(self.episode_count, 50):])
                 avg_rewards = np.mean(self.rewards_data[-min(self.episode_count, 50):])
+                if avg_rewards > best_avg:
+                    best_avg = avg_rewards
+                    torch.save(self.network.state_dict(), os.path.join(os.getcwd(), "best.pt"))
+
                 pbar.set_description(f'Success = {avg_success:.1%}, Rewards = {avg_rewards}')
 
             if step % 1000 == 0:
             # pickle and plot every 10000 steps
                 torch.save(self.network.state_dict(), os.path.join(os.getcwd(), "recent.pt"))
-                snapshot = os.path.join(os.getcwd(), "snapshot.pt")
-                keys_to_save = ['epsilon', 'buffer', 'network', 'target_network', 'global_step', 
-                                'rewards_data', 'optim', 'success_data', 'loss_data', 
-                                'episode_count', 'episode_rewards']
-                payload = {k: self.__dict__[k] for k in keys_to_save}
-                torch.save(payload, snapshot)
+#                 snapshot = os.path.join(os.getcwd(), "snapshot.pt")
+#                 keys_to_save = ['epsilon', 'buffer', 'network', 'target_network', 'global_step', 
+#                                 'rewards_data', 'optim', 'success_data', 'loss_data', 
+#                                 'episode_count', 'episode_rewards']
+#                 payload = {k: self.__dict__[k] for k in keys_to_save}
+#                 torch.save(payload, snapshot)
                 plot_curves(self.rewards_data, self.success_data, self.loss_data)
-                plt.show()
+#                 plt.show()
 #                 with torch.no_grad():
 #                     actions = self.network(imgs)
                 # actions = argmax2d(q_map_pred)
@@ -302,7 +307,7 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=True, sparse_reward=True, img_size=64)
+    env = HandoverGraspingEnv(render=False, sparse_reward=True, img_size=64)
     # get object to float
 
     pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 1)
@@ -325,4 +330,4 @@ if __name__ == "__main__":
                      device='cpu')
 
     # TODO change save frequency, plot_curve, and this train num
-    agent.train(20000)
+    agent.train(60000)
