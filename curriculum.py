@@ -14,12 +14,12 @@ from nuro_arm.constants import URDF_DIR
 MOVE_OPTS = ['static', 'cyclic', 'noise']
 DIMS = ['vertical', 'horizontal', 'depth', 'roll', 'pitch', 'yaw']
 
-#NOTE: relevant?
+# NOTE: relevant?
 WORKSPACE = np.array(((0.10, -0.05, 0.2),  # ((min_x, min_y, min_z)
                       (0.20, 0.05, 0.3)))  # (max_x, max_y, max_z))
 
-NOISE_GRANULARITY = 0.03
-NOISE_SCALING = 0.001
+NOISE_GRANULARITY = 0.025
+NOISE_SCALING = 0.003
 DIST_MAX = 0.2
 
 DEFAULT_POS = (0.25, 0.0, 0.2)
@@ -40,18 +40,17 @@ class ObjectRoutine():
         dimensions: list containing the dimensions along which to vary each timestep
     """
 
-    def __init__(self, 
-            random_start: bool = False, 
-            position:Optional[Tuple[float, float, float]]=DEFAULT_POS,
-            moving_mode: str = 'static',
-            moving_dimensions: List[str]=[]) -> None:
-
+    def __init__(self,
+                 random_start: bool = False,
+                 position: Optional[Tuple[float, float, float]] = DEFAULT_POS,
+                 moving_mode: str = 'static',
+                 moving_dimensions: List[str] = []) -> None:
 
         self._id = loadURDF(path.join(URDF_DIR, "object.urdf"))
         changeDynamics(self._id, -1,
-                          lateralFriction=1,
-                          spinningFriction=0.005,
-                          rollingFriction=0.005)
+                       lateralFriction=1,
+                       spinningFriction=0.005,
+                       rollingFriction=0.005)
         assert self._id
 
         self.workspace = WORKSPACE
@@ -82,10 +81,12 @@ class ObjectRoutine():
             # x, y, z = np.random.uniform(self.workspace[0, :]+ws_padding,
             #                             self.workspace[1, :]-ws_padding)
 
-            #pick random start position based on radius around robot
-            theta = np.random.normal(-np.pi/4, np.pi/4)
-            r = np.random.uniform(.12, DIST_MAX)
-            self.home_position = list((r * cos(theta), r * sin(theta), np.random.uniform(0.1, 0.3)))
+            # pick random start position based on radius around robot
+            # theta = np.random.normal(-np.pi/4, np.pi/4)
+            # r = np.random.uniform(.12, DIST_MAX)
+            # self.home_position = list((r * cos(theta), r * sin(theta), np.random.uniform(0.1, 0.3)))
+            self.home_position = np.random.uniform(
+                (0.15, -0.06, 0.1), (0.25, 0.06, 0.25))
             self.position = self.home_position
 
             self.orientation = self.home_orientation

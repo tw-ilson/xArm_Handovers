@@ -23,14 +23,13 @@ from curriculum import ObjectRoutine
 from augmentations import Preprocess
 
 HOME_JPOS = [0, -1, 1.2, 1.4, 0]
-TERMINAL_ERROR_MARGIN = 0.035
+TERMINAL_ERROR_MARGIN = 0.01
 
 ROTATION_DELTA = 0.10
 VERTICAL_DELTA = 0.02
 DISTANCE_DELTA = 0.02
 ROLL_DELTA = 0.04
 
-# BACKGROUNDS_DIR =  "/Users/tom/Documents/tiny-imagenet-200/val/images"
 
 class HandoverArm(robot.RobotArm):
     def __init__(self, controller_type='sim', headless=True, realtime=False, workspace=None, pb_client=None, serial_number=None):
@@ -84,7 +83,8 @@ class HandoverArm(robot.RobotArm):
         '''
         start_jpos = self.get_arm_jpos()
         collide_list = self.mp.is_collision_free(start_jpos, False)[1]
-        obj_collide = np.any(list(map(lambda x: x.other_body == self.object_id, collide_list)))
+        obj_collide = np.any(
+            list(map(lambda x: x.other_body == self.object_id, collide_list)))
         (old_x, old_y, old_z), ee_quat = self.get_hand_pose()
         old_roll, _, old_yaw = R.from_quat(ee_quat).as_euler('zyz')
         # old_yaw = np.arctan2(old_y, old_x)
@@ -100,15 +100,18 @@ class HandoverArm(robot.RobotArm):
         new_pos = (x, y, z)
         new_quat = R.from_euler('zyz', (roll, np.pi/2, yaw)).as_quat()
         next_jpos, info = self.mp.calculate_ik(new_pos, new_quat)
-        
+
         valid_action = info['ik_pos_error'] < 0.05 and info['ik_rot_error'] < 0.2
 
-        valid_action = valid_action and self.mp.is_collision_free(next_jpos, False)[0]  
+        valid_action = valid_action and self.mp.is_collision_free(next_jpos, False)[
+            0]
 
-        # valid_action, collisions = self.mp.is_collision_free_trajectory(
-            # start_jpos, next_jpos, ignore_gripper=False, n_substeps=4)
         if valid_action:
             self.mp._teleport_arm(next_jpos)
+        else:
+            noise_jpos = [x + (np.random.rand() * 0.015)
+                          for x in list(start_jpos)]
+            self.mp._teleport_arm(noise_jpos)
 
         return obj_collide
 
@@ -192,7 +195,7 @@ class HandoverGraspingEnv(gym.Env):
                  sparse_reward: bool = True,
                  img_size: int = 64,
                  render: bool = False,
-                 preprocess=False,
+                 preprocess=True,
                  ) -> None:
         '''Pybullet simulator with robot that performs top down grasps of a
         single object.  A camera is positioned to take images of workspace
@@ -207,12 +210,14 @@ class HandoverGraspingEnv(gym.Env):
 
         self.prepro = None
         if preprocess:
-            self.prepro = Preprocess()
+            self.prepro = Preprocess(
+                bkrd_dir='/Users/nsortur/Downloads/images/')
 
         # add object
         self.object_width = 0.02
 
-        self.object_routine = ObjectRoutine(moving_mode='noise', moving_dimensions=['horizontal', 'vertical', 'roll'], random_start=False)
+        self.object_routine = ObjectRoutine(moving_mode='noise', moving_dimensions=[
+                                            'roll'], random_start=True)
         self.robot.object_id = self.object_routine._id
 
         self.t_step = 0
@@ -237,10 +242,13 @@ class HandoverGraspingEnv(gym.Env):
     def reset(self) -> np.ndarray:
         '''Resets environment by randomly placing object
         '''
-        # self.object_routine.reset()
-        pos = np.random.uniform((0.15, -0.06, 0.1),(0.25, 0.06, 0.25))
-        quat = pb.getQuaternionFromEuler((0,np.pi/2, 0))
-        pb.resetBasePositionAndOrientation(self.object_routine._id, pos, quat)
+        self.object_routine.reset()
+        if self.prepro is not None:
+            self.prepro.reset()
+        # pos = np.random.uniform((0.15, -0.06, 0.1), (0.25, 0.06, 0.25))
+        # quat = pb.getQuaternionFromEuler((0, np.pi/2, 0))
+        # pb.resetBasePositionAndOrientation(
+        #     self.object_routine._id, pos, quat)
         self.robot.ready()
         # self.reset_object_texture()
         self.t_step = 0
@@ -264,14 +272,12 @@ class HandoverGraspingEnv(gym.Env):
         # tmp = action
         # action = []
         # for i in range(4):
-            # action.append(tmp % 3 - 1)
-            # tmp = tmp // 3
-
+        # action.append(tmp % 3 - 1)
+        # tmp = tmp // 3
 
         collided = self.robot.execute_action(*action)
 
         self.t_step += 1
-        
 
         obs = self.get_obs()
         reward, done = self.getReward(collided)
@@ -281,7 +287,7 @@ class HandoverGraspingEnv(gym.Env):
         # diagnostic information, what should we put here?
         info = {'success': self.canGrasp()}
 
-        # self.object_routine.step()
+        self.object_routine.step()
 
         return obs, reward, done, info
 
@@ -332,13 +338,13 @@ class HandoverGraspingEnv(gym.Env):
 
         jpos = self.robot.get_arm_jpos()
         if self.prepro is not None:
-            quat = pb.getLinkState(self.robot._id, self.robot.camera_link_index)[1]
+            quat = pb.getLinkState(
+                self.robot._id, self.robot.camera_link_index)[1]
             camrot = R.from_quat(quat).as_euler('zyz')[0]
-            print(camrot)
-            
+
             rgb = self.prepro(rgb, mask, camrot)
 
-        return {'rgb': rgb, 'joints':jpos}
+        return {'rgb': rgb, 'joints': jpos}
 
     def plot_obs(self):
         plt.imshow(self.get_obs()['rgb'])
@@ -348,7 +354,7 @@ class HandoverGraspingEnv(gym.Env):
 if __name__ == "__main__":
     env = HandoverGraspingEnv(preprocess=True)
     for i in range(10):
-        env.robot.execute_action(0,0,0,1)
+        env.robot.execute_action(0, 0, 0, 1)
 
     env.plot_obs()
 

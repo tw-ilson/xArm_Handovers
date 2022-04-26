@@ -75,7 +75,8 @@ class DQNAgent:
             for k, v in payload.items():
                 self.__dict__[k] = v
             # might not be necessary but might as well
-            self.network.load_state_dict(torch.load(os.path.join(os.getcwd(), "recent.pt")))
+            self.network.load_state_dict(torch.load(
+                os.path.join(os.getcwd(), "recent.pt")))
 
     def isTerminal(self) -> bool:
         ''' determines if the current state of the agent is a terminal state
@@ -108,7 +109,8 @@ class DQNAgent:
             sp, r, done, info = self.env.step(a)
             self.episode_rewards += r
 
-            self.buffer.add_transition(s=s['rgb'], j=s['joints'], a=a, r=r, sp=sp['rgb'], jp=sp['joints'], d=done)
+            self.buffer.add_transition(
+                s=s['rgb'], j=s['joints'], a=a, r=r, sp=sp['rgb'], jp=sp['joints'], d=done)
 
             # optimize
             if len(self.buffer) > self.batch_size and step % 5 == 0:
@@ -119,6 +121,7 @@ class DQNAgent:
 
             s = sp.copy()
             if done:
+                self.env.plot_obs()
                 s = self.env.reset()
                 self.rewards_data.append(self.episode_rewards)
                 self.success_data.append(info['success'])
@@ -126,24 +129,30 @@ class DQNAgent:
                 self.episode_rewards = 0
                 self.episode_count += 1
 
-                avg_success = np.mean(self.success_data[-min(self.episode_count, 50):])
-                avg_rewards = np.mean(self.rewards_data[-min(self.episode_count, 50):])
+                avg_success = np.mean(
+                    self.success_data[-min(self.episode_count, 50):])
+                avg_rewards = np.mean(
+                    self.rewards_data[-min(self.episode_count, 50):])
                 if avg_rewards > best_avg:
                     best_avg = avg_rewards
-                    torch.save(self.network.state_dict(), os.path.join(os.getcwd(), "best.pt"))
+                    torch.save(self.network.state_dict(),
+                               os.path.join(os.getcwd(), "best.pt"))
 
-                pbar.set_description(f'Success = {avg_success:.1%}, Rewards = {avg_rewards}')
+                pbar.set_description(
+                    f'Success = {avg_success:.1%}, Rewards = {avg_rewards}')
 
             if step % 1000 == 0:
-            # pickle and plot every 10000 steps
-                torch.save(self.network.state_dict(), os.path.join(os.getcwd(), "recent.pt"))
+                # pickle and plot every 10000 steps
+                torch.save(self.network.state_dict(),
+                           os.path.join(os.getcwd(), "recent.pt"))
 #                 snapshot = os.path.join(os.getcwd(), "snapshot.pt")
-#                 keys_to_save = ['epsilon', 'buffer', 'network', 'target_network', 'global_step', 
-#                                 'rewards_data', 'optim', 'success_data', 'loss_data', 
+#                 keys_to_save = ['epsilon', 'buffer', 'network', 'target_network', 'global_step',
+#                                 'rewards_data', 'optim', 'success_data', 'loss_data',
 #                                 'episode_count', 'episode_rewards']
 #                 payload = {k: self.__dict__[k] for k in keys_to_save}
 #                 torch.save(payload, snapshot)
-                plot_curves(self.rewards_data, self.success_data, self.loss_data)
+                plot_curves(self.rewards_data,
+                            self.success_data, self.loss_data)
 #                 plt.show()
 #                 with torch.no_grad():
 #                     actions = self.network(imgs)
@@ -166,22 +175,27 @@ class DQNAgent:
 
         q_all_pred = self.network(s, j)
 
-        q_pred = torch.sum(q_all_pred.view(-1, 4, 3).gather(2, (a+1).unsqueeze(-1)).squeeze(), dim=1)
+        q_pred = torch.sum(q_all_pred.view(-1, 4, 3).gather(2,
+                           (a+1).unsqueeze(-1)).squeeze(), dim=1)
 
         if self.update_method == 'standard':
             with torch.no_grad():
                 q_all_pred_next = self.target_network(sp, jp)
-                q_next = torch.sum(torch.max(q_all_pred_next.view(-1, 4, 3), dim=2)[0], dim=1).squeeze()
+                q_next = torch.sum(
+                    torch.max(q_all_pred_next.view(-1, 4, 3), dim=2)[0], dim=1).squeeze()
                 q_target = r + self.gamma * q_next * (1-d)
 
-        #TODO implement
+        # TODO implement
         elif self.update_method == 'double':
             with torch.no_grad():
                 q_all_pred_next = self.target_network(sp, jp)
-                q_next_act = (torch.argmax(q_all_pred_next.view(-1, 4, 3), dim=2)[0] - 1).unsqueeze(0)
+                q_next_act = (torch.argmax(
+                    q_all_pred_next.view(-1, 4, 3), dim=2)[0] - 1).unsqueeze(0)
                 # print(q_next_act)
                 pred_act = self.network(sp, jp)
-                dbl_select = lambda q: torch.sum(q.view(-1, 4, 3).gather(2, (q_next_act+1).unsqueeze(-1)).squeeze(), 0)
+
+                def dbl_select(q): return torch.sum(
+                    q.view(-1, 4, 3).gather(2, (q_next_act+1).unsqueeze(-1)).squeeze(), 0)
                 q_next = dbl_select(pred_act[:])
                 q_target = r + self.gamma * q_next * (1-d)
 
@@ -196,7 +210,7 @@ class DQNAgent:
         return loss.item()
 
     def prepare_batch(self, s: np.ndarray, j: np.ndarray,  a: np.ndarray,
-            r: np.ndarray, sp: np.ndarray, jp: np.ndarray, d: np.ndarray,
+                      r: np.ndarray, sp: np.ndarray, jp: np.ndarray, d: np.ndarray,
                       ) -> Tuple[Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor]:
         '''Converts components of transition from numpy arrays to tensors
         that are ready to be passed to q-network.  Make sure you send tensors
@@ -218,7 +232,8 @@ class DQNAgent:
         sp : tensor of next state images, dtype=torch.float32, shape=(B, C, H, W)
         d : tensor of done flags, dtype=torch.float32, shape=(B,)
         '''
-        crop = torchvision.transforms.RandomAffine(degrees=0, translate=(0.05, 0.05))
+        crop = torchvision.transforms.RandomAffine(
+            degrees=0, translate=(0.05, 0.05))
         s0 = torch.tensor(s, dtype=torch.float32,
                           device=self.device).permute(0, 3, 1, 2)
         s0 = torch.div(s0, 255)
@@ -261,10 +276,10 @@ class DQNAgent:
 
         t_state = torch.tensor(state['rgb'], dtype=torch.float32, device=self.device).unsqueeze(
             0)
-        t_joint = torch.tensor(state['joints'], dtype=torch.float32, device=self.device).unsqueeze(0)
+        t_joint = torch.tensor(
+            state['joints'], dtype=torch.float32, device=self.device).unsqueeze(0)
         t_state = t_state.permute(0, 3, 1, 2)
         t_state = torch.div(t_state, 255)
-
 
         return self.network.predict(t_state, t_joint, has_noise).squeeze().cpu().numpy()
 
@@ -281,12 +296,12 @@ class DQNAgent:
             + fraction * self.final_epsilon
 
     def playout(self, num_steps):
-        
+
         s = self.env.reset()
         step = 0
         done = 0
         while step < num_steps and not done:
-            
+
             a = self.select_action(s)
 
             sp, r, done, info = self.env.step(a)
@@ -307,7 +322,8 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = HandoverGraspingEnv(render=False, sparse_reward=True, img_size=64)
+    env = HandoverGraspingEnv(
+        render=False, sparse_reward=True, img_size=64, preprocess=True)
     # get object to float
 
     pb.configureDebugVisualizer(pb.COV_ENABLE_GUI, 1)
