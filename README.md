@@ -1,0 +1,2 @@
+# XArm Handovers
+This repository contains the code for controlling the NuRo-Arm via DQN reinforcement learning in order to solve the task of adaptively retrieving an object in the workspace. Compared to other methods which use a single-shot task planning algorithm, our reinforcement learning approach solves the problem of adaping to a potentially moving object, with the goal of enabling the robot to grasp an object out of the human hand. 
